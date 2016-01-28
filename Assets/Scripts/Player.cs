@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 		jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 		jumping = false;
 		
-		fricLvl = 3;
+		fricLvl = 0;
 		
 		print ("Gravity: " + gravity + " Jump Velocity: " + jumpVelocity);
 	}
@@ -55,7 +55,7 @@ public class Player : MonoBehaviour {
 		
 		if (fricCtrl != 0){
 			print(fricCtrl);
-			fricLvl = Mathf.Clamp(fricLvl + fricCtrl, 0, 5);
+			fricLvl = Mathf.Clamp(fricLvl + fricCtrl, 0, 1);
 		}
 		
 		if(fricCtrl != 0){
@@ -67,28 +67,8 @@ public class Player : MonoBehaviour {
 					break;
 				case 1:
 					controller.maxClimbAngle = 75;
-					moveSpeed = 4;
+					moveSpeed = 15;
 					gravity = originalGravity;
-					break;
-				case 2:
-					controller.maxClimbAngle = 68;
-					moveSpeed = 6;
-					gravity = originalGravity;
-					break;
-				case 3:
-					controller.maxClimbAngle = 60;
-					moveSpeed = 8;
-					gravity = originalGravity;
-					break;
-				case 4:
-					controller.maxClimbAngle = 30;
-					moveSpeed = 12;
-					gravity = originalGravity * 0.8f;
-					break;
-				case 5:
-					controller.maxClimbAngle = 15;
-					moveSpeed = 18;
-					gravity = originalGravity * 0.55f;
 					break;
 				default:
 					break;
@@ -108,14 +88,9 @@ public class Player : MonoBehaviour {
 		float targetVelocityX = input.x * moveSpeed;
 		velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)?accelerationTimeGrounded:accelerationTimeAirborne);
 		velocity.y += gravity * Time.deltaTime;
-		controller.Move(velocity * Time.deltaTime);
-		
-		//face direction
-		float moveDir = Input.GetAxisRaw("Horizontal");
-		if(moveDir != 0)
-			transform.eulerAngles = (moveDir < 0) ? Vector3.up * 180 : Vector3.zero;
 		
 		anim.SetFloat("inputH", Mathf.Abs(velocity.x));
 		anim.SetFloat("inputV", velocity.y);
+		controller.Move(velocity * Time.deltaTime);
 	}
 }

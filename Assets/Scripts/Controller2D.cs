@@ -18,15 +18,20 @@ public class Controller2D : MonoBehaviour {
 	RaycastOrigins raycastOrigins;
 	public CollisionInfo collisions;
 	
+	private MeshRenderer mesh;
+	
 	void Start() {
 		boxCollider = GetComponent<BoxCollider2D> ();
 		CalculateRaySpacing ();
+		mesh = GetComponentInChildren<MeshRenderer>();
 	}
 
 	public void Move(Vector3 velocity){
+		//update where our rays are shooting from
 		UpdateRaycastOrigins ();
 		collisions.Reset();
 		collisions.velocityOld = velocity;
+		print("velocity x: " + velocity.x + " y: " + velocity.y);
 		if(velocity.y < 0){
 			DescendSlope(ref velocity);
 		}
@@ -37,6 +42,15 @@ public class Controller2D : MonoBehaviour {
 			VerticalCollisions(ref velocity);
 		}
 		transform.Translate(velocity,Space.World);
+		//face direction
+		float moveDir = Input.GetAxisRaw("Horizontal");
+		print(moveDir);
+		float faceDir = (moveDir != 0) ? (moveDir<0 ? 180 : 0) : mesh.transform.eulerAngles.y;
+		//if(moveDir != 0)
+			//mesh.transform.eulerAngles = (moveDir < 0) ? Vector3.up * 180 : Vector3.zero;
+		mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(new Vector3(0, faceDir, collisions.slopeAngle*-1)) : Quaternion.Euler(new Vector3(0, faceDir, collisions.slopeAngle));
+		//Mathf.Lerp(mesh.transform.eulerAngles, (collisions.descendingSlope ? new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle*-1) : new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle)), 0.5 * Time.deltaTime);
+		//mesh.transform.eulerAngles = collisions.descendingSlope ? new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle*-1) : new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle);
 	}
 	
 	void HorizontalCollisions(ref Vector3 velocity){
@@ -143,11 +157,14 @@ public class Controller2D : MonoBehaviour {
 	}
 	
 	void DescendSlope(ref Vector3 velocity){
+		//which way are we facing
 		float directionX = Mathf.Sign(velocity.x);
+		//ray origin is bottom right if facing left
 		Vector2 rayOrigin = (directionX == -1)?raycastOrigins.bottomRight:raycastOrigins.bottomLeft;
+		//fire the ray straight down until we hit the surface.
 		RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -Vector2.up, Mathf.Infinity, collisionMask);
 		
-		if(hit){
+		if(hit){			
 			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 			if(slopeAngle != 0 && slopeAngle <= maxDescendAngle){
 				if(Mathf.Sign(hit.normal.x) == directionX){
