@@ -46,11 +46,10 @@ public class Controller2D : MonoBehaviour {
 		float moveDir = Input.GetAxisRaw("Horizontal");
 		print(moveDir);
 		float faceDir = (moveDir != 0) ? (moveDir<0 ? 180 : 0) : mesh.transform.eulerAngles.y;
-		//if(moveDir != 0)
-			//mesh.transform.eulerAngles = (moveDir < 0) ? Vector3.up * 180 : Vector3.zero;
-		mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(new Vector3(0, faceDir, collisions.slopeAngle*-1)) : Quaternion.Euler(new Vector3(0, faceDir, collisions.slopeAngle));
-		//Mathf.Lerp(mesh.transform.eulerAngles, (collisions.descendingSlope ? new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle*-1) : new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle)), 0.5 * Time.deltaTime);
-		//mesh.transform.eulerAngles = collisions.descendingSlope ? new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle*-1) : new Vector3(0, mesh.transform.eulerAngles.y, collisions.slopeAngle);
+		
+		//this one almost works
+		mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+		//mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(0, faceDir, collisions.slopeAngle*-1) : Quaternion.Euler(0, faceDir, collisions.slopeAngle);
 	}
 	
 	void HorizontalCollisions(ref Vector3 velocity){
@@ -210,6 +209,10 @@ public class Controller2D : MonoBehaviour {
 	}
 	
 	public struct CollisionInfo{
+		//-1: no friction
+		// 0: normal
+		// 1: high friction
+		public int mode;
 		public bool above, below, left, right, climbingSlope, descendingSlope;
 		public float slopeAngle, slopeAngleOld;
 		public Vector3 velocityOld;
