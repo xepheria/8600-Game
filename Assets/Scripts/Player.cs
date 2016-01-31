@@ -16,6 +16,9 @@ public class Player : MonoBehaviour {
 	//Vector3 velocity;
 	float velocityXSmoothing;
 	
+	BoxCollider2D boxCollider;
+	bool descending;
+	
 	private float xsp, ysp;
 	const float acc = 0.046875f;
 	const float dec = 0.5f;
@@ -29,6 +32,10 @@ public class Player : MonoBehaviour {
 	
 	Controller2D controller;
 	
+	private MeshRenderer mesh;
+	
+	private float faceDir;
+	
 	void Start() {
 		controller = GetComponent<Controller2D> ();
 		
@@ -41,16 +48,21 @@ public class Player : MonoBehaviour {
 		fricLvl = 0;
 		
 		print ("Gravity: " + gravity + " Jump Velocity: " + jumpVelocity);
+		
+		mesh = GetComponentInChildren<MeshRenderer>();
+		
+		boxCollider = GetComponent<BoxCollider2D>();
 	}
 	
 	void OnGUI(){
-		GUI.Box(new Rect(Screen.width - 200, 0, 200, 200), "Angle");
-		GUI.Label(new Rect(Screen.width - 100, 20, 100, 50), controller.maxClimbAngle.ToString());
-		GUI.Label(new Rect(Screen.width - 100, 30, 100, 50), moveSpeed.ToString());
+		GUI.Box(new Rect(Screen.width - 200, 0, 200, 200), "Angle: " + controller.collisions.slopeAngle);
 		GUI.Label(new Rect(Screen.width - 50, 25, 100, 50), fricLvl.ToString());
 		GUI.Label(new Rect(Screen.width - 100, 40, 100, 50), "xspeed: " + xsp.ToString());
 		GUI.Label(new Rect(Screen.width - 100, 70, 100, 50), "yspeed: " + ysp.ToString());
-		GUI.Label(new Rect(Screen.width - 100, 110, 100, 50), "collisions\nbelow: " + controller.collisions.below.ToString());
+		GUI.Label(new Rect(Screen.width - 175, 110, 100, 50), "below: " + controller.collisions.below.ToString());
+		GUI.Label(new Rect(Screen.width - 175, 130, 100, 50), "ascending: " + controller.collisions.climbingSlope.ToString());
+		GUI.Label(new Rect(Screen.width - 175, 150, 100, 50), "descending: " + controller.collisions.descendingSlope.ToString());
+		GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), faceDir.ToString());
 	}
 	
 	void Update(){
@@ -66,7 +78,6 @@ public class Player : MonoBehaviour {
 			fricCtrl = 1;
 		
 		if (fricCtrl != 0){
-			print(fricCtrl);
 			fricLvl = Mathf.Clamp(fricLvl + fricCtrl, -1, 1);
 
 			switch(fricLvl){
@@ -83,16 +94,6 @@ public class Player : MonoBehaviour {
 					break;
 			}
 		}
-		
-		/*if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
-			velocity.y = jumpVelocity;
-			anim.SetBool("jumping", true);
-			jumping = true;
-		}
-		else if(jumping && controller.collisions.below){
-			anim.SetBool("jumping", false);
-			jumping = false;
-		}*/
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
@@ -124,9 +125,14 @@ public class Player : MonoBehaviour {
 				ysp = Mathf.Lerp(ysp, ysp+grv, Time.deltaTime);
 			}
 			//if we're in collision with the ground and press "jump", we jump
-			//sometimes we're not colliding with ground when we're obviously touching the ground. why is this??
 			if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
 				ysp = jmp;
+				anim.SetBool("jumping", true);
+				jumping = true;
+			}
+			else if(jumping && controller.collisions.below){
+				anim.SetBool("jumping", false);
+				jumping = false;
 			}
 		}
 		
@@ -143,5 +149,32 @@ public class Player : MonoBehaviour {
 		anim.SetFloat("inputH", Mathf.Abs(xsp));
 		anim.SetFloat("inputV", ysp);
 		controller.Move(new Vector3(xsp, ysp, 0));
+		
+		//face direction
+		RaycastHit2D hit = Physics2D.Raycast(transform.position,
+							-Vector2.up, collisionMask);
+		float slopeAngle = 0;
+		if(hit){
+			slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+			if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
+				slopeAngle = 360 - slopeAngle;
+			}
+		}
+		print(slopeAngle);
+		float moveDir = Input.GetAxisRaw("Horizontal");
+		
+		if(moveDir != 0)
+			faceDir = (moveDir<0 ? 180 : 0);
+		
+		//this one almost works
+		//mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+		//mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(0, faceDir, collisions.slopeAngle*-1) : Quaternion.Euler(0, faceDir, collisions.slopeAngle);
+		mesh.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * Quaternion.Euler(0, faceDir, 0);
+		if(slopeAngle > 0){
+			if(slopeAngle>180)
+				mesh.transform.position = new Vector3(boxCollider.bounds.min.x, boxCollider.bounds.min.y, 0);
+			else
+				mesh.transform.position = new Vector3(boxCollider.bounds.max.x, boxCollider.bounds.min.y, 0);
+		}
 	}
 }

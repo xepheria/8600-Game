@@ -31,7 +31,6 @@ public class Controller2D : MonoBehaviour {
 		UpdateRaycastOrigins ();
 		collisions.Reset();
 		collisions.velocityOld = velocity;
-		print("velocity x: " + velocity.x + " y: " + velocity.y);
 		if(velocity.y < 0){
 			DescendSlope(ref velocity);
 		}
@@ -42,14 +41,6 @@ public class Controller2D : MonoBehaviour {
 			VerticalCollisions(ref velocity);
 		}
 		transform.Translate(velocity,Space.World);
-		//face direction
-		float moveDir = Input.GetAxisRaw("Horizontal");
-		print(moveDir);
-		float faceDir = (moveDir != 0) ? (moveDir<0 ? 180 : 0) : mesh.transform.eulerAngles.y;
-		
-		//this one almost works
-		mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-		//mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(0, faceDir, collisions.slopeAngle*-1) : Quaternion.Euler(0, faceDir, collisions.slopeAngle);
 	}
 	
 	void HorizontalCollisions(ref Vector3 velocity){
@@ -61,7 +52,7 @@ public class Controller2D : MonoBehaviour {
 			rayOrigin += Vector2.up * (horizontalRaySpacing * i);
 			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
 						
-			Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+			//Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
 			
 			if(hit){
 				//get angle of the surface we hit
@@ -106,7 +97,7 @@ public class Controller2D : MonoBehaviour {
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
 			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
 			
-			Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+			//Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 			
 			if(hit){
 				//set y velocity
