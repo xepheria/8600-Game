@@ -143,7 +143,7 @@ public class Player : MonoBehaviour {
 			}
 			//if we're in collision with the ground and press "jump", we jump
 			if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
-				ysp = jmp + Mathf.Abs(xsp)*.1f;
+				ysp = jmp + Mathf.Abs(xsp)*.2f; //add a little bit of x-speed to jump
 				anim.SetBool("jumping", true);
 				jumping = true;
 			}
