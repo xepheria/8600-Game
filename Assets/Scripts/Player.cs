@@ -22,9 +22,9 @@ public class Player : MonoBehaviour {
 	const float frc = 0.046875f;
 	const float top = 0.2f;
 	const float air = 0.09375f;
-	const float grv = -0.21875f;
-	const float jmp = .1f;
-	const float slp = 0.125f;
+	const float grv = -0.3f;
+	const float jmp = .13f;
+	const float slp = 0.15f;
 	
 	private int fricLvl;
 	
@@ -133,8 +133,12 @@ public class Player : MonoBehaviour {
 				}
 			}
 			//not pressing anything, friction kicks in
-			else
+			else if(!jumping)
 				xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
+			else if(ysp > 0 && ysp < 1){	//air drag
+				if (Mathf.Abs(xsp) > 0.05f)
+					xsp = xsp * 0.96875f;
+			}
 			
 			//air/jump movement
 			//nothing below us, add gravity
@@ -152,8 +156,13 @@ public class Player : MonoBehaviour {
 				jumping = false;
 			}
 			
+			//if we let go of jump button early
+			if(Input.GetKeyUp(KeyCode.Space) && ysp > jmp*.3f){
+				ysp = jmp*.3f;
+			}
+			
 			//accelerate going downhill, slow down going uphill
-			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)), Time.deltaTime);
+			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?1.5f:1)), Time.deltaTime);
 		}
 		
 		//high friction
