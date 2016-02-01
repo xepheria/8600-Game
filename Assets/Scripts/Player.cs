@@ -11,12 +11,9 @@ public class Player : MonoBehaviour {
 	
 	public float jumpHeight, timeToJumpApex, moveSpeed;
 	bool jumping;
-	private float gravity, jumpVelocity, originalGravity;
-	float accelerationTimeAirborne = .2f, accelerationTimeGrounded = .2f;
-	//Vector3 velocity;
+	//private float gravity, jumpVelocity, originalGravity;
 	float velocityXSmoothing;
 	
-	BoxCollider2D boxCollider;
 	bool descending;
 	
 	private float xsp, ysp;
@@ -27,6 +24,7 @@ public class Player : MonoBehaviour {
 	const float air = 0.09375f;
 	const float grv = -0.21875f;
 	const float jmp = .1f;
+	const float slp = 0.125f;
 	
 	private int fricLvl;
 	
@@ -41,17 +39,13 @@ public class Player : MonoBehaviour {
 		
 		anim = GetComponent<Animator> ();
 		
-		originalGravity = gravity = -(2 * jumpHeight)/Mathf.Pow(timeToJumpApex,2);
-		jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+		//originalGravity = gravity = -(2 * jumpHeight)/Mathf.Pow(timeToJumpApex,2);
+		//jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
 		jumping = false;
 		
 		fricLvl = 0;
 		
-		print ("Gravity: " + gravity + " Jump Velocity: " + jumpVelocity);
-		
 		mesh = GetComponentInChildren<MeshRenderer>();
-		
-		boxCollider = GetComponent<BoxCollider2D>();
 	}
 	
 	void OnGUI(){
@@ -69,6 +63,9 @@ public class Player : MonoBehaviour {
 		//if(controller.collisions.above || controller.collisions.below){
 			//ysp = 0;
 		//}
+		if(controller.collisions.left || controller.collisions.right){
+			xsp = 0;
+		}
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
@@ -97,6 +94,26 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			
+			//face direction
+			float moveDir = Input.GetAxisRaw("Horizontal");
+			if(moveDir != 0)
+				faceDir = (moveDir<0 ? 180 : 0);
+			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			
+			//slope of ground beneath us
+			RaycastHit hit;
+			Debug.DrawRay(transform.position, -Vector2.up * .3f, Color.red);
+			float slopeAngle = 0;
+			if(Physics.Raycast(transform.position, -Vector2.up, out hit, 0.2f, collisionMask)){
+				print("hit");
+				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
+					slopeAngle = 360 - slopeAngle;
+				}
+			}
+			print(slopeAngle);
+			
 			//pressing left
 			if(inputLR < 0){
 				if(xsp > 0){
@@ -134,6 +151,8 @@ public class Player : MonoBehaviour {
 				anim.SetBool("jumping", false);
 				jumping = false;
 			}
+			
+			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)), Time.deltaTime);
 		}
 		
 		//high friction
@@ -148,33 +167,10 @@ public class Player : MonoBehaviour {
 		
 		anim.SetFloat("inputH", Mathf.Abs(xsp));
 		anim.SetFloat("inputV", ysp);
+
+		
+		
+		
 		controller.Move(new Vector3(xsp, ysp, 0));
-		
-		//face direction
-		RaycastHit2D hit = Physics2D.Raycast(transform.position,
-							-Vector2.up, collisionMask);
-		float slopeAngle = 0;
-		if(hit){
-			slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-			if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
-				slopeAngle = 360 - slopeAngle;
-			}
-		}
-		print(slopeAngle);
-		float moveDir = Input.GetAxisRaw("Horizontal");
-		
-		if(moveDir != 0)
-			faceDir = (moveDir<0 ? 180 : 0);
-		
-		//this one almost works
-		//mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-		//mesh.transform.rotation = collisions.descendingSlope ? Quaternion.Euler(0, faceDir, collisions.slopeAngle*-1) : Quaternion.Euler(0, faceDir, collisions.slopeAngle);
-		mesh.transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * Quaternion.Euler(0, faceDir, 0);
-		if(slopeAngle > 0){
-			if(slopeAngle>180)
-				mesh.transform.position = new Vector3(boxCollider.bounds.min.x, boxCollider.bounds.min.y, 0);
-			else
-				mesh.transform.position = new Vector3(boxCollider.bounds.max.x, boxCollider.bounds.min.y, 0);
-		}
 	}
 }

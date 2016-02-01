@@ -14,16 +14,13 @@ public class Controller2D : MonoBehaviour {
 	float horizontalRaySpacing;
 	float verticalRaySpacing;
 	
-	BoxCollider2D boxCollider;
+	BoxCollider boxCollider;
 	RaycastOrigins raycastOrigins;
 	public CollisionInfo collisions;
-	
-	private MeshRenderer mesh;
-	
+		
 	void Start() {
-		boxCollider = GetComponent<BoxCollider2D> ();
+		boxCollider = GetComponent<BoxCollider> ();
 		CalculateRaySpacing ();
-		mesh = GetComponentInChildren<MeshRenderer>();
 	}
 
 	public void Move(Vector3 velocity){
@@ -48,13 +45,13 @@ public class Controller2D : MonoBehaviour {
 		float rayLength = Mathf.Abs(velocity.x) + skinWidth;
 		
 		for (int i = 0; i < horizontalRayCount; i++) {
-			Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
-			rayOrigin += Vector2.up * (horizontalRaySpacing * i);
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
+			Vector3 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
+			rayOrigin += Vector3.up * (horizontalRaySpacing * i);
+			RaycastHit hit;
 						
-			//Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
+			Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.red);
 			
-			if(hit){
+			if(Physics.Raycast(rayOrigin, Vector2.right * directionX, out hit, rayLength, collisionMask)){
 				//get angle of the surface we hit
 				//using the surface's normal
 				float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
@@ -95,11 +92,11 @@ public class Controller2D : MonoBehaviour {
 		for (int i = 0; i < verticalRayCount; i++) {
 			Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
 			rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
+			RaycastHit hit;
 			
-			//Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
+			Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.red);
 			
-			if(hit){
+			if(Physics.Raycast(rayOrigin, Vector2.up * directionY, out hit, rayLength, collisionMask)){
 				//set y velocity
 				velocity.y = (hit.distance - skinWidth) * directionY;
 				rayLength = hit.distance;
@@ -118,9 +115,9 @@ public class Controller2D : MonoBehaviour {
 			float directionX = Mathf.Sign(velocity.x);
 			rayLength = Mathf.Abs(velocity.x) + skinWidth;
 			Vector2 rayOrigin = ((directionX == -1)?raycastOrigins.bottomLeft:raycastOrigins.bottomRight) + Vector2.up * velocity.y;
-			RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-			
-			if(hit){
+			RaycastHit hit;
+
+			if(Physics.Raycast(rayOrigin, Vector2.right * directionX, out hit, rayLength, collisionMask)){
 				float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 				if(slopeAngle != collisions.slopeAngle){
 					//new slope
@@ -152,9 +149,9 @@ public class Controller2D : MonoBehaviour {
 		//ray origin is bottom right if facing left
 		Vector2 rayOrigin = (directionX == -1)?raycastOrigins.bottomRight:raycastOrigins.bottomLeft;
 		//fire the ray straight down until we hit the surface.
-		RaycastHit2D hit = Physics2D.Raycast(rayOrigin, -Vector2.up, Mathf.Infinity, collisionMask);
+		RaycastHit hit;
 		
-		if(hit){			
+		if(Physics.Raycast(rayOrigin, -Vector2.up, out hit, Mathf.Infinity, collisionMask)){			
 			float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 			if(slopeAngle != 0 && slopeAngle <= maxDescendAngle){
 				if(Mathf.Sign(hit.normal.x) == directionX){
