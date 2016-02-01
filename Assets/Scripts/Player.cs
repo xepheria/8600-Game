@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
 	const float acc = 0.046875f;
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
-	const float top = 6f;
+	const float top = 0.2f;
 	const float air = 0.09375f;
 	const float grv = -0.21875f;
 	const float jmp = .1f;
@@ -143,7 +143,7 @@ public class Player : MonoBehaviour {
 			}
 			//if we're in collision with the ground and press "jump", we jump
 			if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
-				ysp = jmp;
+				ysp = jmp + Mathf.Abs(xsp)*.1f;
 				anim.SetBool("jumping", true);
 				jumping = true;
 			}
@@ -152,6 +152,7 @@ public class Player : MonoBehaviour {
 				jumping = false;
 			}
 			
+			//accelerate going downhill, slow down going uphill
 			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)), Time.deltaTime);
 		}
 		
@@ -161,6 +162,8 @@ public class Player : MonoBehaviour {
 		}
 		
 		//no friction
+		//no player input
+		//slide across surfaces
 		else if(controller.collisions.mode == -1){
 			
 		}
