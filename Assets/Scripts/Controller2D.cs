@@ -4,7 +4,7 @@ using System.Collections;
 //[RequireComponent (typeof (BoxCollider2D))]
 public class Controller2D : MonoBehaviour {
 	public LayerMask collisionMask;
-	const float skinWidth = .015f;
+	public const float skinWidth = .015f;
 	public int horizontalRayCount = 4;
 	public int verticalRayCount = 4;
 	
@@ -15,7 +15,7 @@ public class Controller2D : MonoBehaviour {
 	float verticalRaySpacing;
 	
 	BoxCollider boxCollider;
-	RaycastOrigins raycastOrigins;
+	public RaycastOrigins raycastOrigins;
 	public CollisionInfo collisions;
 		
 	void Start() {
@@ -170,7 +170,7 @@ public class Controller2D : MonoBehaviour {
 		}
 	}
 	
-	void UpdateRaycastOrigins() {
+	public void UpdateRaycastOrigins() {
 		Bounds bounds = boxCollider.bounds;
 		bounds.Expand (skinWidth * -2);
 		
@@ -191,7 +191,7 @@ public class Controller2D : MonoBehaviour {
 		verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
 	}
 	
-	struct RaycastOrigins {
+	public struct RaycastOrigins {
 		public Vector2 topLeft, topRight;
 		public Vector2 bottomLeft, bottomRight;
 	}

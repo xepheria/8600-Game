@@ -11,7 +11,6 @@ public class Player : MonoBehaviour {
 	
 	public float jumpHeight, timeToJumpApex, moveSpeed;
 	bool jumping;
-	//private float gravity, jumpVelocity, originalGravity;
 	float velocityXSmoothing;
 	
 	bool descending;
@@ -25,6 +24,8 @@ public class Player : MonoBehaviour {
 	const float grv = -0.3f;
 	const float jmp = .13f;
 	const float slp = 0.15f;
+	const float maxRotationDegrees = 10f;
+	float oldSlideAngle;
 	
 	private int fricLvl;
 	
@@ -38,9 +39,7 @@ public class Player : MonoBehaviour {
 		controller = GetComponent<Controller2D> ();
 		
 		anim = GetComponent<Animator> ();
-		
-		//originalGravity = gravity = -(2 * jumpHeight)/Mathf.Pow(timeToJumpApex,2);
-		//jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
+
 		jumping = false;
 		
 		fricLvl = 0;
@@ -60,9 +59,6 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update(){
-		//if(controller.collisions.above || controller.collisions.below){
-			//ysp = 0;
-		//}
 		if(controller.collisions.left || controller.collisions.right){
 			xsp = 0;
 		}
@@ -94,6 +90,9 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			//reset rotation of transform
+			transform.rotation = Quaternion.identity;
+			anim.SetBool("sliding", false);
 			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
@@ -106,13 +105,13 @@ public class Player : MonoBehaviour {
 			Debug.DrawRay(transform.position, -Vector2.up * .3f, Color.red);
 			float slopeAngle = 0;
 			if(Physics.Raycast(transform.position, -Vector2.up, out hit, 0.2f, collisionMask)){
-				print("hit");
 				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+				oldSlideAngle = slopeAngle;
 				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
 				}
 			}
-			print(slopeAngle);
+			
 			
 			//pressing left
 			if(inputLR < 0){
@@ -163,6 +162,10 @@ public class Player : MonoBehaviour {
 			
 			//accelerate going downhill, slow down going uphill
 			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?1.5f:1)), Time.deltaTime);
+			anim.SetFloat("inputH", Mathf.Abs(xsp));
+			anim.SetFloat("inputV", ysp);
+
+			controller.Move(new Vector3(xsp, ysp, 0));
 		}
 		
 		//high friction
@@ -174,15 +177,67 @@ public class Player : MonoBehaviour {
 		//no player input
 		//slide across surfaces
 		else if(controller.collisions.mode == -1){
-			
+			//if not on ground or speed is too low, bump out to normal mode
+			if(!controller.collisions.below || Mathf.Abs(xsp) <= 0.01f){
+				controller.collisions.mode = 0;
+			}
+			else{
+				//kill y movement
+				ysp = 0;
+				
+				//check raycasts of character
+				RaycastHit leftRayInfo, rightRayInfo;
+				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
+					//both rays hit something. now move and rotate character
+					print("both rays made contact");
+					slidePosition(leftRayInfo, rightRayInfo);
+					anim.SetBool("sliding", true);
+				}
+				else{
+					print("MISSed");
+					controller.collisions.mode = 0;
+				}
+				
+				//decelerate
+				xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
+			}
 		}
+	}
+	
+	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
-		anim.SetFloat("inputH", Mathf.Abs(xsp));
-		anim.SetFloat("inputV", ysp);
-
+		float rayLength = 2f;
+		float centerY = transform.GetComponent<BoxCollider>().bounds.center.y;
 		
+		//make sure rays shoot from right place
+		controller.UpdateRaycastOrigins();
 		
+		Vector2 updatedBottomLeft = new Vector2(controller.raycastOrigins.bottomLeft.x + xsp, centerY);
+		Vector2 updatedBottomRight = new Vector2(controller.raycastOrigins.bottomRight.x + xsp, centerY);
 		
-		controller.Move(new Vector3(xsp, ysp, 0));
+		//shoot one from bottomleft, one from bottomright
+		Ray leftRay = new Ray(updatedBottomLeft, -transform.up);
+		Ray rightRay = new Ray(updatedBottomRight, -transform.up);
+		
+		//debug
+		Debug.DrawRay(updatedBottomLeft, -transform.up * rayLength, Color.red);
+		Debug.DrawRay(updatedBottomRight, -transform.up * rayLength, Color.red);
+		
+		return Physics.Raycast(leftRay, out leftRayInfo, rayLength, collisionMask) && Physics.Raycast(rightRay, out rightRayInfo, rayLength, collisionMask);
+	}
+	
+	void slidePosition(RaycastHit leftRayInfo, RaycastHit rightRayInfo){
+		Vector3 averageNormal = (leftRayInfo.normal + rightRayInfo.normal) / 2;
+		Vector3 averagePoint = (leftRayInfo.point + rightRayInfo.point) / 2;
+		
+		Debug.DrawRay(leftRayInfo.point, leftRayInfo.normal, Color.magenta);
+		Debug.DrawRay(rightRayInfo.point, rightRayInfo.normal, Color.magenta);
+		Debug.DrawRay(averagePoint, averageNormal, Color.white);
+		
+		Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, averageNormal);
+		Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
+		transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
+		
+		transform.position = averagePoint + transform.up*.2f;
 	}
 }
