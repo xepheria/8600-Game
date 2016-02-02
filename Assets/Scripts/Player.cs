@@ -106,10 +106,10 @@ public class Player : MonoBehaviour {
 			float slopeAngle = 0;
 			if(Physics.Raycast(transform.position, -Vector2.up, out hit, 0.2f, collisionMask)){
 				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-				oldSlideAngle = slopeAngle;
 				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
 				}
+				oldSlideAngle = slopeAngle;
 			}
 			
 			
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour {
 			}
 			
 			//accelerate going downhill, slow down going uphill
-			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?1.5f:1)), Time.deltaTime);
+			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
 			anim.SetFloat("inputH", Mathf.Abs(xsp));
 			anim.SetFloat("inputV", ysp);
 
@@ -182,20 +182,21 @@ public class Player : MonoBehaviour {
 				controller.collisions.mode = 0;
 			}
 			else{
-				//kill y movement
-				ysp = 0;
 				
 				//check raycasts of character
 				RaycastHit leftRayInfo, rightRayInfo;
 				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 					//both rays hit something. now move and rotate character
-					print("both rays made contact");
 					slidePosition(leftRayInfo, rightRayInfo);
 					anim.SetBool("sliding", true);
 				}
 				else{
+					//off the edge. launch off
 					print("MISSed");
 					controller.collisions.mode = 0;
+					//set xsp and ysp based on direction of angle forward
+					ysp = xsp*-Mathf.Sin(oldSlideAngle);
+					xsp = xsp*Mathf.Cos(oldSlideAngle);
 				}
 				
 				//decelerate
@@ -223,6 +224,30 @@ public class Player : MonoBehaviour {
 		Debug.DrawRay(updatedBottomLeft, -transform.up * rayLength, Color.red);
 		Debug.DrawRay(updatedBottomRight, -transform.up * rayLength, Color.red);
 		
+		//check for walls
+		//if moving left
+		if(xsp < 0){
+			Debug.DrawRay(transform.position, -transform.right * 0.5f, Color.red);
+			if(Physics.Raycast(updatedBottomLeft, -transform.right, 0.5f, collisionMask)){
+				//hit a wall
+				xsp = 0;
+				rightRayInfo = new RaycastHit();
+				leftRayInfo = new RaycastHit();
+				return false;
+			}
+		}
+		//if moving right
+		else if(xsp > 0){
+			Debug.DrawRay(transform.position, transform.right * 0.5f, Color.red);
+			if(Physics.Raycast(updatedBottomRight, transform.right, 0.5f, collisionMask)){
+				//hit a wall
+				xsp = 0;
+				rightRayInfo = new RaycastHit();
+				leftRayInfo = new RaycastHit();
+				return false;
+			}
+		}
+		
 		return Physics.Raycast(leftRay, out leftRayInfo, rayLength, collisionMask) && Physics.Raycast(rightRay, out rightRayInfo, rayLength, collisionMask);
 	}
 	
@@ -238,6 +263,19 @@ public class Player : MonoBehaviour {
 		Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
 		transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
 		
-		transform.position = averagePoint + transform.up*.2f;
+		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
+				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
+					slopeAngle = 360 - slopeAngle;
+				}
+		//are we launching off a steep slope?
+		/*if(){
+			//bump out of no friction mode
+			controller.collisions.mode=0;
+		}
+		else*/
+			transform.position = averagePoint + transform.up*.2f;
+			
+		print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
+		oldSlideAngle = slopeAngle;
 	}
 }
