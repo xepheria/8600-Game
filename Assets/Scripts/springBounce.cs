@@ -7,9 +7,9 @@ public class springBounce : MonoBehaviour {
 	public float bounceAmt;
 	public Player player;
 
-	void OnCollisionEnter(Collision col){
+	void OnTriggerEnter(Collider col){
 		print("collision entered");
-		if(col.gameObject.CompareTag("Player")){
+		if(col.CompareTag("Player")){
 			print("bounce it!");
 			player.bounce(transform.up * bounceAmt);
 		}

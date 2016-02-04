@@ -60,7 +60,7 @@ public class Player : MonoBehaviour {
 			GUI.Label(new Rect(Screen.width - 175, 110, 100, 50), "below: " + controller.collisions.below.ToString());
 			GUI.Label(new Rect(Screen.width - 175, 130, 100, 50), "ascending: " + controller.collisions.climbingSlope.ToString());
 			GUI.Label(new Rect(Screen.width - 175, 150, 100, 50), "descending: " + controller.collisions.descendingSlope.ToString());
-			GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), launchTimer.ToString());
+			GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), bumpTimer.ToString());
 			
 			//demo instructions
 			GUI.Box(new Rect(0, 0, 400, 200), "Demo\nMove left/right : arrow keys\t\tJump : Space\nHi-fric mode : Hold X\t\tLo-Fric mode : Hold C\n");
@@ -383,6 +383,7 @@ public class Player : MonoBehaviour {
 	}
 	
 	public void bounce(Vector3 bounceAmt){
+		print(bounceAmt);
 		controller.collisions.mode = 0;
 		xsp = bounceAmt.x;
 		ysp = bounceAmt.y;
