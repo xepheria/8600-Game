@@ -101,12 +101,14 @@ public class Player : MonoBehaviour {
 			}
 			else{
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
+				anim.SetBool("jumping", false);
+				jumping = false;
+				anim.SetBool("sliding", true);
 				//check raycasts of character
 				RaycastHit leftRayInfo, rightRayInfo;
 				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 					//both rays hit something. now move and rotate character
 					slidePosition(leftRayInfo, rightRayInfo);
-					anim.SetBool("sliding", true);
 					xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
 					print("moving " + transform.right);
 				}
@@ -123,9 +125,6 @@ public class Player : MonoBehaviour {
 				}
 				
 			}
-		}
-		else if(controller.collisions.mode == 1 && jumping){
-			controller.collisions.mode = 0;
 		}
 		
 		//normal mode
@@ -234,6 +233,8 @@ public class Player : MonoBehaviour {
 			}
 			//reset animations of transform
 			anim.SetBool("sliding", false); //stop low-fric anim if playing
+			anim.SetBool("jumping", false);
+			jumping = false;
 			anim.SetBool("hiFricAnim", true); //no-fric anim
 			
 			//face direction
