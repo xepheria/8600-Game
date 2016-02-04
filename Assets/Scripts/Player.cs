@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (Controller2D))]
+[RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
 public class Player : MonoBehaviour {
 	
@@ -25,8 +25,9 @@ public class Player : MonoBehaviour {
 	const float slp = 0.15f;
 	const float maxRotationDegrees = 10f;
 	float oldSlideAngle;
-	float bumpTimer;
+	float bumpTimer, launchTimer;
 	const float bumpTime = 0.6f; //how long to wait
+	const float launchTime = 0.6f;
 	
 	bool showDebug;
 	
@@ -59,7 +60,7 @@ public class Player : MonoBehaviour {
 			GUI.Label(new Rect(Screen.width - 175, 110, 100, 50), "below: " + controller.collisions.below.ToString());
 			GUI.Label(new Rect(Screen.width - 175, 130, 100, 50), "ascending: " + controller.collisions.climbingSlope.ToString());
 			GUI.Label(new Rect(Screen.width - 175, 150, 100, 50), "descending: " + controller.collisions.descendingSlope.ToString());
-			GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), bumpTimer.ToString());
+			GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), launchTimer.ToString());
 			
 			//demo instructions
 			GUI.Box(new Rect(0, 0, 400, 200), "Demo\nMove left/right : arrow keys\t\tJump : Space\nHi-fric mode : Hold X\t\tLo-Fric mode : Hold C\n");
@@ -87,6 +88,8 @@ public class Player : MonoBehaviour {
 		//timer for using special mode after bumping into a wall
 		bumpTimer -= Time.deltaTime;
 		if(bumpTimer < 0) bumpTimer = 0;
+		launchTimer -= Time.deltaTime;
+		if(launchTimer < 0) launchTimer = 0;
 		
 		//low friction
 		//accelerate based on slope, no user input
@@ -116,6 +119,7 @@ public class Player : MonoBehaviour {
 					//xsp = (xsp*transform.right).x;
 					print(xsp + "  " + ysp);
 					bumpTimer = bumpTime;
+					launchTimer = launchTime;
 				}
 				
 			}
@@ -148,7 +152,7 @@ public class Player : MonoBehaviour {
 				}
 				oldSlideAngle = slopeAngle;
 			}
-			print(slopeAngle);
+			//print(slopeAngle);
 			
 			//running into wall, 0 out xsp
 			if(controller.collisions.below && (controller.collisions.left || controller.collisions.right)){
@@ -208,6 +212,11 @@ public class Player : MonoBehaviour {
 			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
 			anim.SetFloat("inputH", Mathf.Abs(xsp));
 			anim.SetFloat("inputV", ysp);
+			
+			//cap to max speed
+			if(controller.collisions.below && launchTimer <= 0){
+				xsp = Mathf.Clamp(xsp, -top, top);
+			}
 
 			controller.Move(new Vector3(xsp, ysp, 0));
 		}
@@ -382,6 +391,11 @@ public class Player : MonoBehaviour {
 			print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
 			oldSlideAngle = slopeAngle;
 		//}
-		
+	}
+	
+	public void bounce(Vector3 bounceAmt){
+		controller.collisions.mode = 0;
+		xsp = bounceAmt.x;
+		ysp = bounceAmt.y;
 	}
 }
