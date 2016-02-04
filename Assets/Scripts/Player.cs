@@ -375,27 +375,16 @@ public class Player : MonoBehaviour {
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
 				}
-		//are we launching off a steep slope?
-		//FIX THIS TO LAUNCH CORRECTLY!!!
-		/*if(Mathf.Abs(slopeAngle - oldSlideAngle) >= 45){
-			print("angle too big");
-			print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
-			//bump out of no friction mode
-			controller.collisions.mode=0;
-			//set xsp and ysp based on direction of angle forward
-			ysp = xsp*-Mathf.Sin(oldSlideAngle);
-			xsp = xsp*Mathf.Cos(oldSlideAngle);
-		}
-		else{*/
-			transform.position = averagePoint + transform.up*.2f;
-			print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
-			oldSlideAngle = slopeAngle;
-		//}
+				
+		transform.position = averagePoint + transform.up*.2f;
+		print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
+		oldSlideAngle = slopeAngle;
 	}
 	
 	public void bounce(Vector3 bounceAmt){
 		controller.collisions.mode = 0;
 		xsp = bounceAmt.x;
 		ysp = bounceAmt.y;
+		bumpTimer = bumpTime;
 	}
 }
