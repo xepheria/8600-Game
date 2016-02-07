@@ -29,9 +29,15 @@ public class Player : MonoBehaviour {
 	const float bumpTime = 0.6f; //how long to wait
 	const float launchTime = 0.6f;
 	
+	float angleToShoot;
+	int angleIncSign;
+	Vector3 shootDir;
+	public GameObject shot;
+	
 	bool showDebug;
 	
 	Controller2D controller;
+	BoxCollider boxCollider;
 	
 	private MeshRenderer mesh;
 	
@@ -41,6 +47,7 @@ public class Player : MonoBehaviour {
 		showDebug = true;
 		
 		controller = GetComponent<Controller2D> ();
+		boxCollider = GetComponent<BoxCollider>();
 		
 		anim = GetComponent<Animator> ();
 
@@ -49,6 +56,9 @@ public class Player : MonoBehaviour {
 		controller.collisions.mode = 0;
 		
 		mesh = GetComponentInChildren<MeshRenderer>();
+		
+		angleToShoot = 0;
+		angleIncSign = 1;
 	}
 	
 	void OnGUI(){
@@ -287,6 +297,31 @@ public class Player : MonoBehaviour {
 				}
 			}
 		}
+		
+		//can shoot in any mode
+		//V is held down, calculate angle
+		if(Input.GetKey(KeyCode.V)){
+			if(angleToShoot >= 90) angleIncSign = -1;
+			else if(angleToShoot <= 0) angleIncSign = 1;
+			angleToShoot += angleIncSign * Time.deltaTime * 50;
+			if(faceDir == 0){
+				shootDir = Quaternion.Euler(0, 0, angleToShoot) * transform.right;
+			}
+			else{
+				shootDir = Quaternion.Euler(0, 0, -angleToShoot) * -transform.right;
+			}
+			Debug.DrawRay(boxCollider.bounds.center, shootDir, Color.white);
+		}
+		
+		if(Input.GetKeyUp(KeyCode.V)){
+			//shoot at current angle, then reset angle
+			GameObject shotInstance = (GameObject)Instantiate(shot, boxCollider.bounds.center, Quaternion.Euler(shootDir));
+			shotInstance.GetComponent<Rigidbody>().velocity = new Vector3(50*xsp, controller.collisions.below?0:50*ysp, 0);
+			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 700);
+			
+			angleToShoot = 0;
+			angleIncSign = 1;
+		}
 	}
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
@@ -383,7 +418,6 @@ public class Player : MonoBehaviour {
 	}
 	
 	public void bounce(Vector3 bounceAmt){
-		print(bounceAmt);
 		controller.collisions.mode = 0;
 		xsp = bounceAmt.x;
 		ysp = bounceAmt.y;
