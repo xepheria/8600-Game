@@ -347,18 +347,18 @@ public class Player : MonoBehaviour {
 		//check for walls
 		//if moving left
 		if(xsp < 0){
-			Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
+			/*Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, -transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}
-			Debug.DrawRay(transform.position+transform.up, -transform.right * 0.5f, Color.red);
-			if(Physics.Raycast(transform.position+transform.up, -transform.right, 0.5f, collisionMask)){
+			}*/
+			Debug.DrawRay(transform.position+transform.up, -transform.right * 0.4f, Color.red);
+			if(Physics.Raycast(transform.position+transform.up, -transform.right, 0.4f, collisionMask)){
 				//hit a wall
-				xsp = 0;
+				xsp = acc;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
@@ -366,18 +366,18 @@ public class Player : MonoBehaviour {
 		}
 		//if moving right
 		else if(xsp > 0){
-			Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
+			/*Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}
-			Debug.DrawRay(transform.position+transform.up, transform.right * 0.5f, Color.red);
-			if(Physics.Raycast(transform.position+transform.up, transform.right, 0.5f, collisionMask)){
+			}*/
+			Debug.DrawRay(transform.position+transform.up, transform.right * 0.4f, Color.red);
+			if(Physics.Raycast(transform.position+transform.up, transform.right, 0.4f, collisionMask)){
 				//hit a wall
-				xsp = 0;
+				xsp = -acc;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
