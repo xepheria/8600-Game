@@ -15,13 +15,13 @@ public class Player : MonoBehaviour {
 	bool descending;
 	
 	private float xsp, ysp;
-	const float acc = 0.046875f;
+	const float acc = 0.04875f;
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.1f;
 	const float air = 0.09375f;
 	const float grv = -0.3f;
-	const float jmp = .13f;
+	const float jmp = .15f;
 	const float slp = 0.15f;
 	const float maxRotationDegrees = 10f;
 	float oldSlideAngle;

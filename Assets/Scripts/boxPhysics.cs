@@ -23,8 +23,8 @@ public class boxPhysics : MonoBehaviour {
 		
 	void changeFriction(bool Sticky){
 		Renderer rend = GetComponent<Renderer>();
-		PhysicMaterial material = 	GetComponent<Collider>().material;
-		
+		PhysicMaterial material = GetComponent<Collider>().material;		
+
 		if(Sticky){
 			material.dynamicFriction = 1;
 			material.staticFriction = 1;
@@ -43,21 +43,22 @@ public class boxPhysics : MonoBehaviour {
 	public float velocityDecay = 0.9f;
 	
 	void OnTriggerStay(Collider col){
-	
-		Rigidbody rb = GetComponent<Rigidbody>();
-
-		print("collision entered");
-		if(col.CompareTag("Player")){
-			if(!isSticky){
-				//rb.velocity = ;
-			}
-		}
-		if(col.CompareTag("ground")){
-			if(isSticky){
+		if(isSticky){
+			if(col.CompareTag("ground")){
+				Rigidbody rb = GetComponent<Rigidbody>();
 				rb.velocity = rb.velocity*velocityDecay;
 				rb.angularVelocity  = rb.angularVelocity*velocityDecay;
 			}
 		}
+	
 	}
+	
+	void OnTriggerEnter(Collider col){
+		if(col.CompareTag("bullet")){
+			isSticky = !isSticky;
+			changeFriction(isSticky);
+		}
+	}
+
 }
 
