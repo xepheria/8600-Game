@@ -57,6 +57,12 @@ public class boxPhysics : MonoBehaviour {
 		if(col.CompareTag("bullet")){
 			isSticky = !isSticky;
 			changeFriction(isSticky);
+		} else if(col.CompareTag("highBullet")){
+			isSticky = true;
+			changeFriction(isSticky);
+		} else if(col.CompareTag("lowBullet")){
+			isSticky = false;
+			changeFriction(isSticky);
 		}
 	}
 

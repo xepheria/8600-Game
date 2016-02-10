@@ -315,10 +315,21 @@ public class Player : MonoBehaviour {
 		
 		if(Input.GetKeyUp(KeyCode.V)){
 			//shoot at current angle, then reset angle
+
+		
+
 			GameObject shotInstance = (GameObject)Instantiate(shot, boxCollider.bounds.center, Quaternion.Euler(shootDir));
 			shotInstance.GetComponent<Rigidbody>().velocity = new Vector3(50*xsp, controller.collisions.below?0:50*ysp, 0);
 			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 700);
 			
+			if(Input.GetKey(KeyCode.X)){
+				shotInstance.tag = "highBullet";
+			} else if(Input.GetKey(KeyCode.C)){
+				shotInstance.tag = "lowBullet";
+			} else {
+				shotInstance.tag = "bullet";
+			}
+
 			angleToShoot = 0;
 			angleIncSign = 1;
 		}
