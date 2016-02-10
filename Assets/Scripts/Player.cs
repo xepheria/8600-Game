@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
@@ -27,7 +28,7 @@ public class Player : MonoBehaviour {
 	float oldSlideAngle;
 	float bumpTimer, launchTimer;
 	const float bumpTime = 0.6f; //how long to wait
-	const float launchTime = 0.6f;
+	const float launchTime = 1.5f;
 	
 	float angleToShoot;
 	int angleIncSign;
@@ -43,7 +44,11 @@ public class Player : MonoBehaviour {
 	
 	private float faceDir;
 	
+	private bool gameOver;
+	
 	void Start() {
+		gameOver = false;
+		
 		showDebug = true;
 		
 		controller = GetComponent<Controller2D> ();
@@ -100,11 +105,14 @@ public class Player : MonoBehaviour {
 		if(bumpTimer < 0) bumpTimer = 0;
 		launchTimer -= Time.deltaTime;
 		if(launchTimer < 0) launchTimer = 0;
-		
+		if(bumpTimer > 0 || launchTimer > 0)
+				controller.collisions.mode = 0;
+			
+			
 		//low friction
 		//accelerate based on slope, no user input
 		//can't change direction
-		if(controller.collisions.mode == 1 && bumpTimer <= 0){
+		if(controller.collisions.mode == 1){
 			//if not on ground or speed is too low, bump out to normal mode
 			if(!controller.collisions.below || Mathf.Abs(xsp) <= 0.01f){
 				controller.collisions.mode = 0;
@@ -118,9 +126,23 @@ public class Player : MonoBehaviour {
 				RaycastHit leftRayInfo, rightRayInfo;
 				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 					//both rays hit something. now move and rotate character
-					slidePosition(leftRayInfo, rightRayInfo);
-					xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
-					print("moving " + transform.right);
+					
+					//if we press jump, do SLIDE JUMP
+					if(Input.GetKeyDown(KeyCode.Space)){
+						controller.collisions.mode = 0;
+						ysp = (jmp*.75f) * Mathf.Cos(oldSlideAngle * Mathf.Deg2Rad);
+						xsp = (xsp*1.07f)-jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
+						anim.SetBool("jumping", true);
+						anim.SetBool("sliding", true);
+						jumping = true;
+						launchTimer = launchTime;
+						controller.Move(new Vector3(xsp, ysp, 0));
+					}
+					else{
+						slidePosition(leftRayInfo, rightRayInfo);
+						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+						print("moving " + transform.right);
+					}
 				}
 				else{
 					//off the edge. launch off
@@ -133,12 +155,16 @@ public class Player : MonoBehaviour {
 					bumpTimer = bumpTime;
 					launchTimer = launchTime;
 				}
-				
 			}
 		}
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			//game over stuff, reset scene
+			if(gameOver){
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			}
+			
 			//reset rotation of transform
 			transform.rotation = Quaternion.identity;
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
@@ -201,9 +227,9 @@ public class Player : MonoBehaviour {
 			}
 			//if we're in collision with the ground and press "jump", we jump
 			if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
-				//ysp = jmp + Mathf.Abs(xsp)*.2f; //add a little bit of x-speed to jump
+				ysp = (jmp + Mathf.Abs(xsp)*.2f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 				xsp = xsp-jmp * Mathf.Sin(slopeAngle * Mathf.Deg2Rad);
-				ysp = jmp * Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
+				//ysp = jmp * Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
 				anim.SetBool("jumping", true);
 				jumping = true;
 			}
@@ -358,18 +384,18 @@ public class Player : MonoBehaviour {
 		//check for walls
 		//if moving left
 		if(xsp < 0){
-			Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
+			/*Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, -transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}
-			Debug.DrawRay(transform.position+transform.up, -transform.right * 0.5f, Color.red);
-			if(Physics.Raycast(transform.position+transform.up, -transform.right, 0.5f, collisionMask)){
+			}*/
+			Debug.DrawRay(transform.position+transform.up, -transform.right * 0.4f, Color.red);
+			if(Physics.Raycast(transform.position+transform.up, -transform.right, 0.4f, collisionMask)){
 				//hit a wall
-				xsp = 0;
+				xsp = acc;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
@@ -377,18 +403,18 @@ public class Player : MonoBehaviour {
 		}
 		//if moving right
 		else if(xsp > 0){
-			Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
+			/*Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}
-			Debug.DrawRay(transform.position+transform.up, transform.right * 0.5f, Color.red);
-			if(Physics.Raycast(transform.position+transform.up, transform.right, 0.5f, collisionMask)){
+			}*/
+			Debug.DrawRay(transform.position+transform.up, transform.right * 0.4f, Color.red);
+			if(Physics.Raycast(transform.position+transform.up, transform.right, 0.4f, collisionMask)){
 				//hit a wall
-				xsp = 0;
+				xsp = -acc;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
@@ -433,5 +459,11 @@ public class Player : MonoBehaviour {
 		xsp = bounceAmt.x;
 		ysp = bounceAmt.y;
 		bumpTimer = bumpTime;
+	}
+	
+	//called when out of life
+	public void defeated(){
+		gameOver = true;
+		print("game over");
 	}
 }
