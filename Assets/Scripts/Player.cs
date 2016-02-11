@@ -91,11 +91,11 @@ public class Player : MonoBehaviour {
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
-		if(Input.GetKey(KeyCode.X) && bumpTimer <= 0 && controller.collisions.below)
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
 			fricCtrl = -1;
-		else if(Input.GetKey(KeyCode.C) && bumpTimer <= 0 && controller.collisions.below)
+		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below && xsp != 0)
 			fricCtrl = 1;
-		else if(!Input.GetKey(KeyCode.C) && Input.GetKey(KeyCode.X))
+		else if(!Input.GetButton("LoFric") && !Input.GetButton("HiFric"))
 			fricCtrl = 0;
 
 		controller.collisions.mode = fricCtrl;
@@ -113,8 +113,8 @@ public class Player : MonoBehaviour {
 		//accelerate based on slope, no user input
 		//can't change direction
 		if(controller.collisions.mode == 1){
-			//if not on ground or speed is too low, bump out to normal mode
-			if(!controller.collisions.below || Mathf.Abs(xsp) <= 0.01f){
+			//if not on ground, bump out to normal mode
+			if(!controller.collisions.below){
 				controller.collisions.mode = 0;
 			}
 			else{
@@ -128,14 +128,13 @@ public class Player : MonoBehaviour {
 					//both rays hit something. now move and rotate character
 					
 					//if we press jump, do SLIDE JUMP
-					if(Input.GetKeyDown(KeyCode.Space)){
+					if(Input.GetButtonDown("Jump")){
 						controller.collisions.mode = 0;
 						ysp = (jmp*.75f) * Mathf.Cos(oldSlideAngle * Mathf.Deg2Rad);
-						xsp = (xsp*1.07f)-jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
+						xsp -= jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
 						anim.SetBool("jumping", true);
-						anim.SetBool("sliding", true);
+						anim.SetBool("sliding", false);
 						jumping = true;
-						launchTimer = launchTime;
 						controller.Move(new Vector3(xsp, ysp, 0));
 					}
 					else{
@@ -149,8 +148,8 @@ public class Player : MonoBehaviour {
 					print("MISSed" + transform.right);
 					controller.collisions.mode = 0;
 					//set xsp and ysp based on direction of angle forward
-					ysp = (xsp*transform.right).y;
-					//xsp = (xsp*transform.right).x;
+					ysp = Mathf.Clamp((xsp*transform.right).y, 0, jmp*2);
+					xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
 					print(xsp + "  " + ysp);
 					bumpTimer = bumpTime;
 					launchTimer = launchTime;
@@ -187,7 +186,6 @@ public class Player : MonoBehaviour {
 				}
 				oldSlideAngle = slopeAngle;
 			}
-			//print(slopeAngle);
 			
 			//running into wall, 0 out xsp
 			if(controller.collisions.below && (controller.collisions.left || controller.collisions.right)){
@@ -213,8 +211,11 @@ public class Player : MonoBehaviour {
 				}
 			}
 			//not pressing anything, friction kicks in
-			else if(controller.collisions.below)
+			else if(controller.collisions.below){
 				xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
+				if(Mathf.Abs(xsp) < 0.005f)
+					xsp = 0;
+			}
 			else if(ysp > 0 && ysp < 1){	//air drag
 				if (Mathf.Abs(xsp) > 0.05f)
 					xsp = xsp * 0.96875f;
@@ -226,7 +227,7 @@ public class Player : MonoBehaviour {
 				ysp = Mathf.Lerp(ysp, ysp+grv, Time.deltaTime);
 			}
 			//if we're in collision with the ground and press "jump", we jump
-			if(Input.GetKeyDown(KeyCode.Space) && controller.collisions.below){
+			if(Input.GetButtonDown("Jump") && controller.collisions.below){
 				ysp = (jmp + Mathf.Abs(xsp)*.2f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 				xsp = xsp-jmp * Mathf.Sin(slopeAngle * Mathf.Deg2Rad);
 				//ysp = jmp * Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
@@ -239,12 +240,14 @@ public class Player : MonoBehaviour {
 			}
 			
 			//if we let go of jump button early
-			if(Input.GetKeyUp(KeyCode.Space) && ysp > jmp*.3f){
+			if(Input.GetButtonUp("Jump") && ysp > jmp*.3f){
 				ysp = jmp*.3f;
 			}
 			
 			//accelerate going downhill, slow down going uphill
-			xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
+			if(slopeAngle > 30 && slopeAngle < 330){
+				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
+			}
 			anim.SetFloat("inputH", Mathf.Abs(xsp));
 			anim.SetFloat("inputV", ysp);
 			
@@ -309,24 +312,35 @@ public class Player : MonoBehaviour {
 						xsp = xsp * 0.96875f;
 				}
 				
-				//check raycasts of character
-				RaycastHit leftRayInfo, rightRayInfo;
-				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
-					//both rays hit something. now move and rotate character
-					slidePosition(leftRayInfo, rightRayInfo);
+				if(Input.GetButtonDown("Jump") && controller.collisions.below){
+					controller.collisions.mode = 0;
+					ysp = jmp * Mathf.Cos(oldSlideAngle * Mathf.Deg2Rad);
+					xsp -= jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
+					anim.SetBool("jumping", true);
+					anim.SetBool("hiFricAnim", false);
+					jumping = true;
+					controller.Move(new Vector3(xsp, ysp, 0));
 				}
 				else{
-					//off the edge. bump to normal mode
-					print("MISSed");
-					controller.collisions.mode = 0;
-					bumpTimer = bumpTime;
+					//check raycasts of character
+					RaycastHit leftRayInfo, rightRayInfo;
+					if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
+						//both rays hit something. now move and rotate character
+						slidePosition(leftRayInfo, rightRayInfo);
+					}
+					else{
+						//off the edge. bump to normal mode
+						print("MISSed");
+						controller.collisions.mode = 0;
+						bumpTimer = bumpTime;
+					}
 				}
 			}
 		}
 		
 		//can shoot in any mode
 		//V is held down, calculate angle
-		if(Input.GetKey(KeyCode.V)){
+		if(Input.GetButton("Fire")){
 			if(angleToShoot >= 90) angleIncSign = -1;
 			else if(angleToShoot <= 0) angleIncSign = 1;
 			angleToShoot += angleIncSign * Time.deltaTime * 50;
@@ -339,7 +353,7 @@ public class Player : MonoBehaviour {
 			Debug.DrawRay(boxCollider.bounds.center, shootDir, Color.white);
 		}
 		
-		if(Input.GetKeyUp(KeyCode.V)){
+		if(Input.GetButtonUp("Fire")){
 			//shoot at current angle, then reset angle
 
 		
