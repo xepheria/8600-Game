@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
@@ -17,12 +17,15 @@ public class Player : MonoBehaviour {
 	
 	private float xsp, ysp;
 	const float acc = 0.04875f;
+	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
+	const float hiFricSpCap = .07f; //I moved this variable up here because I suck at finding things
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
-	const float top = 0.1f;
+	const float top = 0.11f;
+	const float aboveTopDec = 6f; //This is multiplied by delta time in a lerp for if normal mode is above max speed
 	const float air = 0.09375f;
 	const float grv = -0.3f;
-	const float jmp = .15f;
+	const float jmp = .145f;
 	const float slp = 0.15f;
 	const float maxRotationDegrees = 10f;
 	float oldSlideAngle;
@@ -161,7 +164,7 @@ public class Player : MonoBehaviour {
 		if(controller.collisions.mode == 0){
 			//game over stuff, reset scene
 			if(gameOver){
-				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+				//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 			}
 			
 			//reset rotation of transform
@@ -253,7 +256,13 @@ public class Player : MonoBehaviour {
 			
 			//cap to max speed
 			if(controller.collisions.below && launchTimer <= 0){
-				xsp = Mathf.Clamp(xsp, -top, top);
+				//xsp = Mathf.Clamp(xsp, -top, top);
+				if(xsp > top){
+					xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
+				}
+				if(xsp < -top){
+					xsp = Mathf.Lerp(xsp, -top, Time.deltaTime*aboveTopDec);	
+				}
 			}
 
 			controller.Move(new Vector3(xsp, ysp, 0));
@@ -264,7 +273,6 @@ public class Player : MonoBehaviour {
 		//grip to surface
 		//low max speed
 		else if(controller.collisions.mode == -1 && bumpTimer <= 0){
-			const float hiFricSpCap = 0.03f;
 			
 			//cap speed
 			if(Mathf.Abs(xsp) > hiFricSpCap){
@@ -289,27 +297,28 @@ public class Player : MonoBehaviour {
 				//pressing left
 				if(inputLR < 0){
 					if(xsp > 0){
-						xsp = Mathf.Lerp(xsp, xsp-dec, Time.deltaTime);
+						xsp = Mathf.Lerp(xsp, xsp-hiAcc, Time.deltaTime);
 					}
 					else if(xsp > -hiFricSpCap){
-						xsp = Mathf.Lerp(xsp, xsp-acc, Time.deltaTime);
+						xsp = Mathf.Lerp(xsp, xsp-hiAcc, Time.deltaTime);
 					}
 				}
 				//pressing right
 				else if(inputLR > 0){
 					if(xsp < 0){
-						xsp = Mathf.Lerp(xsp, xsp+dec, Time.deltaTime);
+						xsp = Mathf.Lerp(xsp, xsp+hiAcc, Time.deltaTime);
 					}
 					else if(xsp < hiFricSpCap){
-						xsp = Mathf.Lerp(xsp, xsp+acc, Time.deltaTime);
+						xsp = Mathf.Lerp(xsp, xsp+hiAcc, Time.deltaTime);
 					}
 				}
 				//not pressing anything, friction kicks in
 				else if(!jumping)
-					xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
+					xsp = 0;//Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
 				else if(ysp > 0 && ysp < 1){	//air drag
-					if (Mathf.Abs(xsp) > 0.05f)
-						xsp = xsp * 0.96875f;
+					xsp = 0;
+					//if (Mathf.Abs(xsp) > 0.05f)
+						//xsp = xsp * 0.96875f;
 				}
 				
 				if(Input.GetButtonDown("Jump") && controller.collisions.below){
@@ -355,17 +364,14 @@ public class Player : MonoBehaviour {
 		
 		if(Input.GetButtonUp("Fire")){
 			//shoot at current angle, then reset angle
-
-		
-
 			GameObject shotInstance = (GameObject)Instantiate(shot, boxCollider.bounds.center, Quaternion.Euler(shootDir));
 			shotInstance.GetComponent<Rigidbody>().velocity = new Vector3(50*xsp, controller.collisions.below?0:50*ysp, 0);
 			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 700);
 			
-			if(Input.GetKey(KeyCode.X)){
-				shotInstance.tag = "highBullet";
-			} else if(Input.GetKey(KeyCode.C)){
-				shotInstance.tag = "lowBullet";
+			if(Input.GetButton("LoFric")){
+				shotInstance.tag = "LoBullet";
+			} else if(Input.GetButton("HiFric")){
+				shotInstance.tag = "HiBullet";
 			} else {
 				shotInstance.tag = "bullet";
 			}

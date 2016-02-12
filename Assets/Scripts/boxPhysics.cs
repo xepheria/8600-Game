@@ -26,8 +26,8 @@ public class boxPhysics : MonoBehaviour {
 		PhysicMaterial material = GetComponent<Collider>().material;		
 
 		if(Sticky){
-			material.dynamicFriction = 1;
-			material.staticFriction = 1;
+			material.dynamicFriction = 10;
+			material.staticFriction = 10;
 			rend.material.shader = Shader.Find ("Standard");
 			rend.material.SetColor ("_Color", Color.red);
 		} else {
@@ -40,7 +40,7 @@ public class boxPhysics : MonoBehaviour {
 	
 	public float bounceAmt;
 	public Player player;
-	public float velocityDecay = 0.9f;
+	public float velocityDecay = 0.5f;
 	
 	void OnTriggerStay(Collider col){
 		if(isSticky){
@@ -57,11 +57,11 @@ public class boxPhysics : MonoBehaviour {
 		if(col.CompareTag("bullet")){
 			isSticky = !isSticky;
 			changeFriction(isSticky);
-		} else if(col.CompareTag("highBullet")){
-			isSticky = true;
-			changeFriction(isSticky);
-		} else if(col.CompareTag("lowBullet")){
+		} else if(col.CompareTag("LoBullet")){
 			isSticky = false;
+			changeFriction(isSticky);
+		} else if(col.CompareTag("HiBullet")){
+			isSticky = true;
 			changeFriction(isSticky);
 		}
 	}
