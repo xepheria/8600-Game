@@ -16,9 +16,13 @@ public class Player : MonoBehaviour {
 	bool descending;
 	
 	private float xsp, ysp;
+<<<<<<< Updated upstream
 	const float acc = 0.04875f;
 	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
 	const float hiFricSpCap = .07f; //I moved this variable up here because I suck at finding things
+=======
+	const float acc =  0.04875f;
+>>>>>>> Stashed changes
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.11f;
@@ -231,9 +235,8 @@ public class Player : MonoBehaviour {
 			}
 			//if we're in collision with the ground and press "jump", we jump
 			if(Input.GetButtonDown("Jump") && controller.collisions.below){
-				ysp = (jmp + Mathf.Abs(xsp)*.2f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
+				ysp = (jmp + Mathf.Abs(xsp)*.1f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 				xsp = xsp-jmp * Mathf.Sin(slopeAngle * Mathf.Deg2Rad);
-				//ysp = jmp * Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
 				anim.SetBool("jumping", true);
 				jumping = true;
 			}
