@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-//using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
@@ -16,13 +16,9 @@ public class Player : MonoBehaviour {
 	bool descending;
 	
 	private float xsp, ysp;
-<<<<<<< Updated upstream
 	const float acc = 0.04875f;
 	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
 	const float hiFricSpCap = .07f; //I moved this variable up here because I suck at finding things
-=======
-	const float acc =  0.04875f;
->>>>>>> Stashed changes
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.11f;
@@ -96,6 +92,11 @@ public class Player : MonoBehaviour {
 			showDebug = !showDebug;
 		}
 		
+		//game over stuff, reset scene
+		if(gameOver){
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		}
+		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
 		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
@@ -145,7 +146,10 @@ public class Player : MonoBehaviour {
 						controller.Move(new Vector3(xsp, ysp, 0));
 					}
 					else{
-						slidePosition(leftRayInfo, rightRayInfo);
+						if(Mathf.Abs(xsp) > 0.007f)
+							slidePosition(leftRayInfo, rightRayInfo);
+						else
+							controller.collisions.mode = 0;
 						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
 						print("moving " + transform.right);
 					}
@@ -166,10 +170,6 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
-			//game over stuff, reset scene
-			if(gameOver){
-				//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-			}
 			
 			//reset rotation of transform
 			transform.rotation = Quaternion.identity;
@@ -317,11 +317,9 @@ public class Player : MonoBehaviour {
 				}
 				//not pressing anything, friction kicks in
 				else if(!jumping)
-					xsp = 0;//Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
+					xsp = 0;
 				else if(ysp > 0 && ysp < 1){	//air drag
 					xsp = 0;
-					//if (Mathf.Abs(xsp) > 0.05f)
-						//xsp = xsp * 0.96875f;
 				}
 				
 				if(Input.GetButtonDown("Jump") && controller.collisions.below){
@@ -338,7 +336,8 @@ public class Player : MonoBehaviour {
 					RaycastHit leftRayInfo, rightRayInfo;
 					if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 						//both rays hit something. now move and rotate character
-						slidePosition(leftRayInfo, rightRayInfo);
+						if(xsp != 0)
+							slidePosition(leftRayInfo, rightRayInfo);
 					}
 					else{
 						//off the edge. bump to normal mode
@@ -387,14 +386,19 @@ public class Player : MonoBehaviour {
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
 		float rayLength = 2f;
-		float centerY = transform.GetComponent<BoxCollider>().bounds.center.y;
+		Vector2 centerBox = boxCollider.bounds.center;
+		print(boxCollider.size);
+		Vector2 transformRight = transform.right;
 		
 		//make sure rays shoot from right place
 		controller.UpdateRaycastOrigins();
 		
 		Vector2 slideOffset = xsp * transform.right;
-		Vector2 updatedBottomLeft = new Vector2(controller.raycastOrigins.bottomLeft.x + slideOffset.x, centerY + slideOffset.y);
-		Vector2 updatedBottomRight = new Vector2(controller.raycastOrigins.bottomRight.x + slideOffset.x, centerY + slideOffset.y);
+		//print("slideoffset " + slideOffset);
+		Vector2 updatedBottomLeft = centerBox - ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
+		Vector2 updatedBottomRight = centerBox + ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
+		//Vector2 updatedBottomLeft = new Vector2(controller.raycastOrigins.bottomLeft.x + slideOffset.x, centerY + slideOffset.y);
+		//Vector2 updatedBottomRight = new Vector2(controller.raycastOrigins.bottomRight.x + slideOffset.x, centerY + slideOffset.y);
 		
 		//shoot one from bottomleft, one from bottomright
 		Ray leftRay = new Ray(updatedBottomLeft, -transform.up);
@@ -450,6 +454,7 @@ public class Player : MonoBehaviour {
 	void slidePosition(RaycastHit leftRayInfo, RaycastHit rightRayInfo){
 		Vector3 averageNormal = (leftRayInfo.normal + rightRayInfo.normal) / 2;
 		Vector3 averagePoint = (leftRayInfo.point + rightRayInfo.point) / 2;
+		print("avgpoint" + averagePoint.ToString("F4") + "before: " + transform.position.ToString("F4"));
 		
 		Debug.DrawRay(leftRayInfo.point, leftRayInfo.normal, Color.magenta);
 		Debug.DrawRay(rightRayInfo.point, rightRayInfo.normal, Color.magenta);
@@ -473,7 +478,7 @@ public class Player : MonoBehaviour {
 				}
 				
 		transform.position = averagePoint + transform.up*.2f;
-		print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
+		//print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
 		oldSlideAngle = slopeAngle;
 	}
 	
