@@ -23,9 +23,13 @@ public class TextBoxManager : MonoBehaviour {
 	private bool cancelTyping = false;
 	
 	public float typeSpeed;
+	
+	public Image arrowDisplay;
 
 	// Use this for initialization
 	void Start () {
+		arrowDisplay.gameObject.SetActive(false);
+		
 		player = FindObjectOfType<Player>();
 		
 		if(textFile != null){
@@ -51,6 +55,7 @@ public class TextBoxManager : MonoBehaviour {
 		}
 				
 		if(Input.GetKeyDown(KeyCode.Return)){
+			arrowDisplay.gameObject.SetActive(false);
 			if(!isTyping){
 				currentLine++;
 				if(currentLine > endAtLine){
@@ -78,6 +83,7 @@ public class TextBoxManager : MonoBehaviour {
 		}
 		//if while loop is broken by player input, spit out all the text of the line into the box
 		theText.text = lineOfText;
+		arrowDisplay.gameObject.SetActive(true);
 		isTyping = false;
 		cancelTyping = false;
 	}
