@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
+//using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
@@ -14,6 +14,7 @@ public class Player : MonoBehaviour {
 	float velocityXSmoothing;
 	
 	bool descending;
+	
 	
 	private float xsp, ysp;
 	const float acc = 0.04875f;
@@ -30,7 +31,7 @@ public class Player : MonoBehaviour {
 	const float maxRotationDegrees = 10f;
 	float oldSlideAngle;
 	float bumpTimer, launchTimer;
-	const float bumpTime = 0.6f; //how long to wait
+	const float bumpTime = 0.2f; //how long to wait
 	const float launchTime = 1.5f;
 	
 	float angleToShoot;
@@ -95,14 +96,14 @@ public class Player : MonoBehaviour {
 		
 		//game over stuff, reset scene
 		if(gameOver){
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
 		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
 			fricCtrl = -1;
-		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below && xsp != 0)
+		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below)
 			fricCtrl = 1;
 		else if(!Input.GetButton("LoFric") && !Input.GetButton("HiFric"))
 			fricCtrl = 0;
@@ -124,7 +125,14 @@ public class Player : MonoBehaviour {
 		if(bumpTimer > 0 || launchTimer > 0)
 				controller.collisions.mode = 0;
 			
-			
+		
+
+		//face direction
+		float moveDir = Input.GetAxisRaw("Horizontal");
+		if(moveDir != 0)
+			faceDir = (moveDir<0 ? -1 : 1);
+		mesh.transform.localScale = new Vector3(faceDir, 1, 1);
+
 		//low friction
 		//accelerate based on slope, no user input
 		//can't change direction
@@ -154,10 +162,11 @@ public class Player : MonoBehaviour {
 						controller.Move(new Vector3(xsp, ysp, 0));
 					}
 					else{
-						if(Mathf.Abs(xsp) > 0.007f)
+						//You can't slide back down slopes like tony hawk if 0 resets to normal
+						//if(Mathf.Abs(xsp) > 0.007f)
 							slidePosition(leftRayInfo, rightRayInfo);
-						else
-							controller.collisions.mode = 0;
+						//else
+						//	controller.collisions.mode = 0;
 						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
 						print("moving " + transform.right);
 					}
@@ -184,12 +193,12 @@ public class Player : MonoBehaviour {
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 			
-			//face direction
+			/*face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(inputLR != 0)
 				faceDir = (moveDir<0 ? 180 : 0);
 			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			
+			*/
 			//slope of ground beneath us
 			RaycastHit hit;
 			Debug.DrawRay(transform.position+(Vector3.up*0.5f), -Vector2.up * 1f, Color.red);
@@ -225,11 +234,11 @@ public class Player : MonoBehaviour {
 					xsp = Mathf.Lerp(xsp, xsp+acc, Time.deltaTime);
 				}
 			}
-			//not pressing anything, friction kicks in
+			//not pressing anything, gravity kicks in
 			else if(controller.collisions.below){
 				xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
-				if(Mathf.Abs(xsp) < 0.005f)
-					xsp = 0;
+				//if(Mathf.Abs(xsp) < 0.005f)
+				//	xsp = 0;
 			}
 			else if(ysp > 0 && ysp < 1){	//air drag
 				if (Mathf.Abs(xsp) > 0.05f)
@@ -295,12 +304,12 @@ public class Player : MonoBehaviour {
 			jumping = false;
 			anim.SetBool("hiFricAnim", true); //no-fric anim
 			
-			//face direction
+			/*face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
 				faceDir = (moveDir<0 ? 180 : 0);
 			mesh.transform.eulerAngles = new Vector3(0, faceDir, 0);
-			
+			*/
 			if(!controller.collisions.below){
 				controller.collisions.mode = 0;
 			}
@@ -471,11 +480,12 @@ public class Player : MonoBehaviour {
 		transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
 	
 		if(controller.collisions.mode == -1){
-			//face direction
+			/*face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
 				faceDir = (moveDir<0 ? 180 : 0);
 			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			*/
 		}
 		
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
