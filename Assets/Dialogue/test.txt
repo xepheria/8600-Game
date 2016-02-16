@@ -1,0 +1,11 @@
+Test check 1
+Test check 2
+Test check 3
+Test check 4
+Test check 5
+Test check 6
+
+Howdy pardner!
+My name is Tommy! But folks around here just call me the Text Test Box!
+Play around with my settings in the Unity Editor, as well as the test dialogue script in the Dialogue folder within Assets!
+Well, it was nice chatting with you!

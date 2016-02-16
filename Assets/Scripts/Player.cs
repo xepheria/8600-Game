@@ -47,6 +47,7 @@ public class Player : MonoBehaviour {
 	
 	private float faceDir;
 	
+	public bool canMove;
 	private bool gameOver;
 	
 	void Start() {
@@ -107,6 +108,13 @@ public class Player : MonoBehaviour {
 			fricCtrl = 0;
 
 		controller.collisions.mode = fricCtrl;
+		
+		//if can't move, set xsp to 0, friction to normal
+		if(!canMove){
+			xsp = 0;
+			controller.collisions.mode = 0;
+			inputLR = 0;
+		}
 		
 		//timer for using special mode after bumping into a wall
 		bumpTimer -= Time.deltaTime;
@@ -178,7 +186,7 @@ public class Player : MonoBehaviour {
 			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
-			if(moveDir != 0)
+			if(inputLR != 0)
 				faceDir = (moveDir<0 ? 180 : 0);
 			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			
@@ -234,7 +242,7 @@ public class Player : MonoBehaviour {
 				ysp = Mathf.Lerp(ysp, ysp+grv, Time.deltaTime);
 			}
 			//if we're in collision with the ground and press "jump", we jump
-			if(Input.GetButtonDown("Jump") && controller.collisions.below){
+			if(Input.GetButtonDown("Jump") && controller.collisions.below && canMove){
 				ysp = (jmp + Mathf.Abs(xsp)*.1f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 				xsp = xsp-jmp * Mathf.Sin(slopeAngle * Mathf.Deg2Rad);
 				anim.SetBool("jumping", true);
@@ -351,7 +359,7 @@ public class Player : MonoBehaviour {
 		
 		//can shoot in any mode
 		//V is held down, calculate angle
-		if(Input.GetButton("Fire")){
+		if(Input.GetButton("Fire") && canMove){
 			if(angleToShoot >= 90) angleIncSign = -1;
 			else if(angleToShoot <= 0) angleIncSign = 1;
 			angleToShoot += angleIncSign * Time.deltaTime * 50;
@@ -387,7 +395,6 @@ public class Player : MonoBehaviour {
 		
 		float rayLength = 2f;
 		Vector2 centerBox = boxCollider.bounds.center;
-		print(boxCollider.size);
 		Vector2 transformRight = transform.right;
 		
 		//make sure rays shoot from right place
@@ -454,7 +461,6 @@ public class Player : MonoBehaviour {
 	void slidePosition(RaycastHit leftRayInfo, RaycastHit rightRayInfo){
 		Vector3 averageNormal = (leftRayInfo.normal + rightRayInfo.normal) / 2;
 		Vector3 averagePoint = (leftRayInfo.point + rightRayInfo.point) / 2;
-		print("avgpoint" + averagePoint.ToString("F4") + "before: " + transform.position.ToString("F4"));
 		
 		Debug.DrawRay(leftRayInfo.point, leftRayInfo.normal, Color.magenta);
 		Debug.DrawRay(rightRayInfo.point, rightRayInfo.normal, Color.magenta);
