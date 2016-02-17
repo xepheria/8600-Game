@@ -10,7 +10,7 @@ public class boxPhysics : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		changeFriction(isSticky);
-	}		
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -64,7 +64,8 @@ public class boxPhysics : MonoBehaviour {
 			isSticky = true;
 			changeFriction(isSticky);
 		}
+		GetComponent<Rigidbody>().velocity = Vector3.zero;
+		GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 	}
-
 }
 
