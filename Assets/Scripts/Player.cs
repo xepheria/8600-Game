@@ -51,6 +51,28 @@ public class Player : MonoBehaviour {
 	public bool canMove;
 	private bool gameOver;
 	
+	//audio stuff
+	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX;
+	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioFricModeOff;
+	
+	public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol){
+		AudioSource newAudio = gameObject.AddComponent<AudioSource>();
+		newAudio.clip = clip;
+		newAudio.loop = loop;
+		newAudio.playOnAwake = playAwake;
+		newAudio.volume = vol;
+		return newAudio;
+	}
+	
+	public void Awake(){
+		//add audiosources to Player
+		audioClimbing = AddAudio(climbingSFX, true, false, 1.0f);
+		audioFricDown = AddAudio(fricDownSFX, false, false, 1.0f);
+		audioFricUp = AddAudio(fricUpSFX, false, false, 1.0f);
+		audioSliding = AddAudio(slidingSFX, true, false, 1.0f);
+		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 1.0f);
+	}
+	
 	void Start() {
 		gameOver = false;
 		
@@ -101,14 +123,31 @@ public class Player : MonoBehaviour {
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
-		if((!Input.GetButton("LoFric") && !Input.GetButton("HiFric")) || (Input.GetButton("LoFric") && Input.GetButton("HiFric"))){
-			fricCtrl = 0;
-		}
-		else if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
+		//I commented this out so you can switch while on a wall
+		//if((!Input.GetButton("LoFric") && !Input.GetButton("HiFric")) || (Input.GetButton("LoFric") && Input.GetButton("HiFric"))){
+		//	fricCtrl = 0;
+		//}
+		//else
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
 			fricCtrl = -1;
 		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below)
 			fricCtrl = 1;
 
+		if(controller.collisions.mode != fricCtrl){
+			if(fricCtrl == 0){
+				audioFricModeOff.Play();
+			}
+			else if(fricCtrl == -1){
+				audioFricUp.Play();
+				if(audioSliding.isPlaying) audioSliding.Stop();
+				audioClimbing.Play();
+			}
+			else if(fricCtrl == 1){
+				audioFricDown.Play();
+				if(audioClimbing.isPlaying) audioClimbing.Stop();
+				audioSliding.Play();
+			}
+		}
 		controller.collisions.mode = fricCtrl;
 		
 		//if can't move, set xsp to 0, friction to normal
@@ -180,6 +219,8 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			if(audioSliding.isPlaying) audioSliding.Stop();
+			if(audioClimbing.isPlaying) audioClimbing.Stop();
 			
 			//reset rotation of transform
 			transform.rotation = Quaternion.identity;
