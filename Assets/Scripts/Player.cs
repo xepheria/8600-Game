@@ -69,7 +69,7 @@ public class Player : MonoBehaviour {
 		audioClimbing = AddAudio(climbingSFX, true, false, 1.0f);
 		audioFricDown = AddAudio(fricDownSFX, false, false, 1.0f);
 		audioFricUp = AddAudio(fricUpSFX, false, false, 1.0f);
-		audioSliding = AddAudio(slidingSFX, true, false, 1.0f);
+		audioSliding = AddAudio(slidingSFX, true, false, 0.05f);
 		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 1.0f);
 	}
 	
@@ -174,6 +174,13 @@ public class Player : MonoBehaviour {
 				controller.collisions.mode = 0;
 			}
 			else{
+				
+				//face direction
+				float moveDir = Input.GetAxisRaw("Horizontal");
+				if(inputLR != 0)
+					faceDir = (moveDir<0 ? 180 : 0);
+				mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
 				jumping = false;
@@ -186,8 +193,9 @@ public class Player : MonoBehaviour {
 					//if we press jump, do SLIDE JUMP
 					if(Input.GetButtonDown("Jump")){
 						controller.collisions.mode = 0;
-						ysp = (jmp*.75f) * Mathf.Cos(oldSlideAngle * Mathf.Deg2Rad);
-						xsp -= jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
+						ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
+						xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
+						
 						anim.SetBool("jumping", true);
 						anim.SetBool("sliding", false);
 						jumping = true;
@@ -199,6 +207,11 @@ public class Player : MonoBehaviour {
 							slidePosition(leftRayInfo, rightRayInfo);
 						else if(oldSlideAngle < 30 || oldSlideAngle > 330)
 							controller.collisions.mode = 0;
+						//Falling Upside down
+						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.11){
+							ysp=0; xsp = 0;
+							controller.collisions.mode = 0;
+						}
 						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
 						print("moving " + transform.right);
 					}
@@ -388,8 +401,12 @@ public class Player : MonoBehaviour {
 					RaycastHit leftRayInfo, rightRayInfo;
 					if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 						//both rays hit something. now move and rotate character
-						if(xsp != 0)
-							slidePosition(leftRayInfo, rightRayInfo);
+						slidePosition(leftRayInfo, rightRayInfo);
+						
+						//Falling Upside down
+						if(oldSlideAngle > 90 && oldSlideAngle < 270){
+							ysp=0;
+						}
 					}
 					else{
 						//off the edge. bump to normal mode
@@ -462,14 +479,14 @@ public class Player : MonoBehaviour {
 		//check for walls
 		//if moving left
 		if(xsp < 0){
-			/*Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
+			Debug.DrawRay(transform.position+transform.up*0.2f, -transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, -transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}*/
+			}
 			Debug.DrawRay(transform.position+transform.up, -transform.right * 0.4f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up, -transform.right, 0.4f, collisionMask)){
 				//hit a wall
@@ -481,14 +498,14 @@ public class Player : MonoBehaviour {
 		}
 		//if moving right
 		else if(xsp > 0){
-			/*Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
+			Debug.DrawRay(transform.position+transform.up*0.2f, transform.right * 0.5f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up*0.2f, transform.right, 0.5f, collisionMask)){
 				//hit a wall
 				xsp = 0;
 				rightRayInfo = new RaycastHit();
 				leftRayInfo = new RaycastHit();
 				return false;
-			}*/
+			}
 			Debug.DrawRay(transform.position+transform.up, transform.right * 0.4f, Color.red);
 			if(Physics.Raycast(transform.position+transform.up, transform.right, 0.4f, collisionMask)){
 				//hit a wall
@@ -529,7 +546,8 @@ public class Player : MonoBehaviour {
 					slopeAngle = 360 - slopeAngle;
 				}
 				
-		transform.position = averagePoint + transform.up*.2f;
+		if(xsp != 0)
+			transform.position = averagePoint + transform.up*.2f;
 		//print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
 		oldSlideAngle = slopeAngle;
 	}
