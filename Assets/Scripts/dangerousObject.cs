@@ -10,7 +10,6 @@ public class dangerousObject : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider col){
-		print("ya hit me");
 		if(col.CompareTag("Player")){
 			player.defeated();
 		}

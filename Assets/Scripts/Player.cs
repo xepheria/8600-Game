@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [RequireComponent (typeof(Controller2D))]
 [RequireComponent (typeof(Animator))]
@@ -50,6 +51,8 @@ public class Player : MonoBehaviour {
 	
 	public bool canMove;
 	private bool gameOver;
+	public Image gameOverOverlay;
+	public Text gameOverText;
 	
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX;
@@ -76,7 +79,7 @@ public class Player : MonoBehaviour {
 	void Start() {
 		gameOver = false;
 		
-		showDebug = true;
+		showDebug = false;
 		
 		controller = GetComponent<Controller2D> ();
 		boxCollider = GetComponent<BoxCollider>();
@@ -91,6 +94,10 @@ public class Player : MonoBehaviour {
 		
 		angleToShoot = 0;
 		angleIncSign = 1;
+		
+		gameOverOverlay.color = new Color(0,0,0,0);
+		gameOverOverlay.gameObject.SetActive(false);
+		gameOverText.gameObject.SetActive(false);
 	}
 	
 	void OnGUI(){
@@ -118,7 +125,14 @@ public class Player : MonoBehaviour {
 		
 		//game over stuff, reset scene
 		if(gameOver){
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 90, 0), Time.deltaTime);
+			transform.position = Vector3.Lerp(transform.position, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane)), Time.deltaTime);
+			transform.position = new Vector3(transform.position.x, transform.position.y, -8);
+			gameOverOverlay.color = Color.Lerp(gameOverOverlay.color, Color.black, Time.deltaTime*5);
+			gameObject.GetComponent<cameraFollow>().followVertical = false;
+			if(Input.GetButtonDown("Submit"))
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			return;
 		}
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
@@ -194,7 +208,7 @@ public class Player : MonoBehaviour {
 					if(Input.GetButtonDown("Jump")){
 						controller.collisions.mode = 0;
 						ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
-						xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
+						xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
 						
 						anim.SetBool("jumping", true);
 						anim.SetBool("sliding", false);
@@ -389,8 +403,8 @@ public class Player : MonoBehaviour {
 				
 				if(Input.GetButtonDown("Jump") && controller.collisions.below){
 					controller.collisions.mode = 0;
-					ysp = jmp * Mathf.Cos(oldSlideAngle * Mathf.Deg2Rad);
-					xsp -= jmp * Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad);
+					ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
+					xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
 					anim.SetBool("jumping", true);
 					anim.SetBool("hiFricAnim", false);
 					jumping = true;
@@ -454,7 +468,7 @@ public class Player : MonoBehaviour {
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
-		float rayLength = 2f;
+		float rayLength = 1.2f;
 		Vector2 centerBox = boxCollider.bounds.center;
 		Vector2 transformRight = transform.right;
 		
@@ -562,6 +576,9 @@ public class Player : MonoBehaviour {
 	//called when out of life
 	public void defeated(){
 		gameOver = true;
+		gameOverOverlay.gameObject.SetActive(true);
+		gameOverText.gameObject.SetActive(true);
+		anim.Play("Death");
 		print("game over");
 	}
 }

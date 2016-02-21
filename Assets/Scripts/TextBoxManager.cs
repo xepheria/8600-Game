@@ -54,7 +54,7 @@ public class TextBoxManager : MonoBehaviour {
 			return;
 		}
 				
-		if(Input.GetKeyDown(KeyCode.Return)){
+		if(Input.GetButtonDown("Submit")){
 			arrowDisplay.gameObject.SetActive(false);
 			if(!isTyping){
 				currentLine++;
