@@ -102,7 +102,7 @@ public class Player : MonoBehaviour {
 	
 	void OnGUI(){
 		if(showDebug){
-			GUI.Box(new Rect(Screen.width - 200, 0, 200, 200), "Angle: " + controller.collisions.slopeAngle);
+			GUI.Box(new Rect(Screen.width - 200, 0, 200, 200), "Angle: " + oldSlideAngle);
 			GUI.Label(new Rect(Screen.width - 50, 25, 100, 50), controller.collisions.mode.ToString());
 			GUI.Label(new Rect(Screen.width - 100, 40, 100, 50), "xspeed: " + xsp.ToString());
 			GUI.Label(new Rect(Screen.width - 100, 70, 100, 50), "yspeed: " + ysp.ToString());
@@ -137,15 +137,21 @@ public class Player : MonoBehaviour {
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
-		//I commented this out so you can switch while on a wall
-		//if((!Input.GetButton("LoFric") && !Input.GetButton("HiFric")) || (Input.GetButton("LoFric") && Input.GetButton("HiFric"))){
-		//	fricCtrl = 0;
-		//}
-		//else
-		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below)
+
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below){
 			fricCtrl = -1;
-		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below)
+			if(controller.collisions.mode == 0){
+				//Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
+				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
+			}
+		}
+		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below){
 			fricCtrl = 1;
+			if(controller.collisions.mode == 0){
+				//Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
+				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
+			}
+		}
 
 		if(controller.collisions.mode != fricCtrl){
 			if(fricCtrl == 0){
@@ -201,7 +207,7 @@ public class Player : MonoBehaviour {
 				anim.SetBool("sliding", true);
 				
 				//************************
-				gameObject.GetComponentInChildren<Renderer>().material.color = Color.yellow;
+				gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
 				//************************
 				
 				//check raycasts of character
@@ -378,7 +384,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool("hiFricAnim", true); //no-fric anim
 			
 			//************************
-			gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
+			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
 			//************************
 			
 			//face direction
@@ -483,7 +489,7 @@ public class Player : MonoBehaviour {
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
-		float rayLength = 1.2f;
+		float rayLength = 1f;
 		Vector2 centerBox = boxCollider.bounds.center;
 		Vector2 transformRight = transform.right;
 		
