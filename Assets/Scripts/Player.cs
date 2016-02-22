@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
 	private float xsp, ysp;
 	const float acc = 0.04875f;
 	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
-	const float hiFricSpCap = .07f; //I moved this variable up here because I suck at finding things
+	const float hiFricSpCap = .050f; //I moved this variable up here because I suck at finding things
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.11f;
@@ -33,7 +33,7 @@ public class Player : MonoBehaviour {
 	float oldSlideAngle;
 	float bumpTimer, launchTimer;
 	const float bumpTime = 0.2f; //how long to wait
-	const float launchTime = 1.5f;
+	const float launchTime = 0.2f;
 	
 	float angleToShoot;
 	int angleIncSign;
@@ -137,18 +137,18 @@ public class Player : MonoBehaviour {
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
+		if(controller.collisions.mode == 2)
+			fricCtrl = 2;
 
-		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below){
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && fricCtrl != 2){
 			fricCtrl = -1;
 			if(controller.collisions.mode == 0){
-				//Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
 			}
 		}
-		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below){
+		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below && fricCtrl != 2){
 			fricCtrl = 1;
 			if(controller.collisions.mode == 0){
-				//Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
 			}
 		}
@@ -169,6 +169,11 @@ public class Player : MonoBehaviour {
 			}
 		}
 		controller.collisions.mode = fricCtrl;
+		
+		if(oldSlideAngle > 50 && oldSlideAngle < 310 && controller.collisions.mode == 0 && controller.collisions.below){
+				controller.collisions.mode = 2;
+				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
+		}
 		
 		//if can't move, set xsp to 0, friction to normal
 		if(!canMove){
@@ -238,7 +243,7 @@ public class Player : MonoBehaviour {
 							controller.collisions.mode = 0;
 						}
 						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
-						print("moving " + transform.right);
+						//print("moving " + transform.right);
 					}
 				}
 				else{
@@ -255,6 +260,58 @@ public class Player : MonoBehaviour {
 			}
 		}
 		
+		//tumble mode
+		if(controller.collisions.mode == 2){
+			if(!controller.collisions.below){
+				//controller.collisions.mode = 0;
+			}
+			
+			print("TUMBLETUMBLETUMBLE");
+			
+			//check current slope of ground beneath us
+			RaycastHit hit;
+			Debug.DrawRay(transform.position+(transform.up*0.5f), -transform.up * 1.5f, Color.red);
+			float slopeAngle = 0;
+			if(Physics.Raycast(transform.position+(transform.up*0.5f), -transform.up, out hit, 1.5f, collisionMask)){
+				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
+					slopeAngle = 360 - slopeAngle;
+				}
+				oldSlideAngle = slopeAngle;
+			}
+			
+			print(slopeAngle);
+			if(slopeAngle == 0) controller.collisions.mode = 0;
+			
+			
+			anim.SetBool("jumping", false);
+			jumping = false;
+			anim.SetBool("tumbling", true);
+				
+			//************************
+			gameObject.GetComponentInChildren<Renderer>().material.color = Color.black;
+			//************************
+			
+			//check raycasts of character
+			RaycastHit leftRayInfo, rightRayInfo;
+			if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
+				//both rays hit something. now move and rotate character
+				slidePosition(leftRayInfo, rightRayInfo);
+				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+			}
+			else{
+					//off the edge. launch off
+					print("MISSed" + transform.right);
+					controller.collisions.mode = 0;
+					//set xsp and ysp based on direction of angle forward
+					ysp = Mathf.Clamp((xsp*transform.right).y, 0, jmp*2);
+					xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
+					print(xsp + "  " + ysp);
+					bumpTimer = bumpTime;
+					launchTimer = launchTime;
+			}
+		}
+		
 		//normal mode
 		if(controller.collisions.mode == 0){
 			if(audioSliding.isPlaying) audioSliding.Stop();
@@ -266,6 +323,7 @@ public class Player : MonoBehaviour {
 			transform.rotation = Quaternion.identity;
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
+			anim.SetBool("tumbling", false);
 			
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
@@ -279,9 +337,9 @@ public class Player : MonoBehaviour {
 			
 			//slope of ground beneath us
 			RaycastHit hit;
-			Debug.DrawRay(transform.position+(Vector3.up*0.5f), -Vector2.up * 1f, Color.red);
+			Debug.DrawRay(transform.position+(Vector3.up*0.5f), -Vector2.up * 1.5f, Color.red);
 			float slopeAngle = 0;
-			if(Physics.Raycast(transform.position+(Vector3.up*0.5f), -Vector2.up, out hit, 1f, collisionMask)){
+			if(Physics.Raycast(transform.position+(Vector3.up*0.5f), -Vector2.up, out hit, 1.5f, collisionMask)){
 				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
@@ -489,7 +547,7 @@ public class Player : MonoBehaviour {
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
-		float rayLength = 1f;
+		float rayLength = 1.0f;
 		Vector2 centerBox = boxCollider.bounds.center;
 		Vector2 transformRight = transform.right;
 		
@@ -561,6 +619,14 @@ public class Player : MonoBehaviour {
 		Debug.DrawRay(leftRayInfo.point, leftRayInfo.normal, Color.magenta);
 		Debug.DrawRay(rightRayInfo.point, rightRayInfo.normal, Color.magenta);
 		Debug.DrawRay(averagePoint, averageNormal, Color.white);
+		
+		//*********
+		print(leftRayInfo.normal + "              " + rightRayInfo.normal);
+		if(Mathf.Abs(leftRayInfo.normal.x) + Mathf.Abs(rightRayInfo.normal.y) == 2 || Mathf.Abs(leftRayInfo.normal.y) + Mathf.Abs(rightRayInfo.normal.x) == 2){
+			print("NOT ALLOWED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			controller.collisions.mode = 0;
+			return;
+		}
 		
 		Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, averageNormal);
 		Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
