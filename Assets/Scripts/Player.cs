@@ -69,11 +69,11 @@ public class Player : MonoBehaviour {
 	
 	public void Awake(){
 		//add audiosources to Player
-		audioClimbing = AddAudio(climbingSFX, true, false, 1.0f);
-		audioFricDown = AddAudio(fricDownSFX, false, false, 1.0f);
-		audioFricUp = AddAudio(fricUpSFX, false, false, 1.0f);
+		audioClimbing = AddAudio(climbingSFX, true, false, 0.05f);
+		audioFricDown = AddAudio(fricDownSFX, false, false, 0.5f);
+		audioFricUp = AddAudio(fricUpSFX, false, false, 0.5f);
 		audioSliding = AddAudio(slidingSFX, true, false, 0.05f);
-		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 1.0f);
+		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 0.3f);
 	}
 	
 	void Start() {
@@ -199,6 +199,11 @@ public class Player : MonoBehaviour {
 				anim.SetBool("jumping", false);
 				jumping = false;
 				anim.SetBool("sliding", true);
+				
+				//************************
+				gameObject.GetComponentInChildren<Renderer>().material.color = Color.yellow;
+				//************************
+				
 				//check raycasts of character
 				RaycastHit leftRayInfo, rightRayInfo;
 				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
@@ -250,9 +255,15 @@ public class Player : MonoBehaviour {
 			if(audioClimbing.isPlaying) audioClimbing.Stop();
 			
 			//reset rotation of transform
+			if (launchTimer == 0 && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 180)
+				xsp = -xsp;
 			transform.rotation = Quaternion.identity;
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
+			
+			//************************
+			gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
+			//************************
 			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
@@ -366,6 +377,10 @@ public class Player : MonoBehaviour {
 			jumping = false;
 			anim.SetBool("hiFricAnim", true); //no-fric anim
 			
+			//************************
+			gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
+			//************************
+			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
@@ -451,7 +466,7 @@ public class Player : MonoBehaviour {
 			//shoot at current angle, then reset angle
 			GameObject shotInstance = (GameObject)Instantiate(shot, boxCollider.bounds.center, Quaternion.Euler(shootDir));
 			shotInstance.GetComponent<Rigidbody>().velocity = new Vector3(50*xsp, controller.collisions.below?0:50*ysp, 0);
-			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 100);
+			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 700);
 			
 			if(controller.collisions.mode == 1){
 				shotInstance.tag = "LoBullet";
@@ -579,6 +594,9 @@ public class Player : MonoBehaviour {
 		gameOverOverlay.gameObject.SetActive(true);
 		gameOverText.gameObject.SetActive(true);
 		anim.Play("Death");
+		//*****************
+		gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
+		//*****************
 		print("game over");
 	}
 }

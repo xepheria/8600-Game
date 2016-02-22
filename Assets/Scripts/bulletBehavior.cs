@@ -5,17 +5,17 @@ public class bulletBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		Destroy(gameObject, 3);
-		//Physics.IgnoreCollision(GetComponent<Collider>(), player.GetComponent<Collider>());
+		//Destroy(gameObject, 3);
 	}
 	
 	void OnCollisionEnter(Collision col){
 		if(!col.collider.CompareTag("Player")){
-			Destroy(gameObject);
+			//Destroy(gameObject);
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//print(GetComponent<Rigidbody>().velocity);
 	}
 }
