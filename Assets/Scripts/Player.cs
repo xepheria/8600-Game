@@ -281,7 +281,7 @@ public class Player : MonoBehaviour {
 			}
 			
 			print(slopeAngle);
-			if(slopeAngle == 0) controller.collisions.mode = 0;
+			if(slopeAngle < 20 || slopeAngle > 340) controller.collisions.mode = 0;
 			
 			
 			anim.SetBool("jumping", false);
