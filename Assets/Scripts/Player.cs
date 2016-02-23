@@ -34,6 +34,7 @@ public class Player : MonoBehaviour {
 	float bumpTimer, launchTimer;
 	const float bumpTime = 0.2f; //how long to wait
 	const float launchTime = 0.2f;
+	const float barTime = 1.0f; //if we run out of energy
 	
 	float angleToShoot;
 	int angleIncSign;
@@ -53,6 +54,13 @@ public class Player : MonoBehaviour {
 	private bool gameOver;
 	public Image gameOverOverlay;
 	public Text gameOverText;
+	
+	//power meter
+	public Texture2D barEmpty, barFull;
+	float hiFricEnergy;
+	private Vector2 barSize = new Vector2(180, 20);
+	float hiFricEnergyInc = 0.25f;
+	float hiFricEnergyDec = 0.21f;
 	
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX;
@@ -77,6 +85,8 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Start() {
+		hiFricEnergy = 1;
+		
 		gameOver = false;
 		
 		showDebug = false;
@@ -115,9 +125,20 @@ public class Player : MonoBehaviour {
 			GUI.Box(new Rect(0, 0, 400, 200), "Demo\nMove left/right : arrow keys\t\tJump : Space\nHi-fric mode : Hold X\t\tLo-Fric mode : Hold C\n");
 			GUI.Label(new Rect(20, 60, 375, 100), "Use hi-fric to climb steep hills. Use lo-fric to gain speed and launch off slopes. Press G to toggle instructions/debug information.");
 		}
+		
+		//power gauge
+		GUI.BeginGroup(new Rect(Screen.width - 200, Screen.height - 100, 200, 100));
+			GUI.Box(new Rect(0, 0, 200, 100), "POWER");
+			GUI.DrawTexture(new Rect(10, 30, barSize.x, barSize.y), barEmpty, ScaleMode.StretchToFill);
+			//filled-in bar
+			GUI.BeginGroup(new Rect(10, 30, barSize.x * hiFricEnergy, barSize.y));
+				GUI.DrawTexture(new Rect(0, 0, barSize.x, barSize.y), barFull, ScaleMode.StretchToFill);
+			GUI.EndGroup();
+		GUI.EndGroup();
 	}
 	
 	void Update(){
+		print(xsp + " " + ysp);
 		
 		if(Input.GetKeyDown(KeyCode.G)){
 			showDebug = !showDebug;
@@ -140,7 +161,7 @@ public class Player : MonoBehaviour {
 		if(controller.collisions.mode == 2)
 			fricCtrl = 2;
 
-		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && fricCtrl != 2){
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0 && fricCtrl != 2){
 			fricCtrl = -1;
 			if(controller.collisions.mode == 0){
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
@@ -169,6 +190,11 @@ public class Player : MonoBehaviour {
 			}
 		}
 		controller.collisions.mode = fricCtrl;
+		
+		//refill hifric energy bar
+		if(controller.collisions.mode != -1){
+			hiFricEnergy = Mathf.Clamp(hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+		}
 		
 		if(oldSlideAngle > 50 && oldSlideAngle < 310 && controller.collisions.mode == 0 && controller.collisions.below){
 				controller.collisions.mode = 2;
@@ -230,6 +256,7 @@ public class Player : MonoBehaviour {
 						anim.SetBool("sliding", false);
 						jumping = true;
 						controller.Move(new Vector3(xsp, ysp, 0));
+						launchTimer = launchTime;
 					}
 					else{
 						print(oldSlideAngle);
@@ -238,7 +265,7 @@ public class Player : MonoBehaviour {
 						else if(oldSlideAngle < 30 || oldSlideAngle > 330)
 							controller.collisions.mode = 0;
 						//Falling Upside down
-						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.11){
+						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.09f){
 							ysp=0; xsp = 0;
 							controller.collisions.mode = 0;
 						}
@@ -265,9 +292,7 @@ public class Player : MonoBehaviour {
 			if(!controller.collisions.below){
 				//controller.collisions.mode = 0;
 			}
-			
-			print("TUMBLETUMBLETUMBLE");
-			
+						
 			//check current slope of ground beneath us
 			RaycastHit hit;
 			Debug.DrawRay(transform.position+(transform.up*0.5f), -transform.up * 1.5f, Color.red);
@@ -279,8 +304,6 @@ public class Player : MonoBehaviour {
 				}
 				oldSlideAngle = slopeAngle;
 			}
-			
-			print(slopeAngle);
 			if(slopeAngle < 20 || slopeAngle > 340 || (slopeAngle > 90 && slopeAngle < 270)) controller.collisions.mode = 0;
 			
 			
@@ -304,7 +327,7 @@ public class Player : MonoBehaviour {
 					print("MISSed" + transform.right);
 					controller.collisions.mode = 0;
 					//set xsp and ysp based on direction of angle forward
-					ysp = Mathf.Clamp((xsp*transform.right).y, 0, jmp*2);
+					ysp = Mathf.Clamp((xsp*transform.right).y, -jmp, jmp*2);
 					xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
 					print(xsp + "  " + ysp);
 					bumpTimer = bumpTime;
@@ -482,12 +505,13 @@ public class Player : MonoBehaviour {
 				
 				if(Input.GetButtonDown("Jump") && controller.collisions.below){
 					controller.collisions.mode = 0;
-					ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
+					ysp = Mathf.Clamp((jmp*transform.up).y, -jmp, jmp*2);
 					xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
 					anim.SetBool("jumping", true);
 					anim.SetBool("hiFricAnim", false);
 					jumping = true;
 					controller.Move(new Vector3(xsp, ysp, 0));
+					launchTimer = launchTime;
 				}
 				else{
 					//check raycasts of character
@@ -508,6 +532,10 @@ public class Player : MonoBehaviour {
 						bumpTimer = bumpTime;
 					}
 				}
+				
+				//decrement energy
+				hiFricEnergy = Mathf.Clamp(hiFricEnergy - Time.deltaTime * hiFricEnergyDec, 0, 1);
+				if(hiFricEnergy == 0) bumpTimer = barTime;
 			}
 		}
 		
@@ -555,7 +583,6 @@ public class Player : MonoBehaviour {
 		controller.UpdateRaycastOrigins();
 		
 		Vector2 slideOffset = xsp * transform.right;
-		//print("slideoffset " + slideOffset);
 		Vector2 updatedBottomLeft = centerBox - ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
 		Vector2 updatedBottomRight = centerBox + ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
 		//Vector2 updatedBottomLeft = new Vector2(controller.raycastOrigins.bottomLeft.x + slideOffset.x, centerY + slideOffset.y);
@@ -621,7 +648,6 @@ public class Player : MonoBehaviour {
 		Debug.DrawRay(averagePoint, averageNormal, Color.white);
 		
 		//*********
-		print(leftRayInfo.normal + "              " + rightRayInfo.normal);
 		if(Mathf.Abs(leftRayInfo.normal.x) + Mathf.Abs(rightRayInfo.normal.y) == 2 || Mathf.Abs(leftRayInfo.normal.y) + Mathf.Abs(rightRayInfo.normal.x) == 2){
 			print("NOT ALLOWED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			controller.collisions.mode = 0;
