@@ -161,13 +161,13 @@ public class Player : MonoBehaviour {
 		if(controller.collisions.mode == 2)
 			fricCtrl = 2;
 
-		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0 && fricCtrl != 2){
+		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0){
 			fricCtrl = -1;
 			if(controller.collisions.mode == 0){
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
 			}
 		}
-		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below && fricCtrl != 2){
+		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below){
 			fricCtrl = 1;
 			if(controller.collisions.mode == 0){
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
