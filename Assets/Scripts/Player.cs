@@ -138,7 +138,6 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update(){
-		print(xsp + " " + ysp);
 		
 		if(Input.GetKeyDown(KeyCode.G)){
 			showDebug = !showDebug;
@@ -196,7 +195,7 @@ public class Player : MonoBehaviour {
 			hiFricEnergy = Mathf.Clamp(hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
 		}
 		
-		if(oldSlideAngle > 50 && oldSlideAngle < 310 && controller.collisions.mode == 0 && controller.collisions.below){
+		if(oldSlideAngle > 50 && oldSlideAngle < 310 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below){
 				controller.collisions.mode = 2;
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
 		}
@@ -259,7 +258,6 @@ public class Player : MonoBehaviour {
 						launchTimer = launchTime;
 					}
 					else{
-						print(oldSlideAngle);
 						if(Mathf.Abs(xsp) > 0.007f)
 							slidePosition(leftRayInfo, rightRayInfo);
 						else if(oldSlideAngle < 30 || oldSlideAngle > 330)
@@ -270,7 +268,6 @@ public class Player : MonoBehaviour {
 							controller.collisions.mode = 0;
 						}
 						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
-						//print("moving " + transform.right);
 					}
 				}
 				else{
@@ -681,7 +678,6 @@ public class Player : MonoBehaviour {
 				
 		if(xsp != 0)
 			transform.position = averagePoint + transform.up*.2f;
-		//print("old angle: " + oldSlideAngle.ToString() + "     new angle: " + slopeAngle.ToString());
 		oldSlideAngle = slopeAngle;
 	}
 	
