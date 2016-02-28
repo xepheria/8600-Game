@@ -6,10 +6,20 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: glowParts
+    100004: metalParts
     400000: //RootNode
+    400002: glowParts
+    400004: metalParts
     2300000: //RootNode
+    2300002: glowParts
+    2300004: metalParts
     3300000: //RootNode
+    3300002: glowParts
+    3300004: metalParts
     4300000: pCylinder6
+    4300002: metalParts
+    4300004: glowParts
     9500000: //RootNode
   materials:
     importMaterials: 1
