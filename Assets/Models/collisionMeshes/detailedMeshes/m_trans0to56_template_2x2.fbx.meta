@@ -1,29 +1,37 @@
 fileFormatVersion: 2
-guid: e3138e2fde8664a46a6bec71ee872a5f
-timeCreated: 1456975499
+guid: 5f738c8e8b5c648439511b117eb3c113
+timeCreated: 1457033906
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: darkBlue
-    100002: lightBlue
+    100000: back1
+    100002: group
     100004: //RootNode
-    100006: main
-    100008: transform6
-    400000: darkBlue
-    400002: lightBlue
+    100006: pasted__pCube5
+    100008: pCube5
+    100010: pPlane1
+    100012: pPlane2
+    100014: pPlane3
+    100016: transform1
+    100018: transform2
+    100020: transform3
+    100022: transform4
+    400000: back1
+    400002: group
     400004: //RootNode
-    400006: main
-    400008: transform6
-    2300000: darkBlue
-    2300002: lightBlue
-    2300004: main
-    3300000: darkBlue
-    3300002: lightBlue
-    3300004: main
-    4300000: darkBlue
-    4300002: lightBlue
-    4300004: main
+    400006: pasted__pCube5
+    400008: pCube5
+    400010: pPlane1
+    400012: pPlane2
+    400014: pPlane3
+    400016: transform1
+    400018: transform2
+    400020: transform3
+    400022: transform4
+    2300000: pPlane3
+    3300000: pPlane3
+    4300000: pPlane3
     9500000: //RootNode
   materials:
     importMaterials: 1

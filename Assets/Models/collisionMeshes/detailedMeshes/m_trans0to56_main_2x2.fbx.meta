@@ -7,11 +7,16 @@ ModelImporter:
   fileIDToRecycleName:
     100000: //RootNode
     100002: main
+    100004: darkBlue
     400000: //RootNode
     400002: main
+    400004: darkBlue
     2300000: main
+    2300002: darkBlue
     3300000: main
+    3300002: darkBlue
     4300000: main
+    4300002: darkBlue
     9500000: //RootNode
   materials:
     importMaterials: 1

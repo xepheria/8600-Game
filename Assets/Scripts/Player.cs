@@ -263,7 +263,7 @@ public class Player : MonoBehaviour {
 						else if(oldSlideAngle < 30 || oldSlideAngle > 330)
 							controller.collisions.mode = 0;
 						//Falling Upside down
-						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.09f){
+						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.06f){
 							ysp=0; xsp = 0;
 							controller.collisions.mode = 0;
 						}
