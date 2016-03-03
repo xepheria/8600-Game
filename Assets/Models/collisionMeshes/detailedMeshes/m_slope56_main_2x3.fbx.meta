@@ -1,21 +1,22 @@
 fileFormatVersion: 2
-guid: c3eb9428ad71bdf4fb782ee8e439cfd6
-timeCreated: 1456686661
+guid: ed40d6e2f2faf9c4fa6a5154f97c326c
+timeCreated: 1456975499
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: bottom
+    100000: glow_surface
     100002: //RootNode
-    100004: polySurface1
-    400000: bottom
+    100004: main_block
+    400000: glow_surface
     400002: //RootNode
-    400004: polySurface1
-    2300000: polySurface1
-    2300002: //RootNode
-    3300000: polySurface1
-    3300002: //RootNode
-    4300000: polySurface1
+    400004: main_block
+    2300000: glow_surface
+    2300002: main_block
+    3300000: glow_surface
+    3300002: main_block
+    4300000: glow_surface
+    4300002: main_block
     9500000: //RootNode
   materials:
     importMaterials: 1
