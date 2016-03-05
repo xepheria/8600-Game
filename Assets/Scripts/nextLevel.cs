@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-public class toLevel1 : MonoBehaviour {
+public class nextLevel : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
 		if(col.CompareTag("Player")){

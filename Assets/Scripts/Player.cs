@@ -59,8 +59,8 @@ public class Player : MonoBehaviour {
 	public Texture2D barEmpty, barFull;
 	float hiFricEnergy;
 	private Vector2 barSize = new Vector2(180, 20);
-	float hiFricEnergyInc = 0.25f;
-	float hiFricEnergyDec = 0.21f;
+	float hiFricEnergyInc = 0.2f;
+	float hiFricEnergyDec = 0.25f;
 	
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX;
@@ -258,10 +258,11 @@ public class Player : MonoBehaviour {
 						launchTimer = launchTime;
 					}
 					else{
-						if(Mathf.Abs(xsp) > 0.007f)
+						//Sliding at 0 is major D:
+						//if(Mathf.Abs(xsp) > 0.007f)
 							slidePosition(leftRayInfo, rightRayInfo);
-						else if(oldSlideAngle < 30 || oldSlideAngle > 330)
-							controller.collisions.mode = 0;
+						//else if(oldSlideAngle < 30 || oldSlideAngle > 330)
+						//	controller.collisions.mode = 0;
 						//Falling Upside down
 						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.06f){
 							ysp=0; xsp = 0;
@@ -541,7 +542,8 @@ public class Player : MonoBehaviour {
 				if(hiFricEnergy == 0) bumpTimer = barTime;
 			}
 		}
-		
+		//TEMPORAILY COMMENTED OUT
+		/*
 		//can shoot in any mode
 		//V is held down, calculate angle
 		if(Input.GetButton("Fire") && canMove){
@@ -574,6 +576,7 @@ public class Player : MonoBehaviour {
 			angleToShoot = 0;
 			angleIncSign = 1;
 		}
+		*/
 	}
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
