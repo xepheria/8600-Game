@@ -138,29 +138,23 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update(){
-		
+
+		//for paused
+		if(Time.timeScale > .5f){
+			
 		if(Input.GetKeyDown(KeyCode.G)){
 			showDebug = !showDebug;
 		}
 		
 		//game over stuff, reset scene
-		if(gameOver){
-			transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 90, 0), Time.deltaTime);
-			transform.position = Vector3.Lerp(transform.position, Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane)), Time.deltaTime);
-			transform.position = new Vector3(transform.position.x, transform.position.y, -8);
-			gameOverOverlay.color = Color.Lerp(gameOverOverlay.color, Color.black, Time.deltaTime*5);
-			gameObject.GetComponent<cameraFollow>().followVertical = false;
-			if(Input.GetButtonDown("Submit"))
-				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-			return;
-		}
+		gameOverScreen(gameOver);
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
 		if(controller.collisions.mode == 2)
 			fricCtrl = 2;
 
-		if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0){
+			if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0){
 			fricCtrl = -1;
 			if(controller.collisions.mode == 0){
 				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
@@ -175,7 +169,8 @@ public class Player : MonoBehaviour {
 
 		if(controller.collisions.mode != fricCtrl){
 			if(fricCtrl == 0){
-				audioFricModeOff.Play();
+				//audioFricModeOff.Play();
+				//Too much!
 			}
 			else if(fricCtrl == -1){
 				audioFricUp.Play();
@@ -578,6 +573,7 @@ public class Player : MonoBehaviour {
 		}
 		*/
 	}
+	}
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
@@ -702,4 +698,19 @@ public class Player : MonoBehaviour {
 		//*****************
 		print("game over");
 	}
+
+	public void gameOverScreen(bool gameOver){
+		if (gameOver) {
+			transform.rotation = Quaternion.Lerp (transform.rotation, Quaternion.Euler (0, 90, 0), Time.deltaTime);
+			transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)), Time.deltaTime);
+			transform.position = new Vector3 (transform.position.x, transform.position.y, -8);
+			gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
+			gameObject.GetComponent<cameraFollow> ().followVertical = false;
+			if (Input.GetButtonDown ("Submit"))
+				Application.LoadLevel(Application.loadedLevel);
+			return;
+		}
+	}
+
+
 }

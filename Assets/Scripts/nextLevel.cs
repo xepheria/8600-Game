@@ -4,6 +4,7 @@ using System.Collections;
 public class nextLevel : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
+		print("HWY");
 		if(col.CompareTag("Player")){
 			print("end of level");
 			PlayerPrefs.SetInt ("currentLevel", PlayerPrefs.GetInt ("currentLevel") + 1); 

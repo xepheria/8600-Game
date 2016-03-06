@@ -24,6 +24,7 @@ GUI.skin = menuSkin;
 	*/
 
 	if(GUI.Button(Rect(Screen.width/3*2,0,Screen.width/3,Screen.height/3), "Erase All Data")){
+		PlayerPrefs.SetInt ("currentLevel", 0); 
 		PlayerPrefs.DeleteAll();
 		Application.LoadLevel("MainMenu");
 	}
