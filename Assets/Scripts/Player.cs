@@ -52,6 +52,7 @@ public class Player : MonoBehaviour {
 	
 	public bool canMove;
 	private bool gameOver;
+	public bool onBelt;
 	public Image gameOverOverlay;
 	public Text gameOverText;
 	
@@ -59,12 +60,12 @@ public class Player : MonoBehaviour {
 	public Texture2D barEmpty, barFull;
 	float hiFricEnergy;
 	private Vector2 barSize = new Vector2(180, 20);
-	float hiFricEnergyInc = 0.2f;
-	float hiFricEnergyDec = 0.25f;
+	float hiFricEnergyInc = 0.05f;
+	float hiFricEnergyDec = 0.2f;
 	
 	//audio stuff
-	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX;
-	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioFricModeOff;
+	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX;
+	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioFricModeOff, audioPickup;
 	
 	public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol){
 		AudioSource newAudio = gameObject.AddComponent<AudioSource>();
@@ -82,6 +83,7 @@ public class Player : MonoBehaviour {
 		audioFricUp = AddAudio(fricUpSFX, false, false, 0.5f);
 		audioSliding = AddAudio(slidingSFX, true, false, 0.05f);
 		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 0.3f);
+		audioPickup = AddAudio (pickupSFX, false, false, 0.5f);
 	}
 	
 	void Start() {
@@ -187,7 +189,11 @@ public class Player : MonoBehaviour {
 		
 		//refill hifric energy bar
 		if(controller.collisions.mode != -1){
-			hiFricEnergy = Mathf.Clamp(hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+				if (controller.collisions.mode == 1) {
+					hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc+(4*Mathf.Abs(xsp))), 0, 1);
+				} else {
+					hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+				}
 		}
 		
 		if(oldSlideAngle > 50 && oldSlideAngle < 310 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below){
@@ -455,7 +461,8 @@ public class Player : MonoBehaviour {
 			
 			//cap speed
 			if(Mathf.Abs(xsp) > hiFricSpCap){
-				xsp = hiFricSpCap * Mathf.Sign(xsp);
+				if(!onBelt)
+					xsp = hiFricSpCap * Mathf.Sign(xsp);
 			}
 			//reset animations of transform
 			anim.SetBool("sliding", false); //stop low-fric anim if playing
@@ -496,9 +503,10 @@ public class Player : MonoBehaviour {
 					}
 				}
 				//not pressing anything, friction kicks in
-				else if(!jumping)
+				else if(!jumping && !onBelt){
 					xsp = 0;
-				else if(ysp > 0 && ysp < 1){	//air drag
+				}
+				else if(ysp > 0 && ysp < 1 && !onBelt){	//air drag
 					xsp = 0;
 				}
 				
@@ -681,10 +689,41 @@ public class Player : MonoBehaviour {
 	}
 	
 	public void bounce(Vector3 bounceAmt){
-		controller.collisions.mode = 0;
-		xsp = bounceAmt.x;
-		ysp = bounceAmt.y;
-		bumpTimer = bumpTime;
+		// can't use on the ground
+		//controller.collisions.mode = 0;
+		//bumpTimer = bumpTime;
+		if (controller.collisions.mode != -1) {
+			xsp = bounceAmt.x;
+			ysp = bounceAmt.y;
+		}
+	}
+
+	public void forceField(bool isFan, Vector3 pushAmt, Vector3 maxPush, bool isTouching){
+		if (isFan) {
+			if (controller.collisions.mode != -1) {
+			//	if (Mathf.Abs (maxPush.x) > Mathf.Abs (xsp)){
+					xsp += pushAmt.x;
+			//	}
+				if (maxPush.y > ysp){
+					ysp += pushAmt.y;
+				}
+			}
+		} else {
+			if (controller.collisions.below) {
+				if (controller.collisions.mode != 1) {
+					if (Mathf.Abs (maxPush.x) > Mathf.Abs (xsp)) {
+						xsp += pushAmt.x;
+					}
+				}
+			}
+			onBelt = isTouching;
+		}
+	}
+		
+
+	public void gain(float gainAmt){
+		hiFricEnergy += gainAmt;
+		audioPickup.Play();
 	}
 	
 	//called when out of life
