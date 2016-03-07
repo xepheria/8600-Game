@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 	const float grv = -0.3f;
 	const float jmp = .145f;
 	const float slp = 0.15f;
-	const float maxRotationDegrees = 10f;
+	const float maxRotationDegrees = 20f;
 	float oldSlideAngle;
 	float bumpTimer, launchTimer;
 	const float bumpTime = 0.2f; //how long to wait
@@ -46,7 +46,8 @@ public class Player : MonoBehaviour {
 	Controller2D controller;
 	BoxCollider boxCollider;
 	
-	private MeshRenderer mesh;
+	private MeshRenderer[] mesh;
+	public Transform capeMesh;
 	
 	private float faceDir;
 	private int frictionMode; //MAJOR DEAL
@@ -103,7 +104,7 @@ public class Player : MonoBehaviour {
 
 		controller.collisions.mode = 0;
 		
-		mesh = GetComponentInChildren<MeshRenderer>();
+		mesh = GetComponentsInChildren<MeshRenderer>();
 		
 		angleToShoot = 0;
 		angleIncSign = 1;
@@ -236,8 +237,11 @@ public class Player : MonoBehaviour {
 				//face direction
 				float moveDir = Input.GetAxisRaw("Horizontal");
 				if(inputLR != 0)
-					faceDir = (moveDir<0 ? 180 : 0);
-				mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+					faceDir = (moveDir<0 ? 270 : 90);
+				foreach(MeshRenderer m in mesh){
+					m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				}
+				capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
@@ -361,8 +365,11 @@ public class Player : MonoBehaviour {
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(inputLR != 0)
-				faceDir = (moveDir<0 ? 180 : 0);
-			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				faceDir = (moveDir<0 ? 270 : 90);
+			foreach(MeshRenderer m in mesh){
+					m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				}
+			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			
 			//slope of ground beneath us
 			RaycastHit hit;
@@ -386,7 +393,7 @@ public class Player : MonoBehaviour {
 				if(xsp > 0){
 					xsp = Mathf.Lerp(xsp, xsp-dec, Time.deltaTime);
 				}
-				else if(xsp > -top){
+				else if(xsp > -top && controller.collisions.below){
 					xsp = Mathf.Lerp(xsp, xsp-acc, Time.deltaTime);
 				}
 			}
@@ -395,7 +402,7 @@ public class Player : MonoBehaviour {
 				if(xsp < 0){
 					xsp = Mathf.Lerp(xsp, xsp+dec, Time.deltaTime);
 				}
-				else if(xsp < top){
+				else if(xsp < top && controller.collisions.below){
 					xsp = Mathf.Lerp(xsp, xsp+acc, Time.deltaTime);
 				}
 			}
@@ -440,7 +447,6 @@ public class Player : MonoBehaviour {
 			
 			//cap to max speed
 			if(controller.collisions.below && launchTimer <= 0){
-				//xsp = Mathf.Clamp(xsp, -top, top);
 				if(xsp > top){
 					xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
 				}
@@ -449,11 +455,11 @@ public class Player : MonoBehaviour {
 				}
 			}
 			else if(!controller.collisions.below){
-				if(xsp > top){
-					xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
+				if(xsp > top*3){
+					xsp = Mathf.Lerp(xsp, top*3, Time.deltaTime*aboveTopDec);
 				}
-				if(xsp < -top){
-					xsp = Mathf.Lerp(xsp, -top, Time.deltaTime*aboveTopDec);	
+				if(xsp < -top*3){
+					xsp = Mathf.Lerp(xsp, -top*3, Time.deltaTime*aboveTopDec);	
 				}
 			}
 
@@ -484,9 +490,12 @@ public class Player : MonoBehaviour {
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
-				faceDir = (moveDir<0 ? 180 : 0);
-			mesh.transform.eulerAngles = new Vector3(0, faceDir, 0);
-			
+				faceDir = (moveDir<0 ? 270 : 90);
+			foreach(MeshRenderer m in mesh){
+				m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			}
+			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+
 			if(!controller.collisions.below){
 				controller.collisions.mode = 0;
 			}
@@ -679,11 +688,17 @@ public class Player : MonoBehaviour {
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
-				faceDir = (moveDir<0 ? 180 : 0);
-			mesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				faceDir = (moveDir<0 ? 270 : 90);
+			foreach(MeshRenderer m in mesh){
+				m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			}
+			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 		}
 		
-		mesh.transform.rotation = Quaternion.Euler(0, faceDir, faceDir==180?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z);
+		foreach(MeshRenderer m in mesh){
+			m.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
+		}
+		capeMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
 		
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
@@ -747,7 +762,7 @@ public class Player : MonoBehaviour {
 
 	public void gameOverScreen(bool gameOver){
 		if (gameOver) {
-			transform.rotation = Quaternion.Lerp (transform.rotation, Quaternion.Euler (0, 90, 0), Time.deltaTime);
+			transform.rotation = Quaternion.Lerp (transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
 			transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)), Time.deltaTime);
 			transform.position = new Vector3 (transform.position.x, transform.position.y, -8);
 			gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
