@@ -3,15 +3,15 @@ using System.Collections;
 
 public class fallingPlatform : MonoBehaviour {
 
-	public float fallTimer;
+	public float fallTimer = 200;
 	public bool isFalling;
+	public float fallSpeed = 10000f;
 	private float x; //used for shaking effect
 	private float amplitude = 0.02f;
-	private float speed = 30f;
+	private float speed = 300f;
 
 	// Use this for initialization
 	void Start () {
-		fallTimer = 300;
 		isFalling = false;
 		x = transform.position.x;
 	}
@@ -19,7 +19,7 @@ public class fallingPlatform : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (fallTimer <= 0) {
-			transform.position = new Vector3(transform.position.x, transform.position.y-Time.deltaTime*1.5f, transform.position.z);
+			transform.position = new Vector3(transform.position.x, transform.position.y-(Time.deltaTime*fallSpeed), transform.position.z);
 		}
 		else if (isFalling){
 			fallTimer -= Time.deltaTime * 150f;

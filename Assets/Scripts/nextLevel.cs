@@ -11,6 +11,7 @@ public class nextLevel : MonoBehaviour {
 			print(PlayerPrefs.GetInt("currentLevel"));
 			string nextLevel = "level" + PlayerPrefs.GetInt("currentLevel").ToString(); 
 			if (PlayerPrefs.GetInt ("currentLevel") > 2) {
+				PlayerPrefs.SetInt ("currentLevel", 2);
 				Application.LoadLevel ("MainMenu");
 			} else {
 				Application.LoadLevel (nextLevel);

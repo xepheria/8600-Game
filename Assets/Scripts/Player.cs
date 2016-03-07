@@ -49,6 +49,7 @@ public class Player : MonoBehaviour {
 	private MeshRenderer mesh;
 	
 	private float faceDir;
+	private int frictionMode; //MAJOR DEAL
 	
 	public bool canMove;
 	private bool gameOver;
@@ -57,9 +58,9 @@ public class Player : MonoBehaviour {
 	public Text gameOverText;
 	
 	//power meter
-	public Texture2D barEmpty, barFull;
+	public Texture2D barHigh,barLow,barNorm, barFull;
 	float hiFricEnergy;
-	private Vector2 barSize = new Vector2(180, 20);
+	private Vector2 barSize = new Vector2(214, 11);
 	float hiFricEnergyInc = 0.05f;
 	float hiFricEnergyDec = 0.2f;
 	
@@ -129,18 +130,24 @@ public class Player : MonoBehaviour {
 		}
 		
 		//power gauge
-		GUI.BeginGroup(new Rect(Screen.width - 200, Screen.height - 100, 200, 100));
-			GUI.Box(new Rect(0, 0, 200, 100), "POWER");
-			GUI.DrawTexture(new Rect(10, 30, barSize.x, barSize.y), barEmpty, ScaleMode.StretchToFill);
+		GUI.BeginGroup(new Rect(Screen.width - 300, Screen.height - 100, 300, 100));
+			//GUI.Box(new Rect(0, 0, 200, 100), "POWER");
+		if (frictionMode == 1) {
+			GUI.DrawTexture (new Rect (10, 30, 300, 80), barLow, ScaleMode.StretchToFill);
+		} else if (frictionMode == -1) {
+			GUI.DrawTexture (new Rect (10, 30, 300, 80), barHigh, ScaleMode.StretchToFill);
+		} else {
+			GUI.DrawTexture (new Rect (10, 30, 300, 80), barNorm, ScaleMode.StretchToFill);
+		}
 			//filled-in bar
-			GUI.BeginGroup(new Rect(10, 30, barSize.x * hiFricEnergy, barSize.y));
+			GUI.BeginGroup(new Rect(10+43, 30+33, barSize.x * hiFricEnergy, barSize.y));
 				GUI.DrawTexture(new Rect(0, 0, barSize.x, barSize.y), barFull, ScaleMode.StretchToFill);
 			GUI.EndGroup();
 		GUI.EndGroup();
 	}
 	
 	void Update(){
-
+		frictionMode = controller.collisions.mode;
 		//for paused
 		if(Time.timeScale > .5f){
 			
