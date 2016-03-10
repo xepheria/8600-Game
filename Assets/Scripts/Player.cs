@@ -131,13 +131,13 @@ public class Player : MonoBehaviour {
 		//power gauge
 		GUI.BeginGroup(new Rect(Screen.width - 300, Screen.height - 100, 300, 100));
 			//GUI.Box(new Rect(0, 0, 200, 100), "POWER");
-		if (frictionMode == 1) {
-			GUI.DrawTexture (new Rect (10, 30, 300, 80), barLow, ScaleMode.StretchToFill);
-		} else if (frictionMode == -1) {
-			GUI.DrawTexture (new Rect (10, 30, 300, 80), barHigh, ScaleMode.StretchToFill);
-		} else {
-			GUI.DrawTexture (new Rect (10, 30, 300, 80), barNorm, ScaleMode.StretchToFill);
-		}
+			if (frictionMode == 1) {
+				GUI.DrawTexture (new Rect (10, 30, 300, 80), barLow, ScaleMode.StretchToFill);
+			} else if (frictionMode == -1) {
+				GUI.DrawTexture (new Rect (10, 30, 300, 80), barHigh, ScaleMode.StretchToFill);
+			} else {
+				GUI.DrawTexture (new Rect (10, 30, 300, 80), barNorm, ScaleMode.StretchToFill);
+			}
 			//filled-in bar
 			GUI.BeginGroup(new Rect(10+43, 30+33, barSize.x * hiFricEnergy, barSize.y));
 				GUI.DrawTexture(new Rect(0, 0, barSize.x, barSize.y), barFull, ScaleMode.StretchToFill);

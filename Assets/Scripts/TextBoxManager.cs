@@ -25,6 +25,10 @@ public class TextBoxManager : MonoBehaviour {
 	public float typeSpeed;
 	
 	public Image arrowDisplay;
+	
+	public float tilNextLine = 0;
+	private float waitTime = 3;
+	private bool timerRunning = false;
 
 	// Use this for initialization
 	void Start () {
@@ -53,8 +57,12 @@ public class TextBoxManager : MonoBehaviour {
 		if(!isActive){
 			return;
 		}
+		
+		if(timerRunning){
+			tilNextLine -= Time.deltaTime;
+		}
 				
-		if(Input.GetButtonDown("Submit")){
+		if(Input.GetButtonDown("Submit") && stopPlayerMovement){
 			arrowDisplay.gameObject.SetActive(false);
 			if(!isTyping){
 				currentLine++;
@@ -68,6 +76,22 @@ public class TextBoxManager : MonoBehaviour {
 			else if(isTyping && !cancelTyping){
 				cancelTyping = true;
 			}
+		}
+		else if(!stopPlayerMovement && tilNextLine <= 0){
+			arrowDisplay.gameObject.SetActive(false);
+			//reset timer, disable timer
+			tilNextLine = waitTime;
+			timerRunning = false;
+			if(!isTyping){
+				currentLine++;
+				if(currentLine > endAtLine){
+					DisableTextBox();
+				}
+				else{
+					StartCoroutine(TextScroll(textLines[currentLine]));
+				}
+			}
+			
 		}
 	}
 	
@@ -86,6 +110,11 @@ public class TextBoxManager : MonoBehaviour {
 		arrowDisplay.gameObject.SetActive(true);
 		isTyping = false;
 		cancelTyping = false;
+		
+		//if automated text box
+		if(!stopPlayerMovement){
+			timerRunning = true;
+		}
 	}
 	
 	public void EnableTextBox(){
