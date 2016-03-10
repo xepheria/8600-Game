@@ -759,7 +759,7 @@ public class Player : MonoBehaviour {
 			transform.position = new Vector3 (transform.position.x, transform.position.y, -8);
 			gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
 			gameObject.GetComponent<cameraFollow> ().followVertical = false;
-			if (Input.GetButtonDown ("Submit"))
+			if (Input.GetButtonDown ("Jump"))
 				Application.LoadLevel(Application.loadedLevel);
 			return;
 		}

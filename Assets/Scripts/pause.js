@@ -8,14 +8,14 @@ function Start () {
 function Update () {
 
 	if(Input.GetKeyDown("escape")){
-		Application.Quit();
+		Application.LoadLevel("MainMenu");
 	}
 
-	if(Input.GetButtonDown("Pause") && !isPaused){
+	if(Input.GetButtonDown("Start") && !isPaused){
       Time.timeScale = 0.0;
       isPaused = true;
    }
-   else if(Input.GetButtonDown("Pause") && isPaused){
+   else if(Input.GetButtonDown("Start") && isPaused){
       Time.timeScale = 1.0;
       isPaused = false;    
    } 
@@ -26,6 +26,6 @@ function OnGUI () {
 	  var labelR: Rect = Rect((Screen.width/2)-180,(Screen.height/2)-80,Screen.width/2,Screen.height/3);
 	if(isPaused){
 		
-		GUI.Label(labelR,"PAUSED!");
+		GUI.Label(labelR,"PAUSED! press escape to return to main menu");
 	}
 }
