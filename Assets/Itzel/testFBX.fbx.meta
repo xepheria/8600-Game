@@ -105,6 +105,8 @@ ModelImporter:
     7400024: Falling //// Main_HIPS
     7400026: Sliding Med //// Main_HIPS
     7400028: Sliding Fast //// Main_HIPS
+    7400030: Walk
+    7400032: Run
     9500000: //RootNode
     11100000: //RootNode
     11100002: BACK
@@ -535,8 +537,8 @@ ModelImporter:
     - serializedVersion: 16
       name: Sliding Fast
       takeName: Take 001
-      firstFrame: 242
-      lastFrame: 245
+      firstFrame: 241
+      lastFrame: 259
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -582,6 +584,190 @@ ModelImporter:
       - path: Main_HIPS
         weight: 1
       - path: Main_HIPS/BACK
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE/L_hand
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK/HEAD
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE/R_hand
+        weight: 1
+      - path: Main_HIPS/L_hip
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS/L_foot
+        weight: 1
+      - path: Main_HIPS/R_hip
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_/R_foot
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Walk
+      takeName: Take 001
+      firstFrame: 300
+      lastFrame: 323
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/mainbody
+        weight: 1
+      - path: Itzel/mainbody/bootLight1
+        weight: 1
+      - path: Itzel/mainbody/bootLight2
+        weight: 1
+      - path: Itzel/mainbody/bootLight3
+        weight: 1
+      - path: Itzel/mainbody/bootLight4
+        weight: 1
+      - path: Itzel/mainbody/main
+        weight: 1
+      - path: Main_HIPS
+        weight: 1
+      - path: Main_HIPS/BACK
+        weight: 1
+      - path: Main_HIPS/BACK/cape
+        weight: 1
+      - path: Main_HIPS/BACK/cape/cape 1
+        weight: 1
+      - path: Main_HIPS/BACK/cape/mount
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE/L_hand
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK/HEAD
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE/R_hand
+        weight: 1
+      - path: Main_HIPS/L_hip
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS/L_foot
+        weight: 1
+      - path: Main_HIPS/R_hip
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_/R_foot
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Run
+      takeName: Take 001
+      firstFrame: 371
+      lastFrame: 389
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/mainbody
+        weight: 1
+      - path: Itzel/mainbody/bootLight1
+        weight: 1
+      - path: Itzel/mainbody/bootLight2
+        weight: 1
+      - path: Itzel/mainbody/bootLight3
+        weight: 1
+      - path: Itzel/mainbody/bootLight4
+        weight: 1
+      - path: Itzel/mainbody/main
+        weight: 1
+      - path: Main_HIPS
+        weight: 1
+      - path: Main_HIPS/BACK
+        weight: 1
+      - path: Main_HIPS/BACK/cape
+        weight: 1
+      - path: Main_HIPS/BACK/cape/cape 1
+        weight: 1
+      - path: Main_HIPS/BACK/cape/mount
         weight: 1
       - path: Main_HIPS/BACK/CHEST
         weight: 1
