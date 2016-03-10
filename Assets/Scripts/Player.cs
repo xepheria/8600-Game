@@ -46,7 +46,7 @@ public class Player : MonoBehaviour {
 	Controller2D controller;
 	BoxCollider boxCollider;
 	
-	private MeshRenderer[] mesh;
+	public Transform bodyMesh;
 	public Transform capeMesh;
 	
 	private float faceDir;
@@ -103,8 +103,6 @@ public class Player : MonoBehaviour {
 		jumping = false;
 
 		controller.collisions.mode = 0;
-		
-		mesh = GetComponentsInChildren<MeshRenderer>();
 		
 		angleToShoot = 0;
 		angleIncSign = 1;
@@ -238,9 +236,8 @@ public class Player : MonoBehaviour {
 				float moveDir = Input.GetAxisRaw("Horizontal");
 				if(inputLR != 0)
 					faceDir = (moveDir<0 ? 270 : 90);
-				foreach(MeshRenderer m in mesh){
-					m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-				}
+
+				bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 				capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
@@ -366,9 +363,8 @@ public class Player : MonoBehaviour {
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(inputLR != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
-			foreach(MeshRenderer m in mesh){
-					m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-				}
+			
+			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			
 			//slope of ground beneath us
@@ -491,9 +487,8 @@ public class Player : MonoBehaviour {
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
-			foreach(MeshRenderer m in mesh){
-				m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			}
+			
+			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 
 			if(!controller.collisions.below){
@@ -601,7 +596,7 @@ public class Player : MonoBehaviour {
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
 		
-		float rayLength = 1.0f;
+		float rayLength = 1.5f;
 		Vector2 centerBox = boxCollider.bounds.center;
 		Vector2 transformRight = transform.right;
 		
@@ -689,15 +684,12 @@ public class Player : MonoBehaviour {
 			float moveDir = Input.GetAxisRaw("Horizontal");
 			if(moveDir != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
-			foreach(MeshRenderer m in mesh){
-				m.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			}
+			
+			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 		}
 		
-		foreach(MeshRenderer m in mesh){
-			m.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
-		}
+		bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
 		capeMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
 		
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
@@ -706,7 +698,7 @@ public class Player : MonoBehaviour {
 				}
 				
 		if(xsp != 0)
-			transform.position = averagePoint + transform.up*.2f;
+			transform.position = averagePoint + transform.up*.35f;
 		oldSlideAngle = slopeAngle;
 	}
 	
