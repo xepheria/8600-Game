@@ -16,6 +16,7 @@ public class Player : MonoBehaviour {
 	
 	bool descending;
 	
+	Vector3 originalBodyPosition, originalCapePosition;
 	
 	private float xsp, ysp;
 	const float acc = 0.08f;
@@ -110,6 +111,9 @@ public class Player : MonoBehaviour {
 		gameOverOverlay.color = new Color(0,0,0,0);
 		gameOverOverlay.gameObject.SetActive(false);
 		gameOverText.gameObject.SetActive(false);
+		
+		originalBodyPosition = bodyMesh.transform.localPosition;
+		originalCapePosition = capeMesh.transform.localPosition;
 	}
 	
 	void OnGUI(){
@@ -354,6 +358,9 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			bodyMesh.transform.localPosition = originalBodyPosition;
+			capeMesh.transform.localPosition = originalCapePosition;
+			
 			if(audioSliding.isPlaying) audioSliding.Stop();
 			if(audioClimbing.isPlaying) audioClimbing.Stop();
 			
@@ -399,7 +406,7 @@ public class Player : MonoBehaviour {
 				if(xsp > 0){
 					xsp = Mathf.Lerp(xsp, xsp-dec, Time.deltaTime);
 				}
-				else if(xsp > -top && controller.collisions.below){
+				else if(xsp > -top){
 					xsp = Mathf.Lerp(xsp, xsp-acc, Time.deltaTime);
 				}
 			}
@@ -408,7 +415,7 @@ public class Player : MonoBehaviour {
 				if(xsp < 0){
 					xsp = Mathf.Lerp(xsp, xsp+dec, Time.deltaTime);
 				}
-				else if(xsp < top && controller.collisions.below){
+				else if(xsp < top){
 					xsp = Mathf.Lerp(xsp, xsp+acc, Time.deltaTime);
 				}
 			}
@@ -706,8 +713,11 @@ public class Player : MonoBehaviour {
 					slopeAngle = 360 - slopeAngle;
 				}
 				
-		if(xsp != 0)
-			transform.position = averagePoint + transform.up*.35f;
+		if(xsp != 0){
+			transform.position = averagePoint + transform.up*.15f;
+			//bodyMesh.transform.localPosition = originalBodyPosition - transform.up*.32f;
+			//capeMesh.transform.localPosition = originalCapePosition - transform.up*.32f;
+		}
 		oldSlideAngle = slopeAngle;
 	}
 	
