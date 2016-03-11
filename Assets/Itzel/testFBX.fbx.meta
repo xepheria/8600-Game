@@ -107,6 +107,7 @@ ModelImporter:
     7400028: Sliding Fast //// Main_HIPS
     7400030: Walk
     7400032: Run
+    7400034: Tumble
     9500000: //RootNode
     11100000: //RootNode
     11100002: BACK
@@ -145,6 +146,8 @@ ModelImporter:
     13700004: bootLight3
     13700006: bootLight4
     13700008: main
+    13700010: cape 1
+    13700012: mount
   materials:
     importMaterials: 1
     materialName: 0
@@ -810,6 +813,98 @@ ModelImporter:
       maskType: 0
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Tumble
+      takeName: Take 001
+      firstFrame: 440
+      lastFrame: 450
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/mainbody
+        weight: 1
+      - path: Itzel/mainbody/bootLight1
+        weight: 1
+      - path: Itzel/mainbody/bootLight2
+        weight: 1
+      - path: Itzel/mainbody/bootLight3
+        weight: 1
+      - path: Itzel/mainbody/bootLight4
+        weight: 1
+      - path: Itzel/mainbody/main
+        weight: 1
+      - path: Main_HIPS
+        weight: 1
+      - path: Main_HIPS/BACK
+        weight: 1
+      - path: Main_HIPS/BACK/cape
+        weight: 1
+      - path: Main_HIPS/BACK/cape/cape 1
+        weight: 1
+      - path: Main_HIPS/BACK/cape/mount
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/L_shoulder/L_elbow/L_elbow_helperDONT_USE/L_hand
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/NECK/HEAD
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE
+        weight: 1
+      - path: Main_HIPS/BACK/CHEST/R_shoulder/R_elbow/R_elbow_helperDONT_USE/R_hand
+        weight: 1
+      - path: Main_HIPS/L_hip
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS
+        weight: 1
+      - path: Main_HIPS/L_hip/L_hip_helper_USE_THIS/L_knee_NOT_THIS/L_foot
+        weight: 1
+      - path: Main_HIPS/R_hip
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_
+        weight: 1
+      - path: Main_HIPS/R_hip/R_hip_helper_use_this_one/R_knee__don_t_use_/R_foot
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -844,7 +939,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    rootMotionBoneName: 
+    rootMotionBoneName: Main_HIPS
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2

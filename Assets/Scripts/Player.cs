@@ -250,7 +250,7 @@ public class Player : MonoBehaviour {
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
-				anim.SetBool("tumbling", false);
+				anim.SetBool("tumblingAnim", false);
 				jumping = false;
 					if (inputLR == 0) {
 						anim.SetBool ("sliding", true);
@@ -330,7 +330,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool("sliding", false);
 			anim.SetBool ("hiFricAnim", false);
 			jumping = false;
-			anim.SetBool("tumbling", true);
+			anim.SetBool("tumblingAnim", true);
 				
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.black;
@@ -370,7 +370,7 @@ public class Player : MonoBehaviour {
 			transform.rotation = Quaternion.identity;
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
-			anim.SetBool("tumbling", false);
+			anim.SetBool("tumblingAnim", false);
 			
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
@@ -491,9 +491,9 @@ public class Player : MonoBehaviour {
 			//reset animations of transform
 			anim.SetBool("sliding", false); //stop low-fric anim if playing
 			anim.SetBool("jumping", false);
-			anim.SetBool("tumbling", false);
+			anim.SetBool("tumblingAnim", false);
 			jumping = false;
-			//anim.SetBool("hiFricAnim", true); //no-fric anim
+			anim.SetBool("hiFricAnim", true); //no-fric anim
 			
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
