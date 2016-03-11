@@ -5,26 +5,38 @@ var bg : Texture;
 function OnGUI () {
 GUI.skin = menuSkin;
 	if(Input.GetKeyDown("escape")){
-		Application.Quit();
+		Application.LoadLevel("MainMenu");
 	}
 
 	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
-	GUI.Box(Rect(0,0,Screen.width,Screen.height),"MAGNETA");
+	GUI.Label(Rect(0,0,Screen.width,Screen.height),"THANKS FOR PLAYING");
+	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
+	GUI.Box(Rect(0,0,Screen.width,Screen.height),"CLEMSON DPA \n wot2 \n wot3");
 
-	if(Input.GetButtonDown("Jump") || Input.GetButtonDown ("Start")){
+
+}
+
+function Start(){
+	//Chill();
+}
+
+function Update () {
+	Chill();
+}
+
+function Chill() {
+	
+	yield WaitForSeconds (2);
+	//Application.LoadLevel("MainMenu");
+	if(Input.anyKey){
 		PlayerPrefs.SetInt ("currentLevel", 0); 
-		Application.LoadLevel("level0");
+		Application.LoadLevel("MainMenu");
 	}
 
-	if(GUI.Button(Rect(0,Screen.height/3*2,Screen.width/3,Screen.height/3), "NEW GAME")){	
-		PlayerPrefs.SetInt ("currentLevel", 0); 
-		Application.LoadLevel("level0");
-	}
-
-	if(PlayerPrefs.HasKey("currentLevel")){
-		if(GUI.Button(Rect(Screen.width/3*2,Screen.height/3*2,Screen.width/3,Screen.height/3), "Continue")){	
-			var nextLevel:String = "level" + PlayerPrefs.GetInt("currentLevel"); 
-			Application.LoadLevel(nextLevel);
-		}
-	}
+		for (var i = 0;i < 20; i++) {
+             if(Input.GetKeyDown("joystick 1 button "+i)){
+               	PlayerPrefs.SetInt ("currentLevel", 0); 
+				Application.LoadLevel("MainMenu");
+             }
+         }
 }
