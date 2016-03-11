@@ -221,6 +221,10 @@ public class Player : MonoBehaviour {
 		if(launchTimer < 0) launchTimer = 0;
 		if(bumpTimer > 0 || launchTimer > 0)
 				controller.collisions.mode = 0;
+		
+
+			anim.SetFloat("inputH", Mathf.Abs(xsp));
+			anim.SetFloat("inputV", ysp);
 
 		//low friction
 		//accelerate based on slope, no user input
@@ -242,9 +246,13 @@ public class Player : MonoBehaviour {
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
+				anim.SetBool("tumbling", false);
 				jumping = false;
-				anim.SetBool("sliding", true);
-				
+					if (inputLR == 0) {
+						anim.SetBool ("sliding", true);
+					} else {
+						anim.SetBool ("sliding", false);
+					}
 				//************************
 				gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
 				//************************
@@ -315,6 +323,8 @@ public class Player : MonoBehaviour {
 			
 			
 			anim.SetBool("jumping", false);
+			anim.SetBool("sliding", false);
+			anim.SetBool ("hiFricAnim", false);
 			jumping = false;
 			anim.SetBool("tumbling", true);
 				
@@ -438,8 +448,6 @@ public class Player : MonoBehaviour {
 			if(slopeAngle > 30 && slopeAngle < 330){
 				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
 			}
-			anim.SetFloat("inputH", Mathf.Abs(xsp));
-			anim.SetFloat("inputV", ysp);
 			
 			//cap to max speed
 			if(controller.collisions.below && launchTimer <= 0){
@@ -476,8 +484,9 @@ public class Player : MonoBehaviour {
 			//reset animations of transform
 			anim.SetBool("sliding", false); //stop low-fric anim if playing
 			anim.SetBool("jumping", false);
+			anim.SetBool("tumbling", false);
 			jumping = false;
-			anim.SetBool("hiFricAnim", true); //no-fric anim
+			//anim.SetBool("hiFricAnim", true); //no-fric anim
 			
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;

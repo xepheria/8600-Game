@@ -13,12 +13,12 @@ GUI.skin = menuSkin;
 
 	if(Input.GetButtonDown("Jump") || Input.GetButtonDown ("Start")){
 		PlayerPrefs.SetInt ("currentLevel", 0); 
-		Application.LoadLevel("HowToPlay");
+		Application.LoadLevel("level0");
 	}
 
 	if(GUI.Button(Rect(0,Screen.height/3*2,Screen.width/3,Screen.height/3), "NEW GAME")){	
 		PlayerPrefs.SetInt ("currentLevel", 0); 
-		Application.LoadLevel("HowToPlay");
+		Application.LoadLevel("level0");
 	}
 
 	if(PlayerPrefs.HasKey("currentLevel")){
