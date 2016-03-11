@@ -1,12 +1,15 @@
 ﻿#pragma strict
 
 var menuSkin : GUISkin;
- 
+var bg : Texture;
 function OnGUI () {
 GUI.skin = menuSkin;
 	if(Input.GetKeyDown("escape")){
 		Application.Quit();
 	}
+
+	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
+	GUI.Box(Rect(0,0,Screen.width,Screen.height),"MAGNETA");
 
 	if(Input.GetButtonDown("Jump") || Input.GetButtonDown ("Start")){
 		PlayerPrefs.SetInt ("currentLevel", 0); 

@@ -18,9 +18,9 @@ public class Player : MonoBehaviour {
 	
 	
 	private float xsp, ysp;
-	const float acc = 0.04875f;
+	const float acc = 0.08f;
 	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
-	const float hiFricSpCap = .050f; //I moved this variable up here because I suck at finding things
+	const float hiFricSpCap = .06f; //I moved this variable up here because I suck at finding things
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.11f;
