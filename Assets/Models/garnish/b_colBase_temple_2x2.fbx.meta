@@ -1,47 +1,22 @@
 fileFormatVersion: 2
-guid: 1c274278d7644ad4099f3fa3fafcca23
-timeCreated: 1455832997
+guid: ebab3fba4289d4d9c880a4545a6684ac
+timeCreated: 1457741155
 licenseType: Free
 ModelImporter:
-  serializedVersion: 18
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: back
-    100004: pCube1
-    100006: pCube2
-    100008: pCube3
-    100010: pCube4
-    100012: pCube5
-    100014: pCube6
-    100016: pCube7
-    100018: polySurface1
-    100020: transform1
-    100022: transform2
-    100024: transform3
-    100026: transform4
-    100028: transform5
-    100030: transform6
-    100032: transform7
+    100002: darkBlue
+    100004: stone
     400000: //RootNode
-    400002: back
-    400004: pCube1
-    400006: pCube2
-    400008: pCube3
-    400010: pCube4
-    400012: pCube5
-    400014: pCube6
-    400016: pCube7
-    400018: polySurface1
-    400020: transform1
-    400022: transform2
-    400024: transform3
-    400026: transform4
-    400028: transform5
-    400030: transform6
-    400032: transform7
-    2300000: polySurface1
-    3300000: polySurface1
-    4300000: polySurface1
+    400002: darkBlue
+    400004: stone
+    2300000: darkBlue
+    2300002: stone
+    3300000: darkBlue
+    3300002: stone
+    4300000: darkBlue
+    4300002: stone
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -50,6 +25,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleRotations: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -57,9 +33,9 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
@@ -83,20 +59,19 @@ ModelImporter:
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0

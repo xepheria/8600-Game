@@ -10,7 +10,7 @@ public class nextLevel : MonoBehaviour {
 			PlayerPrefs.SetInt ("currentLevel", PlayerPrefs.GetInt ("currentLevel") + 1); 
 			print(PlayerPrefs.GetInt("currentLevel"));
 			string nextLevel = "level" + PlayerPrefs.GetInt("currentLevel").ToString(); 
-			if (PlayerPrefs.GetInt ("currentLevel") > 4) {
+			if (PlayerPrefs.GetInt ("currentLevel") > 1) {
 				PlayerPrefs.SetInt ("currentLevel", 0);
 				Application.LoadLevel ("Credits");
 			} else {

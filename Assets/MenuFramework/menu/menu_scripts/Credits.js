@@ -8,10 +8,8 @@ GUI.skin = menuSkin;
 		Application.LoadLevel("MainMenu");
 	}
 
-	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
-	GUI.Label(Rect(0,0,Screen.width,Screen.height),"THANKS FOR PLAYING");
-	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
-	GUI.Box(Rect(0,0,Screen.width,Screen.height),"CLEMSON DPA \n wot2 \n wot3");
+	GUI.Label(Rect(0,20,Screen.width,Screen.height),"THANK YOU FOR PLAYING");
+	GUI.Box(Rect(0,0,Screen.width,Screen.height),"CLEMSON DPA \n 8600 Spring 2016");
 
 
 }

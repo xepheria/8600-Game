@@ -5,6 +5,8 @@ function Start () {
 	isPaused = false;
 }
 
+var bg : Texture;
+
 function Update () {
 	if(isPaused){
 		if(Input.GetKeyDown("escape")){
@@ -30,14 +32,12 @@ function Update () {
 }
 
 function OnGUI () {
+
+
 	GUI.skin = hudSkin;
-	  var labelR: Rect = Rect((Screen.width/2)-180,(Screen.height/2)-80,Screen.width/2,Screen.height/3);
-	  var labelE: Rect = Rect(20,80,Screen.width/2,Screen.height/3);
-	  var labelF: Rect = Rect(20,140,Screen.width/2,Screen.height/3);
+	  var labelR: Rect = Rect(0,(Screen.height/3),Screen.width,Screen.height);
 	if(isPaused){
-		
-		GUI.Label(labelR,"PAUSED!");
-		GUI.Label(labelE,"R to Retry");
-		GUI.Label(labelF,"ESC to return to menu");
+		GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
+		GUI.Label(labelR,"PAUSED! \n \n R to Retry \n ESC to return to menu");
 	}
 }
