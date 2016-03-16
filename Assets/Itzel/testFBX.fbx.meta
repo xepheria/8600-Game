@@ -37,6 +37,14 @@ ModelImporter:
     100058: R_knee__don_t_use_
     100060: R_shoulder
     100062: //RootNode
+    100064: hiFric
+    100066: hiFricGloBack
+    100068: hiFricGloFoot1
+    100070: hiFricGloFoot2
+    100072: loFric
+    100074: loFricGloFoot1
+    100076: loFricGloFoot2
+    100078: loFricGloRing
     400000: BACK
     400002: bootLight1
     400004: bootLight2
@@ -69,6 +77,14 @@ ModelImporter:
     400058: R_knee__don_t_use_
     400060: R_shoulder
     400062: //RootNode
+    400064: hiFric
+    400066: hiFricGloBack
+    400068: hiFricGloFoot1
+    400070: hiFricGloFoot2
+    400072: loFric
+    400074: loFricGloFoot1
+    400076: loFricGloFoot2
+    400078: loFricGloRing
     2300000: cape 1
     2300002: mount
     2300004: bootLight1
@@ -90,6 +106,12 @@ ModelImporter:
     4300008: bootLight3
     4300010: bootLight4
     4300012: main
+    4300014: loFricGloRing
+    4300016: loFricGloFoot1
+    4300018: loFricGloFoot2
+    4300020: hiFricGloFoot2
+    4300022: hiFricGloFoot1
+    4300024: hiFricGloBack
     7400000: Idle
     7400002: Jump Up
     7400004: Falling
@@ -149,6 +171,12 @@ ModelImporter:
     13700008: main
     13700010: cape 1
     13700012: mount
+    13700014: hiFricGloBack
+    13700016: hiFricGloFoot1
+    13700018: hiFricGloFoot2
+    13700020: loFricGloFoot1
+    13700022: loFricGloFoot2
+    13700024: loFricGloRing
   materials:
     importMaterials: 1
     materialName: 0

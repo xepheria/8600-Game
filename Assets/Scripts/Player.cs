@@ -49,6 +49,7 @@ public class Player : MonoBehaviour {
 	
 	public Transform bodyMesh;
 	public Transform capeMesh;
+	public GameObject loFricStuff, hiFricStuff;
 	
 	private float faceDir;
 	
@@ -257,6 +258,8 @@ public class Player : MonoBehaviour {
 				//************************
 				gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
 				//************************
+				loFricStuff.active = true;
+				hiFricStuff.active = false;
 				
 				anim.SetFloat("inputH", Mathf.Abs(xsp));
 				
@@ -334,6 +337,8 @@ public class Player : MonoBehaviour {
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.black;
 			//************************
+			loFricStuff.active = false;
+			hiFricStuff.active = false;
 			
 			//check raycasts of character
 			RaycastHit leftRayInfo, rightRayInfo;
@@ -388,6 +393,8 @@ public class Player : MonoBehaviour {
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
 			//************************
+			loFricStuff.active = false;
+			hiFricStuff.active = false;
 			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
@@ -514,6 +521,8 @@ public class Player : MonoBehaviour {
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
 			//************************
+			loFricStuff.active = false;
+			hiFricStuff.active = true;
 			
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
