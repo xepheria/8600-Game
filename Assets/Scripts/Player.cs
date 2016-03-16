@@ -159,7 +159,10 @@ public class Player : MonoBehaviour {
 		}
 		
 		//game over stuff, reset scene
-		gameOverScreen(gameOver);
+		if(gameOver){
+			gameOverScreen();
+			return;
+		}
 		
 		float inputLR = Input.GetAxisRaw("Horizontal");
 		int fricCtrl = 0;
@@ -764,24 +767,19 @@ public class Player : MonoBehaviour {
 		gameOver = true;
 		gameOverOverlay.gameObject.SetActive(true);
 		gameOverText.gameObject.SetActive(true);
-		anim.Play("Death");
-		//*****************
-		gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
-		//*****************
+		anim.Play("Defeated");
 		print("game over");
 	}
 
-	public void gameOverScreen(bool gameOver){
-		if (gameOver) {
-			transform.rotation = Quaternion.Lerp (transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
-			transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height / 2, Camera.main.nearClipPlane)), Time.deltaTime);
-			transform.position = new Vector3 (transform.position.x, transform.position.y, -8);
-			gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
-			gameObject.GetComponent<cameraFollow> ().followVertical = false;
-			if (Input.GetButtonDown ("Jump"))
-				Application.LoadLevel(Application.loadedLevel);
-			return;
-		}
+	public void gameOverScreen(){
+		gameObject.GetComponent<cameraFollow> ().followVertical = false;
+		bodyMesh.transform.rotation = Quaternion.Lerp (bodyMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
+		capeMesh.transform.rotation = Quaternion.Lerp (capeMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
+		transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height * .7f, 18)), Time.deltaTime*15f);
+		//transform.position = new Vector3 (transform.position.x, transform.position.y, -12);
+		gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
+		if (Input.GetButtonDown ("Jump"))
+			Application.LoadLevel(Application.loadedLevel);
 	}
 
 
