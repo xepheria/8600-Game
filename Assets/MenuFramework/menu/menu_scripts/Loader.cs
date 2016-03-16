@@ -5,6 +5,8 @@ public class Loader : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		QualitySettings.vSyncCount = 0;
+		Application.targetFrameRate = 60;
 		Application.LoadLevel("MainMenu");
 	}
 	

@@ -27,7 +27,7 @@ public class Player : MonoBehaviour {
 	const float top = 0.11f;
 	const float aboveTopDec = 6f; //This is multiplied by delta time in a lerp for if normal mode is above max speed
 	const float air = 0.09375f;
-	const float grv = -0.3f;
+	const float grv = -0.28f;
 	const float jmp = .145f;
 	const float slp = 0.15f;
 	const float maxRotationDegrees = 20f;
@@ -51,7 +51,6 @@ public class Player : MonoBehaviour {
 	public Transform capeMesh;
 	
 	private float faceDir;
-	private int frictionMode; //MAJOR DEAL
 	
 	public bool canMove;
 	private bool gameOver;
@@ -135,9 +134,9 @@ public class Player : MonoBehaviour {
 		//power gauge
 		GUI.BeginGroup(new Rect(Screen.width - 300, Screen.height - 100, 300, 100));
 			//GUI.Box(new Rect(0, 0, 200, 100), "POWER");
-			if (frictionMode == 1) {
+			if (controller.collisions.mode == 1) {
 				GUI.DrawTexture (new Rect (10, 30, 300, 80), barLow, ScaleMode.StretchToFill);
-			} else if (frictionMode == -1) {
+			} else if (controller.collisions.mode == -1) {
 				GUI.DrawTexture (new Rect (10, 30, 300, 80), barHigh, ScaleMode.StretchToFill);
 			} else {
 				GUI.DrawTexture (new Rect (10, 30, 300, 80), barNorm, ScaleMode.StretchToFill);
@@ -150,7 +149,6 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update(){
-		frictionMode = controller.collisions.mode;
 		//for paused
 		if(Time.timeScale > .5f){
 			
@@ -228,10 +226,6 @@ public class Player : MonoBehaviour {
 		if(launchTimer < 0) launchTimer = 0;
 		if(bumpTimer > 0 || launchTimer > 0)
 				controller.collisions.mode = 0;
-		
-
-			anim.SetFloat("inputH", Mathf.Abs(xsp));
-			anim.SetFloat("inputV", ysp);
 
 		//low friction
 		//accelerate based on slope, no user input
@@ -255,14 +249,16 @@ public class Player : MonoBehaviour {
 				anim.SetBool("jumping", false);
 				anim.SetBool("tumblingAnim", false);
 				jumping = false;
-					if (inputLR == 0) {
-						anim.SetBool ("sliding", true);
-					} else {
+					if ((inputLR > 0 && xsp < 0) || (inputLR < 0 && xsp > 0)) {
 						anim.SetBool ("sliding", false);
+					} else {
+						anim.SetBool ("sliding", true);
 					}
 				//************************
 				gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
 				//************************
+				
+				anim.SetFloat("inputH", Mathf.Abs(xsp));
 				
 				//check raycasts of character
 				RaycastHit leftRayInfo, rightRayInfo;
@@ -343,8 +339,21 @@ public class Player : MonoBehaviour {
 			RaycastHit leftRayInfo, rightRayInfo;
 			if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
 				//both rays hit something. now move and rotate character
-				slidePosition(leftRayInfo, rightRayInfo);
-				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+				if(Input.GetButtonDown("Jump")){
+						controller.collisions.mode = 0;
+						ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
+						xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
+						
+						anim.SetBool("jumping", true);
+						anim.SetBool("tumblingAnim", false);
+						jumping = true;
+						controller.Move(new Vector3(xsp, ysp, 0));
+						launchTimer = launchTime;
+				}
+				else{
+					slidePosition(leftRayInfo, rightRayInfo);
+					xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+				}
 			}
 			else{
 					//off the edge. launch off
@@ -368,8 +377,9 @@ public class Player : MonoBehaviour {
 			if(audioClimbing.isPlaying) audioClimbing.Stop();
 			
 			//reset rotation of transform
-			if (launchTimer == 0 && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 180)
+			if (launchTimer == 0 && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270){
 				xsp = -xsp;
+			}
 			transform.rotation = Quaternion.identity;
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
@@ -458,6 +468,9 @@ public class Player : MonoBehaviour {
 			if(slopeAngle > 30 && slopeAngle < 330){
 				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
 			}
+			
+			anim.SetFloat("inputH", Mathf.Abs(xsp));
+			anim.SetFloat("inputV", ysp);
 			
 			//cap to max speed
 			if(controller.collisions.below && launchTimer <= 0){
