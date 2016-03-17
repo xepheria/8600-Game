@@ -29,6 +29,9 @@ public class TextBoxManager : MonoBehaviour {
 	public float tilNextLine = 0;
 	private float waitTime = 3;
 	private bool timerRunning = false;
+	
+	//used for cutscenes
+	public float timeDone = 999999;
 
 	// Use this for initialization
 	void Start () {
@@ -67,6 +70,7 @@ public class TextBoxManager : MonoBehaviour {
 			if(!isTyping){
 				currentLine++;
 				if(currentLine > endAtLine){
+					timeDone = Time.time;
 					DisableTextBox();
 				}
 				else{
@@ -121,9 +125,11 @@ public class TextBoxManager : MonoBehaviour {
 		textBox.SetActive(true);
 		isActive = true;
 		
-		if(stopPlayerMovement){
+		if(stopPlayerMovement && player){
 			player.canMove = false;
 		}
+		
+		timeDone = 999999;
 		
 		StartCoroutine(TextScroll(textLines[currentLine]));
 	}
@@ -132,7 +138,8 @@ public class TextBoxManager : MonoBehaviour {
 		textBox.SetActive(false);
 		isActive = false;
 		
-		player.canMove = true;
+		if(player)
+			player.canMove = true;
 	}
 	
 	public void ReloadScript(TextAsset theText){
