@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 2a151ea794713614bad7c4e6ccdad10e
-timeCreated: 1455832997
+guid: b13ee3ae98f5440428349ec67b522c7f
+timeCreated: 1458591105
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,8 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: cloud
+    4300000: aqColLg
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -50,8 +51,8 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 0
-    normalImportMode: 1
+    normalSmoothAngle: 60
+    normalImportMode: 0
     tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
@@ -68,7 +69,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

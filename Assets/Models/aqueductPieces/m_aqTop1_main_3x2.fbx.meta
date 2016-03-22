@@ -1,15 +1,28 @@
 fileFormatVersion: 2
-guid: 2a151ea794713614bad7c4e6ccdad10e
-timeCreated: 1455832997
+guid: 78c984d582031498ca12289de91e1a52
+timeCreated: 1458591105
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: cloud
+    100000: darkBlue
+    100002: lightBlue
+    100004: //RootNode
+    100006: stone
+    400000: darkBlue
+    400002: lightBlue
+    400004: //RootNode
+    400006: stone
+    2300000: darkBlue
+    2300002: lightBlue
+    2300004: stone
+    3300000: darkBlue
+    3300002: lightBlue
+    3300004: stone
+    4300000: stone
+    4300002: darkBlue
+    4300004: lightBlue
+    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -50,8 +63,8 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 0
-    normalImportMode: 1
+    normalSmoothAngle: 60
+    normalImportMode: 0
     tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
@@ -68,7 +81,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
