@@ -21,7 +21,7 @@ public class Player : MonoBehaviour {
 	private float xsp, ysp;
 	const float acc = 0.08f;
 	const float hiAcc = .8f; //Acceleration at high friction (instant or close to it)
-	const float hiFricSpCap = .06f; //I moved this variable up here because I suck at finding things
+	const float hiFricSpCap = .05f; //I moved this variable up here because I suck at finding things
 	const float dec = 0.5f;
 	const float frc = 0.046875f;
 	const float top = 0.11f;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour {
 	float hiFricEnergy;
 	private Vector2 barSize = new Vector2(214, 11);
 	float hiFricEnergyInc = 0.05f;
-	float hiFricEnergyDec = 0.2f;
+	float hiFricEnergyDec = 0.15f;
 	
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX;
@@ -358,6 +358,13 @@ public class Player : MonoBehaviour {
 				else{
 					slidePosition(leftRayInfo, rightRayInfo);
 					xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+					
+					if(xsp > top){
+						xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
+					}
+					if(xsp < -top){
+						xsp = Mathf.Lerp(xsp, -top, Time.deltaTime*aboveTopDec);	
+					}
 				}
 			}
 			else{
