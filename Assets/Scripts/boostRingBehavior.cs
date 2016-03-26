@@ -34,8 +34,11 @@ public class boostRingBehavior : MonoBehaviour {
 	void OnTriggerEnter(Collider col){
 		print("collision entered");
 		if(col.CompareTag("Player")){
+			var em = ps.emission;
+			em.enabled = true;
 			ps.Emit (20);
-			print("boost!");
+
+
 			player.bounce(transform.up * boostAmt);
 			anim.Play("Boost");
 			//ps.emission.enabled = true;
