@@ -48,8 +48,10 @@ public class Player : MonoBehaviour {
 	BoxCollider boxCollider;
 	
 	public Transform bodyMesh;
-	public Transform capeMesh;
+	//public Transform capeMesh;
 	public GameObject loFricStuff, hiFricStuff;
+	public GameObject[] bootButtons = new GameObject[4];
+	public Material blueGlow, redGlow, originalButtonShader;
 	
 	private float faceDir;
 	
@@ -113,7 +115,7 @@ public class Player : MonoBehaviour {
 		gameOverText.gameObject.SetActive(false);
 		
 		originalBodyPosition = bodyMesh.transform.localPosition;
-		originalCapePosition = capeMesh.transform.localPosition;
+		//originalCapePosition = capeMesh.transform.localPosition;
 	}
 	
 	void OnGUI(){
@@ -237,6 +239,9 @@ public class Player : MonoBehaviour {
 				controller.collisions.mode = 0;
 			}
 			else{
+				foreach(GameObject but in bootButtons){
+					but.GetComponent<Renderer>().material = blueGlow;
+				}
 				
 				//face direction
 				float moveDir = Input.GetAxisRaw("Horizontal");
@@ -244,7 +249,7 @@ public class Player : MonoBehaviour {
 					faceDir = (moveDir<0 ? 270 : 90);
 
 				bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-				capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
@@ -310,8 +315,8 @@ public class Player : MonoBehaviour {
 		
 		//tumble mode
 		if(controller.collisions.mode == 2){
-			if(!controller.collisions.below){
-				//controller.collisions.mode = 0;
+			foreach(GameObject but in bootButtons){
+				but.GetComponent<Renderer>().material = originalButtonShader;
 			}
 						
 			//check current slope of ground beneath us
@@ -383,7 +388,11 @@ public class Player : MonoBehaviour {
 		//normal mode
 		if(controller.collisions.mode == 0){
 			bodyMesh.transform.localPosition = originalBodyPosition;
-			capeMesh.transform.localPosition = originalCapePosition;
+			//capeMesh.transform.localPosition = originalCapePosition;
+			
+			foreach(GameObject but in bootButtons){
+					but.GetComponent<Renderer>().material = originalButtonShader;
+			}
 			
 			if(audioSliding.isPlaying) audioSliding.Stop();
 			if(audioClimbing.isPlaying) audioClimbing.Stop();
@@ -409,7 +418,7 @@ public class Player : MonoBehaviour {
 				faceDir = (moveDir<0 ? 270 : 90);
 			
 			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 			
 			//slope of ground beneath us
 			RaycastHit hit;
@@ -513,6 +522,10 @@ public class Player : MonoBehaviour {
 		//low max speed
 		else if(controller.collisions.mode == -1 && bumpTimer <= 0){
 			
+			foreach(GameObject but in bootButtons){
+					but.GetComponent<Renderer>().material = redGlow;
+			}
+			
 			//cap speed
 			if(Mathf.Abs(xsp) > hiFricSpCap){
 				if(!onBelt)
@@ -537,7 +550,7 @@ public class Player : MonoBehaviour {
 				faceDir = (moveDir<0 ? 270 : 90);
 			
 			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 
 			if(!controller.collisions.below){
 				controller.collisions.mode = 0;
@@ -734,11 +747,11 @@ public class Player : MonoBehaviour {
 				faceDir = (moveDir<0 ? 270 : 90);
 			
 			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
 		}
 		
 		bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
-		capeMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
+		//capeMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
 		
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
@@ -803,7 +816,7 @@ public class Player : MonoBehaviour {
 	public void gameOverScreen(){
 		gameObject.GetComponent<cameraFollow> ().followVertical = false;
 		bodyMesh.transform.rotation = Quaternion.Lerp (bodyMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
-		capeMesh.transform.rotation = Quaternion.Lerp (capeMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
+		//capeMesh.transform.rotation = Quaternion.Lerp (capeMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
 		transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height * .7f, 18)), Time.deltaTime*15f);
 		//transform.position = new Vector3 (transform.position.x, transform.position.y, -12);
 		gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);

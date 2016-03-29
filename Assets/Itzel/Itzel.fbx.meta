@@ -1,0 +1,1190 @@
+fileFormatVersion: 2
+guid: b790015e005e42a4da7fbfdc7c10c1af
+timeCreated: 1459219665
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: belt
+    100002: body
+    100004: bootButtons
+    100006: cape
+    100008: chest
+    100010: eyebrows
+    100012: eyesGlo
+    100014: face
+    100016: hair
+    100018: hat
+    100020: head
+    100022: hiFricGlo
+    100024: //RootNode
+    100026: Itzel
+    100028: l_ankle
+    100030: l_elbow
+    100032: l_elbowHelper
+    100034: l_hand
+    100036: l_hip
+    100038: l_knee
+    100040: l_kneeHelper
+    100042: l_shoulder
+    100044: LBut1
+    100046: LBut2
+    100048: leftGauntlet
+    100050: leftHi
+    100052: leftLo
+    100054: loFricGlo
+    100056: mainHIPS
+    100058: neck
+    100060: O1
+    100062: O2
+    100064: r_ankle
+    100066: r_elbow
+    100068: r_elbowHelper
+    100070: r_hand
+    100072: r_hip
+    100074: r_knee
+    100076: r_kneeHelper
+    100078: r_shoulder
+    100080: RBut1
+    100082: RBut2
+    100084: rightHi
+    100086: rightLo
+    100088: spine
+    100090: V1
+    100092: V2
+    400000: belt
+    400002: body
+    400004: bootButtons
+    400006: cape
+    400008: chest
+    400010: eyebrows
+    400012: eyesGlo
+    400014: face
+    400016: hair
+    400018: hat
+    400020: head
+    400022: hiFricGlo
+    400024: //RootNode
+    400026: Itzel
+    400028: l_ankle
+    400030: l_elbow
+    400032: l_elbowHelper
+    400034: l_hand
+    400036: l_hip
+    400038: l_knee
+    400040: l_kneeHelper
+    400042: l_shoulder
+    400044: LBut1
+    400046: LBut2
+    400048: leftGauntlet
+    400050: leftHi
+    400052: leftLo
+    400054: loFricGlo
+    400056: mainHIPS
+    400058: neck
+    400060: O1
+    400062: O2
+    400064: r_ankle
+    400066: r_elbow
+    400068: r_elbowHelper
+    400070: r_hand
+    400072: r_hip
+    400074: r_knee
+    400076: r_kneeHelper
+    400078: r_shoulder
+    400080: RBut1
+    400082: RBut2
+    400084: rightHi
+    400086: rightLo
+    400088: spine
+    400090: V1
+    400092: V2
+    4300000: hair
+    4300002: hat
+    4300004: belt
+    4300006: leftGauntlet
+    4300008: cape
+    4300010: eyebrows
+    4300012: eyesGlo
+    4300014: body
+    4300016: LBut1
+    4300018: LBut2
+    4300020: RBut1
+    4300022: RBut2
+    4300024: leftHi
+    4300026: rightHi
+    4300028: V1
+    4300030: V2
+    4300032: leftLo
+    4300034: rightLo
+    4300036: O1
+    4300038: O2
+    7400000: ItzelIdle
+    7400002: ItzelWalk
+    7400004: ItzelRun
+    7400006: ItzelJump Up
+    7400008: ItzelFalling
+    7400010: ItzelSliding
+    7400012: ItzelTumble
+    7400014: ItzelDefeated
+    9500000: //RootNode
+    13700000: belt
+    13700002: body
+    13700004: cape
+    13700006: eyebrows
+    13700008: eyesGlo
+    13700010: hair
+    13700012: hat
+    13700014: LBut1
+    13700016: LBut2
+    13700018: leftGauntlet
+    13700020: leftHi
+    13700022: leftLo
+    13700024: O1
+    13700026: O2
+    13700028: RBut1
+    13700030: RBut2
+    13700032: rightHi
+    13700034: rightLo
+    13700036: V1
+    13700038: V2
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: <Root Transform>
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: ItzelIdle
+      takeName: Take 001
+      firstFrame: 10
+      lastFrame: 90
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000000000000000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelWalk
+      takeName: Take 001
+      firstFrame: 300
+      lastFrame: 323
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelRun
+      takeName: Take 001
+      firstFrame: 371
+      lastFrame: 391
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelJump Up
+      takeName: Take 001
+      firstFrame: 140
+      lastFrame: 160
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelFalling
+      takeName: Take 001
+      firstFrame: 161
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelSliding
+      takeName: Take 001
+      firstFrame: 241
+      lastFrame: 259
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelTumble
+      takeName: Take 001
+      firstFrame: 441
+      lastFrame: 455
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: ItzelDefeated
+      takeName: Take 001
+      firstFrame: 500
+      lastFrame: 600
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hiFricGlo
+        weight: 1
+      - path: hiFricGlo/leftHi
+        weight: 1
+      - path: hiFricGlo/rightHi
+        weight: 1
+      - path: hiFricGlo/V1
+        weight: 1
+      - path: hiFricGlo/V2
+        weight: 1
+      - path: Itzel
+        weight: 1
+      - path: Itzel/belt
+        weight: 1
+      - path: Itzel/body
+        weight: 1
+      - path: Itzel/bootButtons
+        weight: 1
+      - path: Itzel/bootButtons/LBut1
+        weight: 1
+      - path: Itzel/bootButtons/LBut2
+        weight: 1
+      - path: Itzel/bootButtons/RBut1
+        weight: 1
+      - path: Itzel/bootButtons/RBut2
+        weight: 1
+      - path: Itzel/cape
+        weight: 1
+      - path: Itzel/face
+        weight: 1
+      - path: Itzel/face/eyebrows
+        weight: 1
+      - path: Itzel/face/eyesGlo
+        weight: 1
+      - path: Itzel/hair
+        weight: 1
+      - path: Itzel/hat
+        weight: 1
+      - path: Itzel/leftGauntlet
+        weight: 1
+      - path: loFricGlo
+        weight: 1
+      - path: loFricGlo/leftLo
+        weight: 1
+      - path: loFricGlo/O1
+        weight: 1
+      - path: loFricGlo/O2
+        weight: 1
+      - path: loFricGlo/rightLo
+        weight: 1
+      - path: mainHIPS
+        weight: 1
+      - path: mainHIPS/l_hip
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper
+        weight: 1
+      - path: mainHIPS/l_hip/l_knee/l_kneeHelper/l_ankle
+        weight: 1
+      - path: mainHIPS/r_hip
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper
+        weight: 1
+      - path: mainHIPS/r_hip/r_knee/r_kneeHelper/r_ankle
+        weight: 1
+      - path: mainHIPS/spine
+        weight: 1
+      - path: mainHIPS/spine/chest
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/l_shoulder/l_elbow/l_elbowHelper/l_hand
+        weight: 1
+      - path: mainHIPS/spine/chest/neck
+        weight: 1
+      - path: mainHIPS/spine/chest/neck/head
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper
+        weight: 1
+      - path: mainHIPS/spine/chest/r_shoulder/r_elbow/r_elbowHelper/r_hand
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: mainHIPS
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
