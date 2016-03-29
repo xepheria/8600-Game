@@ -468,6 +468,10 @@ public class Player : MonoBehaviour {
 			//nothing below us, add gravity
 			if(!controller.collisions.below){
 				ysp = Mathf.Lerp(ysp, ysp+grv, Time.deltaTime);
+				if(ysp <= -0.1){
+					anim.SetBool("jumping", true);
+					jumping = true;
+				}
 			}
 			//if we're in collision with the ground and press "jump", we jump
 			if(Input.GetButtonDown("Jump") && controller.collisions.below && canMove){
@@ -536,7 +540,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool("jumping", false);
 			anim.SetBool("tumblingAnim", false);
 			jumping = false;
-			anim.SetBool("hiFricAnim", true); //no-fric anim
+			anim.SetBool("hiFricAnim", true);
 			
 			//************************
 			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
@@ -581,6 +585,8 @@ public class Player : MonoBehaviour {
 				else if(ysp > 0 && ysp < 1 && !onBelt){	//air drag
 					xsp = 0;
 				}
+				
+				anim.SetFloat("inputH", Mathf.Abs(xsp));
 				
 				if(Input.GetButtonDown("Jump") && controller.collisions.below){
 					controller.collisions.mode = 0;
