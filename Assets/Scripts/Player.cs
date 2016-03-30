@@ -52,6 +52,11 @@ public class Player : MonoBehaviour {
 	public GameObject loFricStuff, hiFricStuff;
 	public GameObject[] bootButtons = new GameObject[4];
 	public Material blueGlow, redGlow, originalButtonShader;
+
+	private TrailRenderer trail;
+	public float trailLifetime;
+	private float trailOffTime;	
+	private float startTime;
 	
 	private float faceDir;
 	
@@ -106,6 +111,7 @@ public class Player : MonoBehaviour {
 		jumping = false;
 
 		controller.collisions.mode = 0;
+
 		
 		angleToShoot = 0;
 		angleIncSign = 1;
@@ -116,6 +122,13 @@ public class Player : MonoBehaviour {
 		
 		originalBodyPosition = bodyMesh.transform.localPosition;
 		//originalCapePosition = capeMesh.transform.localPosition;
+
+		trail = GameObject.Find("LowFricTrail").GetComponent<TrailRenderer>();
+		trail.enabled = true;
+		trail.time = trailLifetime;
+		trailOffTime = 0;
+		startTime = Time.time;
+		
 	}
 	
 	void OnGUI(){
@@ -197,6 +210,8 @@ public class Player : MonoBehaviour {
 				audioFricDown.Play();
 				if(audioClimbing.isPlaying) audioClimbing.Stop();
 				audioSliding.Play();
+				trail.time = trailLifetime;
+				trailOffTime = trailLifetime;
 			}
 		}
 		controller.collisions.mode = fricCtrl;
@@ -309,6 +324,8 @@ public class Player : MonoBehaviour {
 		
 		//tumble mode
 		if(controller.collisions.mode == 2){
+			trailOffTime -= Time.deltaTime*3f;
+			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
 			foreach(GameObject but in bootButtons){
 				but.GetComponent<Renderer>().material = originalButtonShader;
 			}
@@ -378,8 +395,11 @@ public class Player : MonoBehaviour {
 		
 		//normal mode
 		if(controller.collisions.mode == 0){
+			//trail off the low friction trail		
+			trailOffTime -= Time.deltaTime*3f;
+			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
 			bodyMesh.transform.localPosition = originalBodyPosition;
-			
+
 			foreach(GameObject but in bootButtons){
 					but.GetComponent<Renderer>().material = originalButtonShader;
 			}
@@ -511,7 +531,8 @@ public class Player : MonoBehaviour {
 		//grip to surface
 		//low max speed
 		else if(controller.collisions.mode == -1 && bumpTimer <= 0){
-			
+			trailOffTime -= Time.deltaTime*3f;
+			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
 			foreach(GameObject but in bootButtons){
 					but.GetComponent<Renderer>().material = redGlow;
 			}
