@@ -248,8 +248,7 @@ public class Player : MonoBehaviour {
 				if(inputLR != 0)
 					faceDir = (moveDir<0 ? 270 : 90);
 
-				bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-				//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+				bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
 				
 				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 				anim.SetBool("jumping", false);
@@ -260,9 +259,7 @@ public class Player : MonoBehaviour {
 					} else {
 						anim.SetBool ("sliding", true);
 					}
-				//************************
-				gameObject.GetComponentInChildren<Renderer>().material.color = Color.cyan;
-				//************************
+
 				loFricStuff.active = true;
 				hiFricStuff.active = false;
 				
@@ -286,11 +283,8 @@ public class Player : MonoBehaviour {
 						launchTimer = launchTime;
 					}
 					else{
-						//Sliding at 0 is major D:
-						//if(Mathf.Abs(xsp) > 0.007f)
-							slidePosition(leftRayInfo, rightRayInfo);
-						//else if(oldSlideAngle < 30 || oldSlideAngle > 330)
-						//	controller.collisions.mode = 0;
+						slidePosition(leftRayInfo, rightRayInfo);
+
 						//Falling Upside down
 						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.06f){
 							ysp=0; xsp = 0;
@@ -338,10 +332,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool ("hiFricAnim", false);
 			jumping = false;
 			anim.SetBool("tumblingAnim", true);
-				
-			//************************
-			gameObject.GetComponentInChildren<Renderer>().material.color = Color.black;
-			//************************
+
 			loFricStuff.active = false;
 			hiFricStuff.active = false;
 			
@@ -388,7 +379,6 @@ public class Player : MonoBehaviour {
 		//normal mode
 		if(controller.collisions.mode == 0){
 			bodyMesh.transform.localPosition = originalBodyPosition;
-			//capeMesh.transform.localPosition = originalCapePosition;
 			
 			foreach(GameObject but in bootButtons){
 					but.GetComponent<Renderer>().material = originalButtonShader;
@@ -405,10 +395,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool("sliding", false); //stop no-fric anim if playing
 			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
 			anim.SetBool("tumblingAnim", false);
-			
-			//************************
-			gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
-			//************************
+
 			loFricStuff.active = false;
 			hiFricStuff.active = false;
 			
@@ -417,8 +404,7 @@ public class Player : MonoBehaviour {
 			if(inputLR != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
 			
 			//slope of ground beneath us
 			RaycastHit hit;
@@ -541,10 +527,7 @@ public class Player : MonoBehaviour {
 			anim.SetBool("tumblingAnim", false);
 			jumping = false;
 			anim.SetBool("hiFricAnim", true);
-			
-			//************************
-			gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
-			//************************
+
 			loFricStuff.active = false;
 			hiFricStuff.active = true;
 			
@@ -553,8 +536,7 @@ public class Player : MonoBehaviour {
 			if(moveDir != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
+			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
 
 			if(!controller.collisions.below){
 				controller.collisions.mode = 0;
@@ -673,8 +655,6 @@ public class Player : MonoBehaviour {
 		Vector2 slideOffset = xsp * transform.right;
 		Vector2 updatedBottomLeft = centerBox - ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
 		Vector2 updatedBottomRight = centerBox + ((boxCollider.size.x * .5f) * transformRight) + slideOffset;
-		//Vector2 updatedBottomLeft = new Vector2(controller.raycastOrigins.bottomLeft.x + slideOffset.x, centerY + slideOffset.y);
-		//Vector2 updatedBottomRight = new Vector2(controller.raycastOrigins.bottomRight.x + slideOffset.x, centerY + slideOffset.y);
 		
 		//shoot one from bottomleft, one from bottomright
 		Ray leftRay = new Ray(updatedBottomLeft, -transform.up);
@@ -746,18 +726,16 @@ public class Player : MonoBehaviour {
 		Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
 		transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
 	
-		if(controller.collisions.mode == -1){
+//		if(controller.collisions.mode == -1){
 			//face direction
 			float moveDir = Input.GetAxisRaw("Horizontal");
-			if(moveDir != 0)
+			if(moveDir != 0 && controller.collisions.mode != 2)
 				faceDir = (moveDir<0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-			//capeMesh.transform.rotation = Quaternion.Euler(0, faceDir, 0);
-		}
+			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0), 300*Time.deltaTime);
+//		}
 		
-		bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
-		//capeMesh.transform.rotation = Quaternion.Euler(faceDir==90?360-finalRotation.eulerAngles.z:finalRotation.eulerAngles.z, faceDir, 0);
+		//bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0);
 		
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
