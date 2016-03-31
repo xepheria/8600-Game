@@ -9,19 +9,43 @@ ModelImporter:
     100002: metalShell
     100004: //RootNode
     100006: window
+    100008: pPlane1
+    100010: outershell
+    100012: ship
+    100014: transform1
+    100016: window1
+    100018: window2
     400000: blackMetalCore
     400002: metalShell
     400004: //RootNode
     400006: window
+    400008: pPlane1
+    400010: outershell
+    400012: ship
+    400014: transform1
+    400016: window1
+    400018: window2
     2300000: blackMetalCore
     2300002: metalShell
     2300004: window
+    2300006: pPlane1
+    2300008: outershell
+    2300010: window1
+    2300012: window2
     3300000: blackMetalCore
     3300002: metalShell
     3300004: window
+    3300006: pPlane1
+    3300008: outershell
+    3300010: window1
+    3300012: window2
     4300000: window
     4300002: blackMetalCore
     4300004: metalShell
+    4300006: pPlane1
+    4300008: outershell
+    4300010: window1
+    4300012: window2
     9500000: //RootNode
   materials:
     importMaterials: 1

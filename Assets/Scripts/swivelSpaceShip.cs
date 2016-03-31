@@ -3,7 +3,7 @@ using System.Collections;
 
 public class swivelSpaceShip : MonoBehaviour {
 
-	private float angle = 5f;
+	private float angle = 2.5f;
 	public float speed = .5f;
 	Vector3 pLeft, pRight;
 
