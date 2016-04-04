@@ -424,7 +424,7 @@ public class Player : MonoBehaviour {
 			if(inputLR != 0)
 				faceDir = (moveDir<0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
+			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 15);
 			
 			//slope of ground beneath us
 			RaycastHit hit;
@@ -823,7 +823,7 @@ public class Player : MonoBehaviour {
 		bodyMesh.transform.rotation = Quaternion.Lerp (bodyMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
 		//capeMesh.transform.rotation = Quaternion.Lerp (capeMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
 		transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height * .7f, 18)), Time.deltaTime*15f);
-		//transform.position = new Vector3 (transform.position.x, transform.position.y, -12);
+		transform.position = new Vector3 (transform.position.x, transform.position.y, -12);
 		gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
 		if (Input.GetButtonDown ("Jump"))
 			Application.LoadLevel(Application.loadedLevel);
