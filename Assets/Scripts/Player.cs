@@ -75,7 +75,7 @@ public class Player : MonoBehaviour {
 	
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX;
-	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioFricModeOff, audioPickup;
+	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioPickup;
 	
 	public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol){
 		AudioSource newAudio = gameObject.AddComponent<AudioSource>();
@@ -92,7 +92,6 @@ public class Player : MonoBehaviour {
 		audioFricDown = AddAudio(fricDownSFX, false, false, 0.5f);
 		audioFricUp = AddAudio(fricUpSFX, false, false, 0.5f);
 		audioSliding = AddAudio(slidingSFX, true, false, 0.05f);
-		audioFricModeOff = AddAudio(fricModeOffSFX, false, false, 0.3f);
 		audioPickup = AddAudio (pickupSFX, false, false, 0.5f);
 	}
 	
@@ -121,7 +120,6 @@ public class Player : MonoBehaviour {
 		gameOverText.gameObject.SetActive(false);
 		
 		originalBodyPosition = bodyMesh.transform.localPosition;
-		//originalCapePosition = capeMesh.transform.localPosition;
 
 		trail = GameObject.Find("LowFricTrail").GetComponent<TrailRenderer>();
 		trail.enabled = true;
