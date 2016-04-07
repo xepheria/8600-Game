@@ -744,18 +744,14 @@ public class Player : MonoBehaviour {
 		Quaternion targetRotation = Quaternion.FromToRotation(Vector3.up, averageNormal);
 		Quaternion finalRotation = Quaternion.RotateTowards(transform.rotation, targetRotation, maxRotationDegrees);
 		transform.rotation = Quaternion.Euler(0, 0, finalRotation.eulerAngles.z);
-	
-//		if(controller.collisions.mode == -1){
-			//face direction
-			float moveDir = Input.GetAxisRaw("Horizontal");
-			if(moveDir != 0 && controller.collisions.mode != 2)
-				faceDir = (moveDir<0 ? 270 : 90);
+
+		float moveDir = Input.GetAxisRaw("Horizontal");
+		if(moveDir != 0 && controller.collisions.mode != 2)
+			faceDir = (moveDir<0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0), 300*Time.deltaTime);
-//		}
-		
-		//bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0);
-		
+		print(faceDir);
+		bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0), 300*Time.deltaTime);
+
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
