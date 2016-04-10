@@ -118,10 +118,11 @@ public class Player : MonoBehaviour {
 		gameOverOverlay.color = new Color(0,0,0,0);
 		gameOverOverlay.gameObject.SetActive(false);
 		gameOverText.gameObject.SetActive(false);
-		
+
 		originalBodyPosition = bodyMesh.transform.localPosition;
 
 		trail = GameObject.Find("LowFricTrail").GetComponent<TrailRenderer>();
+		print ("LOW FRIC TRAIL: " + trail);
 		trail.enabled = true;
 		trail.time = trailLifetime;
 		trailOffTime = 0;
