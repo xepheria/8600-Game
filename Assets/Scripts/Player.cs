@@ -750,18 +750,16 @@ public class Player : MonoBehaviour {
 		if(moveDir != 0 && controller.collisions.mode != 2)
 			faceDir = (moveDir<0 ? 270 : 90);
 			
-		print(faceDir);
-		bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0), 300*Time.deltaTime);
+		bodyMesh.transform.rotation = Quaternion.Euler(faceDir==90? 360-finalRotation.eulerAngles.z : finalRotation.eulerAngles.z, faceDir, 0);
 
 		float slopeAngle = Vector2.Angle(averageNormal, Vector2.up);
 				if(Vector3.Cross(averageNormal, Vector2.up).z > 0){
 					slopeAngle = 360 - slopeAngle;
 				}
-				
+		
+		//actual movement
 		if(xsp != 0){
 			transform.position = averagePoint + transform.up*.15f;
-			//bodyMesh.transform.localPosition = originalBodyPosition - transform.up*.32f;
-			//capeMesh.transform.localPosition = originalCapePosition - transform.up*.32f;
 		}
 		oldSlideAngle = slopeAngle;
 	}
