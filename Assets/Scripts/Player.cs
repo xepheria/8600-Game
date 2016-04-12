@@ -57,6 +57,8 @@ public class Player : MonoBehaviour {
 	public float trailLifetime;
 	private float trailOffTime;	
 	private float startTime;
+	public float spawnDelay;
+	private float spawnTimer = 0;
 	
 	private float faceDir;
 	
@@ -76,7 +78,11 @@ public class Player : MonoBehaviour {
 	//audio stuff
 	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX;
 	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioPickup;
-	
+
+	public void resetSpawnTimer(){
+		this.spawnTimer = 0;
+	}
+
 	public AudioSource AddAudio(AudioClip clip, bool loop, bool playAwake, float vol){
 		AudioSource newAudio = gameObject.AddComponent<AudioSource>();
 		newAudio.clip = clip;
@@ -85,7 +91,6 @@ public class Player : MonoBehaviour {
 		newAudio.volume = vol;
 		return newAudio;
 	}
-	
 	public void Awake(){
 		//add audiosources to Player
 		audioClimbing = AddAudio(climbingSFX, true, false, 0.05f);
@@ -127,6 +132,7 @@ public class Player : MonoBehaviour {
 		trail.time = trailLifetime;
 		trailOffTime = 0;
 		startTime = Time.time;
+		this.spawnTimer = 0;
 		
 	}
 	
@@ -164,469 +170,475 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update(){
+		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
+		if (this.spawnTimer < this.spawnDelay) {
+			this.spawnTimer += Time.deltaTime;
+			//GetAllComponent<Renderer>().enabled = false;
+			Renderer[] renderers = GetComponentsInChildren<Renderer> ();
+			for(int i = 0; i < renderers.Length; i++){
+				renderers[i].enabled = false;
+			}
+			//Make sure we only have to turn on the renderers once
+			if (this.spawnTimer >= this.spawnDelay) {
+				for(int i = 0; i < renderers.Length; i++){
+					renderers[i].enabled = true;
+				}
+			}
+		}
+		else{
 		//for paused
-		if(Time.timeScale > .5f){
+			if (Time.timeScale > .5f) {
 			
-		if(Input.GetKeyDown(KeyCode.G)){
-			showDebug = !showDebug;
-		}
-		
-		//game over stuff, reset scene
-		if(gameOver){
-			gameOverScreen();
-			return;
-		}
-		
-		float inputLR = Input.GetAxisRaw("Horizontal");
-		int fricCtrl = 0;
-		if(controller.collisions.mode == 2)
-			fricCtrl = 2;
-
-			if(Input.GetButton("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0){
-			fricCtrl = -1;
-			if(controller.collisions.mode == 0){
-				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
-			}
-		}
-		else if(Input.GetButton("LoFric") && bumpTimer <= 0 && controller.collisions.below){
-			fricCtrl = 1;
-			if(controller.collisions.mode == 0){
-				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
-			}
-		}
-
-		if(controller.collisions.mode != fricCtrl){
-			if(fricCtrl == 0){
-				//audioFricModeOff.Play();
-				//Too much!
-			}
-			else if(fricCtrl == -1){
-				audioFricUp.Play();
-				if(audioSliding.isPlaying) audioSliding.Stop();
-				audioClimbing.Play();
-			}
-			else if(fricCtrl == 1){
-				audioFricDown.Play();
-				if(audioClimbing.isPlaying) audioClimbing.Stop();
-				audioSliding.Play();
-				trail.time = trailLifetime;
-				trailOffTime = trailLifetime;
-			}
-		}
-		controller.collisions.mode = fricCtrl;
-		
-		//refill hifric energy bar
-		if(controller.collisions.mode != -1){
-				if (controller.collisions.mode == 1) {
-					hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc+(4*Mathf.Abs(xsp))), 0, 1);
-				} else {
-					hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+				if (Input.GetKeyDown (KeyCode.G)) {
+					showDebug = !showDebug;
 				}
-		}
 		
-		if(oldSlideAngle > 50 && oldSlideAngle < 310 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below){
-				controller.collisions.mode = 2;
-				transform.rotation = Quaternion.Euler(0, 0, oldSlideAngle);
-		}
-		
-		//if can't move, set xsp to 0, friction to normal
-		if(!canMove){
-			xsp = 0;
-			controller.collisions.mode = 0;
-			inputLR = 0;
-		}
-		
-		//timer for using special mode after bumping into a wall
-		bumpTimer -= Time.deltaTime;
-		if(bumpTimer < 0) bumpTimer = 0;
-		launchTimer -= Time.deltaTime;
-		if(launchTimer < 0) launchTimer = 0;
-		if(bumpTimer > 0 || launchTimer > 0)
-				controller.collisions.mode = 0;
-
-		//low friction
-		//accelerate based on slope, no user input
-		//can't change direction
-		if(controller.collisions.mode == 1){
-			//if not on ground, bump out to normal mode
-			if(!controller.collisions.below){
-				controller.collisions.mode = 0;
-			}
-			else{
-				foreach(GameObject but in bootButtons){
-					but.GetComponent<Renderer>().material = blueGlow;
+				//game over stuff, reset scene
+				if (gameOver) {
+					gameOverScreen ();
+					return;
 				}
-				
-				//face direction
-				float moveDir = Input.GetAxisRaw("Horizontal");
-				if(inputLR != 0)
-					faceDir = (moveDir<0 ? 270 : 90);
+		
+				float inputLR = Input.GetAxisRaw ("Horizontal");
+				int fricCtrl = 0;
+				if (controller.collisions.mode == 2)
+					fricCtrl = 2;
 
-				bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
-				
-				anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
-				anim.SetBool("jumping", false);
-				anim.SetBool("tumblingAnim", false);
-				jumping = false;
-					if ((inputLR > 0 && xsp < 0) || (inputLR < 0 && xsp > 0)) {
-						anim.SetBool ("sliding", false);
+				if (Input.GetButton ("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0) {
+					fricCtrl = -1;
+					if (controller.collisions.mode == 0) {
+						transform.rotation = Quaternion.Euler (0, 0, oldSlideAngle);
+					}
+				} else if (Input.GetButton ("LoFric") && bumpTimer <= 0 && controller.collisions.below) {
+					fricCtrl = 1;
+					if (controller.collisions.mode == 0) {
+						transform.rotation = Quaternion.Euler (0, 0, oldSlideAngle);
+					}
+				}
+
+				if (controller.collisions.mode != fricCtrl) {
+					if (fricCtrl == 0) {
+						//audioFricModeOff.Play();
+						//Too much!
+					} else if (fricCtrl == -1) {
+						audioFricUp.Play ();
+						if (audioSliding.isPlaying)
+							audioSliding.Stop ();
+						audioClimbing.Play ();
+					} else if (fricCtrl == 1) {
+						audioFricDown.Play ();
+						if (audioClimbing.isPlaying)
+							audioClimbing.Stop ();
+						audioSliding.Play ();
+						trail.time = trailLifetime;
+						trailOffTime = trailLifetime;
+					}
+				}
+				controller.collisions.mode = fricCtrl;
+		
+				//refill hifric energy bar
+				if (controller.collisions.mode != -1) {
+					if (controller.collisions.mode == 1) {
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc + (4 * Mathf.Abs (xsp))), 0, 1);
 					} else {
-						anim.SetBool ("sliding", true);
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
 					}
+				}
+		
+				if (oldSlideAngle > 50 && oldSlideAngle < 310 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below) {
+					controller.collisions.mode = 2;
+					transform.rotation = Quaternion.Euler (0, 0, oldSlideAngle);
+				}
+		
+				//if can't move, set xsp to 0, friction to normal
+				if (!canMove) {
+					xsp = 0;
+					controller.collisions.mode = 0;
+					inputLR = 0;
+				}
+		
+				//timer for using special mode after bumping into a wall
+				bumpTimer -= Time.deltaTime;
+				if (bumpTimer < 0)
+					bumpTimer = 0;
+				launchTimer -= Time.deltaTime;
+				if (launchTimer < 0)
+					launchTimer = 0;
+				if (bumpTimer > 0 || launchTimer > 0)
+					controller.collisions.mode = 0;
 
-				loFricStuff.active = true;
-				hiFricStuff.active = false;
-				
-				anim.SetFloat("inputH", Mathf.Abs(xsp));
-				
-				//check raycasts of character
-				RaycastHit leftRayInfo, rightRayInfo;
-				if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
-					//both rays hit something. now move and rotate character
-					
-					//if we press jump, do SLIDE JUMP
-					if(Input.GetButtonDown("Jump")){
+				//low friction
+				//accelerate based on slope, no user input
+				//can't change direction
+				if (controller.collisions.mode == 1) {
+					//if not on ground, bump out to normal mode
+					if (!controller.collisions.below) {
 						controller.collisions.mode = 0;
-						ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
-						xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
-						
-						anim.SetBool("jumping", true);
-						anim.SetBool("sliding", false);
-						jumping = true;
-						controller.Move(new Vector3(xsp, ysp, 0));
-						launchTimer = launchTime;
-					}
-					else{
-						slidePosition(leftRayInfo, rightRayInfo);
-
-						//Falling Upside down
-						if(oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs(xsp)<.06f){
-							ysp=0; xsp = 0;
-							controller.collisions.mode = 0;
+					} else {
+						foreach (GameObject but in bootButtons) {
+							but.GetComponent<Renderer> ().material = blueGlow;
 						}
-						xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
-					}
-				}
-				else{
-					//off the edge. launch off
-					print("MISSed" + transform.right);
-					controller.collisions.mode = 0;
-					//set xsp and ysp based on direction of angle forward
-					ysp = Mathf.Clamp((xsp*transform.right).y, 0, jmp*2);
-					xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
-					print(xsp + "  " + ysp);
-					bumpTimer = bumpTime;
-					launchTimer = launchTime;
-				}
-			}
-		}
-		
-		//tumble mode
-		if(controller.collisions.mode == 2){
-			trailOffTime -= Time.deltaTime*3f;
-			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
-			foreach(GameObject but in bootButtons){
-				but.GetComponent<Renderer>().material = originalButtonShader;
-			}
-						
-			//check current slope of ground beneath us
-			RaycastHit hit;
-			Debug.DrawRay(transform.position+(transform.up*0.5f), -transform.up * 1.5f, Color.red);
-			float slopeAngle = 0;
-			if(Physics.Raycast(transform.position+(transform.up*0.5f), -transform.up, out hit, 1.5f, collisionMask)){
-				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
-					slopeAngle = 360 - slopeAngle;
-				}
-				oldSlideAngle = slopeAngle;
-			}
-			if(slopeAngle < 20 || slopeAngle > 340 || (slopeAngle > 90 && slopeAngle < 270)) controller.collisions.mode = 0;
-			
-			
-			anim.SetBool("jumping", false);
-			anim.SetBool("sliding", false);
-			anim.SetBool ("hiFricAnim", false);
-			jumping = false;
-			anim.SetBool("tumblingAnim", true);
+				
+						//face direction
+						float moveDir = Input.GetAxisRaw ("Horizontal");
+						if (inputLR != 0)
+							faceDir = (moveDir < 0 ? 270 : 90);
 
-			loFricStuff.active = false;
-			hiFricStuff.active = false;
-			
-			//check raycasts of character
-			RaycastHit leftRayInfo, rightRayInfo;
-			if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
-				//both rays hit something. now move and rotate character
-				if(Input.GetButtonDown("Jump")){
-						controller.collisions.mode = 0;
-						ysp = Mathf.Clamp((jmp*transform.up).y, 0, jmp*2);
-						xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
-						
-						anim.SetBool("jumping", true);
-						anim.SetBool("tumblingAnim", false);
-						jumping = true;
-						controller.Move(new Vector3(xsp, ysp, 0));
-						launchTimer = launchTime;
-				}
-				else{
-					slidePosition(leftRayInfo, rightRayInfo);
-					xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(oldSlideAngle * Mathf.Deg2Rad)*1.8f), Time.deltaTime);
+						bodyMesh.transform.rotation = Quaternion.RotateTowards (bodyMesh.transform.rotation, Quaternion.Euler (0, faceDir, 0), 300 * Time.deltaTime);
+				
+						anim.SetBool ("hiFricAnim", false); //stop hi-fric anim if playing
+						anim.SetBool ("jumping", false);
+						anim.SetBool ("tumblingAnim", false);
+						jumping = false;
+						if ((inputLR > 0 && xsp < 0) || (inputLR < 0 && xsp > 0)) {
+							anim.SetBool ("sliding", false);
+						} else {
+							anim.SetBool ("sliding", true);
+						}
+
+						loFricStuff.active = true;
+						hiFricStuff.active = false;
+				
+						anim.SetFloat ("inputH", Mathf.Abs (xsp));
+				
+						//check raycasts of character
+						RaycastHit leftRayInfo, rightRayInfo;
+						if (doubleRaycastDown (out leftRayInfo, out rightRayInfo)) {
+							//both rays hit something. now move and rotate character
 					
-					if(xsp > top){
-						xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
-					}
-					if(xsp < -top){
-						xsp = Mathf.Lerp(xsp, -top, Time.deltaTime*aboveTopDec);	
+							//if we press jump, do SLIDE JUMP
+							if (Input.GetButtonDown ("Jump")) {
+								controller.collisions.mode = 0;
+								ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
+								xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
+						
+								anim.SetBool ("jumping", true);
+								anim.SetBool ("sliding", false);
+								jumping = true;
+								controller.Move (new Vector3 (xsp, ysp, 0));
+								launchTimer = launchTime;
+							} else {
+								slidePosition (leftRayInfo, rightRayInfo);
+
+								//Falling Upside down
+								if (oldSlideAngle > 100 && oldSlideAngle < 260 && Mathf.Abs (xsp) < .06f) {
+									ysp = 0;
+									xsp = 0;
+									controller.collisions.mode = 0;
+								}
+								xsp = Mathf.Lerp (xsp, xsp - (slp * Mathf.Sin (oldSlideAngle * Mathf.Deg2Rad) * 1.8f), Time.deltaTime);
+							}
+						} else {
+							//off the edge. launch off
+							print ("MISSed" + transform.right);
+							controller.collisions.mode = 0;
+							//set xsp and ysp based on direction of angle forward
+							ysp = Mathf.Clamp ((xsp * transform.right).y, 0, jmp * 2);
+							xsp = Mathf.Clamp ((xsp * transform.right).x, -top * 2, top * 2);
+							print (xsp + "  " + ysp);
+							bumpTimer = bumpTime;
+							launchTimer = launchTime;
+						}
 					}
 				}
-			}
-			else{
-					//off the edge. launch off
-					print("MISSed" + transform.right);
-					controller.collisions.mode = 0;
-					//set xsp and ysp based on direction of angle forward
-					ysp = Mathf.Clamp((xsp*transform.right).y, -jmp, jmp*2);
-					xsp = Mathf.Clamp((xsp*transform.right).x, -top*2, top*2);
-					print(xsp + "  " + ysp);
-					bumpTimer = bumpTime;
-					launchTimer = launchTime;
-			}
-		}
 		
-		//normal mode
-		if(controller.collisions.mode == 0){
-			//trail off the low friction trail		
-			trailOffTime -= Time.deltaTime*3f;
-			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
-			bodyMesh.transform.localPosition = originalBodyPosition;
+				//tumble mode
+				if (controller.collisions.mode == 2) {
+					trailOffTime -= Time.deltaTime * 3f;
+					trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
+					foreach (GameObject but in bootButtons) {
+						but.GetComponent<Renderer> ().material = originalButtonShader;
+					}
+						
+					//check current slope of ground beneath us
+					RaycastHit hit;
+					Debug.DrawRay (transform.position + (transform.up * 0.5f), -transform.up * 1.5f, Color.red);
+					float slopeAngle = 0;
+					if (Physics.Raycast (transform.position + (transform.up * 0.5f), -transform.up, out hit, 1.5f, collisionMask)) {
+						slopeAngle = Vector2.Angle (hit.normal, Vector2.up);
+						if (Vector3.Cross (hit.normal, Vector2.up).z > 0) {
+							slopeAngle = 360 - slopeAngle;
+						}
+						oldSlideAngle = slopeAngle;
+					}
+					if (slopeAngle < 20 || slopeAngle > 340 || (slopeAngle > 90 && slopeAngle < 270))
+						controller.collisions.mode = 0;
+			
+			
+					anim.SetBool ("jumping", false);
+					anim.SetBool ("sliding", false);
+					anim.SetBool ("hiFricAnim", false);
+					jumping = false;
+					anim.SetBool ("tumblingAnim", true);
 
-			foreach(GameObject but in bootButtons){
-					but.GetComponent<Renderer>().material = originalButtonShader;
-			}
+					loFricStuff.active = false;
+					hiFricStuff.active = false;
 			
-			if(audioSliding.isPlaying) audioSliding.Stop();
-			if(audioClimbing.isPlaying) audioClimbing.Stop();
-			
-			//reset rotation of transform
-			if (launchTimer == 0 && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270){
-				xsp = -xsp;
-			}
-			transform.rotation = Quaternion.identity;
-			anim.SetBool("sliding", false); //stop no-fric anim if playing
-			anim.SetBool("hiFricAnim", false); //stop hi-fric anim if playing
-			anim.SetBool("tumblingAnim", false);
+					//check raycasts of character
+					RaycastHit leftRayInfo, rightRayInfo;
+					if (doubleRaycastDown (out leftRayInfo, out rightRayInfo)) {
+						//both rays hit something. now move and rotate character
+						if (Input.GetButtonDown ("Jump")) {
+							controller.collisions.mode = 0;
+							ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
+							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
+						
+							anim.SetBool ("jumping", true);
+							anim.SetBool ("tumblingAnim", false);
+							jumping = true;
+							controller.Move (new Vector3 (xsp, ysp, 0));
+							launchTimer = launchTime;
+						} else {
+							slidePosition (leftRayInfo, rightRayInfo);
+							xsp = Mathf.Lerp (xsp, xsp - (slp * Mathf.Sin (oldSlideAngle * Mathf.Deg2Rad) * 1.8f), Time.deltaTime);
+					
+							if (xsp > top) {
+								xsp = Mathf.Lerp (xsp, top, Time.deltaTime * aboveTopDec);
+							}
+							if (xsp < -top) {
+								xsp = Mathf.Lerp (xsp, -top, Time.deltaTime * aboveTopDec);	
+							}
+						}
+					} else {
+						//off the edge. launch off
+						print ("MISSed" + transform.right);
+						controller.collisions.mode = 0;
+						//set xsp and ysp based on direction of angle forward
+						ysp = Mathf.Clamp ((xsp * transform.right).y, -jmp, jmp * 2);
+						xsp = Mathf.Clamp ((xsp * transform.right).x, -top * 2, top * 2);
+						print (xsp + "  " + ysp);
+						bumpTimer = bumpTime;
+						launchTimer = launchTime;
+					}
+				}
+		
+				//normal mode
+				if (controller.collisions.mode == 0) {
+					//trail off the low friction trail		
+					trailOffTime -= Time.deltaTime * 3f;
+					trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
+					bodyMesh.transform.localPosition = originalBodyPosition;
 
-			loFricStuff.active = false;
-			hiFricStuff.active = false;
+					foreach (GameObject but in bootButtons) {
+						but.GetComponent<Renderer> ().material = originalButtonShader;
+					}
 			
-			//face direction
-			float moveDir = Input.GetAxisRaw("Horizontal");
-			if(inputLR != 0)
-				faceDir = (moveDir<0 ? 270 : 90);
+					if (audioSliding.isPlaying)
+						audioSliding.Stop ();
+					if (audioClimbing.isPlaying)
+						audioClimbing.Stop ();
 			
-			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 15);
+					//reset rotation of transform
+					if (launchTimer == 0 && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270) {
+						xsp = -xsp;
+					}
+					transform.rotation = Quaternion.identity;
+					anim.SetBool ("sliding", false); //stop no-fric anim if playing
+					anim.SetBool ("hiFricAnim", false); //stop hi-fric anim if playing
+					anim.SetBool ("tumblingAnim", false);
+
+					loFricStuff.active = false;
+					hiFricStuff.active = false;
 			
-			//slope of ground beneath us
-			RaycastHit hit;
-			Debug.DrawRay(transform.position+(Vector3.up*0.5f), -Vector2.up * 1.5f, Color.red);
-			float slopeAngle = 0;
-			if(Physics.Raycast(transform.position+(Vector3.up*0.5f), -Vector2.up, out hit, 1.5f, collisionMask)){
-				slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-				if(Vector3.Cross(hit.normal, Vector2.up).z > 0){
-					slopeAngle = 360 - slopeAngle;
-				}
-				oldSlideAngle = slopeAngle;
-			}
+					//face direction
+					float moveDir = Input.GetAxisRaw ("Horizontal");
+					if (inputLR != 0)
+						faceDir = (moveDir < 0 ? 270 : 90);
 			
-			//running into wall, 0 out xsp
-			if(controller.collisions.below && (controller.collisions.left || controller.collisions.right)){
-				xsp = 0;
-			}
+					bodyMesh.transform.rotation = Quaternion.RotateTowards (bodyMesh.transform.rotation, Quaternion.Euler (0, faceDir, 0), 15);
 			
-			//pressing left
-			if(inputLR < 0){
-				if(xsp > 0){
-					xsp = Mathf.Lerp(xsp, xsp-dec, Time.deltaTime);
-				}
-				else if(xsp > -top){
-					xsp = Mathf.Lerp(xsp, xsp-acc, Time.deltaTime);
-				}
-			}
+					//slope of ground beneath us
+					RaycastHit hit;
+					Debug.DrawRay (transform.position + (Vector3.up * 0.5f), -Vector2.up * 1.5f, Color.red);
+					float slopeAngle = 0;
+					if (Physics.Raycast (transform.position + (Vector3.up * 0.5f), -Vector2.up, out hit, 1.5f, collisionMask)) {
+						slopeAngle = Vector2.Angle (hit.normal, Vector2.up);
+						if (Vector3.Cross (hit.normal, Vector2.up).z > 0) {
+							slopeAngle = 360 - slopeAngle;
+						}
+						oldSlideAngle = slopeAngle;
+					}
+			
+					//running into wall, 0 out xsp
+					if (controller.collisions.below && (controller.collisions.left || controller.collisions.right)) {
+						xsp = 0;
+					}
+			
+					//pressing left
+					if (inputLR < 0) {
+						if (xsp > 0) {
+							xsp = Mathf.Lerp (xsp, xsp - dec, Time.deltaTime);
+						} else if (xsp > -top) {
+							xsp = Mathf.Lerp (xsp, xsp - acc, Time.deltaTime);
+						}
+					}
 			//pressing right
-			else if(inputLR > 0){
-				if(xsp < 0){
-					xsp = Mathf.Lerp(xsp, xsp+dec, Time.deltaTime);
-				}
-				else if(xsp < top){
-					xsp = Mathf.Lerp(xsp, xsp+acc, Time.deltaTime);
-				}
-			}
+			else if (inputLR > 0) {
+						if (xsp < 0) {
+							xsp = Mathf.Lerp (xsp, xsp + dec, Time.deltaTime);
+						} else if (xsp < top) {
+							xsp = Mathf.Lerp (xsp, xsp + acc, Time.deltaTime);
+						}
+					}
 			//not pressing anything, gravity kicks in
-			else if(controller.collisions.below){
-				xsp = Mathf.Lerp(xsp, xsp-(Mathf.Min(Mathf.Abs(xsp), frc)*Mathf.Sign(xsp)), Time.deltaTime);
-			}
-			else if(ysp > 0 && ysp < 1){	//air drag
-				if (Mathf.Abs(xsp) > 0.05f)
-					xsp = xsp * 0.96875f;
-			}
+			else if (controller.collisions.below) {
+						xsp = Mathf.Lerp (xsp, xsp - (Mathf.Min (Mathf.Abs (xsp), frc) * Mathf.Sign (xsp)), Time.deltaTime);
+					} else if (ysp > 0 && ysp < 1) {	//air drag
+						if (Mathf.Abs (xsp) > 0.05f)
+							xsp = xsp * 0.96875f;
+					}
 			
-			//air/jump movement
-			//nothing below us, add gravity
-			if(!controller.collisions.below){
-				ysp = Mathf.Lerp(ysp, ysp+grv, Time.deltaTime);
-				if(ysp <= -0.1){
-					anim.SetBool("jumping", true);
-					jumping = true;
-				}
-			}
-			//if we're in collision with the ground and press "jump", we jump
-			if(Input.GetButtonDown("Jump") && controller.collisions.below && canMove){
-				ysp = (jmp + Mathf.Abs(xsp)*.1f) * Mathf.Cos(slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
-				xsp = xsp-jmp * Mathf.Sin(slopeAngle * Mathf.Deg2Rad);
-				anim.SetBool("jumping", true);
-				jumping = true;
-			}
-			else if(jumping && controller.collisions.below){
-				anim.SetBool("jumping", false);
-				jumping = false;
-				ysp=0;
-			}
+					//air/jump movement
+					//nothing below us, add gravity
+					if (!controller.collisions.below) {
+						ysp = Mathf.Lerp (ysp, ysp + grv, Time.deltaTime);
+						if (ysp <= -0.1) {
+							anim.SetBool ("jumping", true);
+							jumping = true;
+						}
+					}
+					//if we're in collision with the ground and press "jump", we jump
+					if (Input.GetButtonDown ("Jump") && controller.collisions.below && canMove) {
+						ysp = (jmp + Mathf.Abs (xsp) * .1f) * Mathf.Cos (slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
+						xsp = xsp - jmp * Mathf.Sin (slopeAngle * Mathf.Deg2Rad);
+						anim.SetBool ("jumping", true);
+						jumping = true;
+					} else if (jumping && controller.collisions.below) {
+						anim.SetBool ("jumping", false);
+						jumping = false;
+						ysp = 0;
+					}
 			
-			//if we let go of jump button early
-			if(Input.GetButtonUp("Jump") && ysp > jmp*.3f && ysp < jmp){
-				ysp = jmp*.3f;
-			}
+					//if we let go of jump button early
+					if (Input.GetButtonUp ("Jump") && ysp > jmp * .3f && ysp < jmp) {
+						ysp = jmp * .3f;
+					}
 			
-			//accelerate going downhill, slow down going uphill
-			if(slopeAngle > 30 && slopeAngle < 330){
-				xsp = Mathf.Lerp(xsp, xsp-(slp*Mathf.Sin(slopeAngle * Mathf.Deg2Rad)*(controller.collisions.climbingSlope?2f:1)), Time.deltaTime);
-			}
+					//accelerate going downhill, slow down going uphill
+					if (slopeAngle > 30 && slopeAngle < 330) {
+						xsp = Mathf.Lerp (xsp, xsp - (slp * Mathf.Sin (slopeAngle * Mathf.Deg2Rad) * (controller.collisions.climbingSlope ? 2f : 1)), Time.deltaTime);
+					}
 			
-			anim.SetFloat("inputH", Mathf.Abs(xsp));
-			anim.SetFloat("inputV", ysp);
+					anim.SetFloat ("inputH", Mathf.Abs (xsp));
+					anim.SetFloat ("inputV", ysp);
 			
-			//cap to max speed
-			if(controller.collisions.below && launchTimer <= 0){
-				if(xsp > top){
-					xsp = Mathf.Lerp(xsp, top, Time.deltaTime*aboveTopDec);
-				}
-				if(xsp < -top){
-					xsp = Mathf.Lerp(xsp, -top, Time.deltaTime*aboveTopDec);	
-				}
-			}
-			else if(!controller.collisions.below){
-				if(xsp > top*3){
-					xsp = Mathf.Lerp(xsp, top*3, Time.deltaTime*aboveTopDec);
-				}
-				if(xsp < -top*3){
-					xsp = Mathf.Lerp(xsp, -top*3, Time.deltaTime*aboveTopDec);	
-				}
-			}
+					//cap to max speed
+					if (controller.collisions.below && launchTimer <= 0) {
+						if (xsp > top) {
+							xsp = Mathf.Lerp (xsp, top, Time.deltaTime * aboveTopDec);
+						}
+						if (xsp < -top) {
+							xsp = Mathf.Lerp (xsp, -top, Time.deltaTime * aboveTopDec);	
+						}
+					} else if (!controller.collisions.below) {
+						if (xsp > top * 3) {
+							xsp = Mathf.Lerp (xsp, top * 3, Time.deltaTime * aboveTopDec);
+						}
+						if (xsp < -top * 3) {
+							xsp = Mathf.Lerp (xsp, -top * 3, Time.deltaTime * aboveTopDec);	
+						}
+					}
 
-			controller.Move(new Vector3(xsp, ysp, 0));
-		}
+					controller.Move (new Vector3 (xsp, ysp, 0));
+				}
 		
 		//high friction
 		//takes player input
 		//grip to surface
 		//low max speed
-		else if(controller.collisions.mode == -1 && bumpTimer <= 0){
-			trailOffTime -= Time.deltaTime*3f;
-			trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
-			foreach(GameObject but in bootButtons){
-					but.GetComponent<Renderer>().material = redGlow;
-			}
+		else if (controller.collisions.mode == -1 && bumpTimer <= 0) {
+					trailOffTime -= Time.deltaTime * 3f;
+					trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
+					foreach (GameObject but in bootButtons) {
+						but.GetComponent<Renderer> ().material = redGlow;
+					}
 			
-			//cap speed
-			if(Mathf.Abs(xsp) > hiFricSpCap){
-				if(!onBelt)
-					xsp = hiFricSpCap * Mathf.Sign(xsp);
-			}
-			//reset animations of transform
-			anim.SetBool("sliding", false); //stop low-fric anim if playing
-			anim.SetBool("jumping", false);
-			anim.SetBool("tumblingAnim", false);
-			jumping = false;
-			anim.SetBool("hiFricAnim", true);
+					//cap speed
+					if (Mathf.Abs (xsp) > hiFricSpCap) {
+						if (!onBelt)
+							xsp = hiFricSpCap * Mathf.Sign (xsp);
+					}
+					//reset animations of transform
+					anim.SetBool ("sliding", false); //stop low-fric anim if playing
+					anim.SetBool ("jumping", false);
+					anim.SetBool ("tumblingAnim", false);
+					jumping = false;
+					anim.SetBool ("hiFricAnim", true);
 
-			loFricStuff.active = false;
-			hiFricStuff.active = true;
+					loFricStuff.active = false;
+					hiFricStuff.active = true;
 			
-			//face direction
-			float moveDir = Input.GetAxisRaw("Horizontal");
-			if(moveDir != 0)
-				faceDir = (moveDir<0 ? 270 : 90);
+					//face direction
+					float moveDir = Input.GetAxisRaw ("Horizontal");
+					if (moveDir != 0)
+						faceDir = (moveDir < 0 ? 270 : 90);
 			
-			bodyMesh.transform.rotation = Quaternion.RotateTowards(bodyMesh.transform.rotation, Quaternion.Euler(0, faceDir, 0), 300*Time.deltaTime);
+					bodyMesh.transform.rotation = Quaternion.RotateTowards (bodyMesh.transform.rotation, Quaternion.Euler (0, faceDir, 0), 300 * Time.deltaTime);
 
-			if(!controller.collisions.below){
-				controller.collisions.mode = 0;
-			}
-			else{
-				//pressing left
-				if(inputLR < 0){
-					if(xsp > 0){
-						xsp = Mathf.Lerp(xsp, xsp-hiAcc, Time.deltaTime);
-					}
-					else if(xsp > -hiFricSpCap){
-						xsp = Mathf.Lerp(xsp, xsp-hiAcc, Time.deltaTime);
-					}
-				}
-				//pressing right
-				else if(inputLR > 0){
-					if(xsp < 0){
-						xsp = Mathf.Lerp(xsp, xsp+hiAcc, Time.deltaTime);
-					}
-					else if(xsp < hiFricSpCap){
-						xsp = Mathf.Lerp(xsp, xsp+hiAcc, Time.deltaTime);
-					}
-				}
-				//not pressing anything, friction kicks in
-				else if(!jumping && !onBelt){
-					xsp = 0;
-				}
-				else if(ysp > 0 && ysp < 1 && !onBelt){	//air drag
-					xsp = 0;
-				}
-				
-				anim.SetFloat("inputH", Mathf.Abs(xsp));
-				
-				if(Input.GetButtonDown("Jump") && controller.collisions.below){
-					controller.collisions.mode = 0;
-					ysp = Mathf.Clamp((jmp*transform.up).y, -jmp, jmp*2);
-					xsp = Mathf.Clamp((jmp*transform.up).x + (xsp*transform.right).x, -top*2, top*2);
-					anim.SetBool("jumping", true);
-					anim.SetBool("hiFricAnim", false);
-					jumping = true;
-					controller.Move(new Vector3(xsp, ysp, 0));
-					launchTimer = launchTime;
-				}
-				else{
-					//check raycasts of character
-					RaycastHit leftRayInfo, rightRayInfo;
-					if(doubleRaycastDown(out leftRayInfo, out rightRayInfo)){
-						//both rays hit something. now move and rotate character
-						slidePosition(leftRayInfo, rightRayInfo);
-						
-						//Falling Upside down
-						if(oldSlideAngle > 90 && oldSlideAngle < 270){
-							ysp=0;
-						}
-					}
-					else{
-						//off the edge. bump to normal mode
-						print("MISSed");
+					if (!controller.collisions.below) {
 						controller.collisions.mode = 0;
-						bumpTimer = bumpTime;
+					} else {
+						//pressing left
+						if (inputLR < 0) {
+							if (xsp > 0) {
+								xsp = Mathf.Lerp (xsp, xsp - hiAcc, Time.deltaTime);
+							} else if (xsp > -hiFricSpCap) {
+								xsp = Mathf.Lerp (xsp, xsp - hiAcc, Time.deltaTime);
+							}
+						}
+				//pressing right
+				else if (inputLR > 0) {
+							if (xsp < 0) {
+								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
+							} else if (xsp < hiFricSpCap) {
+								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
+							}
+						}
+				//not pressing anything, friction kicks in
+				else if (!jumping && !onBelt) {
+							xsp = 0;
+						} else if (ysp > 0 && ysp < 1 && !onBelt) {	//air drag
+							xsp = 0;
+						}
+				
+						anim.SetFloat ("inputH", Mathf.Abs (xsp));
+				
+						if (Input.GetButtonDown ("Jump") && controller.collisions.below) {
+							controller.collisions.mode = 0;
+							ysp = Mathf.Clamp ((jmp * transform.up).y, -jmp, jmp * 2);
+							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
+							anim.SetBool ("jumping", true);
+							anim.SetBool ("hiFricAnim", false);
+							jumping = true;
+							controller.Move (new Vector3 (xsp, ysp, 0));
+							launchTimer = launchTime;
+						} else {
+							//check raycasts of character
+							RaycastHit leftRayInfo, rightRayInfo;
+							if (doubleRaycastDown (out leftRayInfo, out rightRayInfo)) {
+								//both rays hit something. now move and rotate character
+								slidePosition (leftRayInfo, rightRayInfo);
+						
+								//Falling Upside down
+								if (oldSlideAngle > 90 && oldSlideAngle < 270) {
+									ysp = 0;
+								}
+							} else {
+								//off the edge. bump to normal mode
+								print ("MISSed");
+								controller.collisions.mode = 0;
+								bumpTimer = bumpTime;
+							}
+						}
+				
+						//decrement energy
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy - Time.deltaTime * hiFricEnergyDec, 0, 1);
+						if (hiFricEnergy == 0)
+							bumpTimer = barTime;
 					}
 				}
-				
-				//decrement energy
-				hiFricEnergy = Mathf.Clamp(hiFricEnergy - Time.deltaTime * hiFricEnergyDec, 0, 1);
-				if(hiFricEnergy == 0) bumpTimer = barTime;
-			}
-		}
-		//TEMPORAILY COMMENTED OUT
-		/*
+				//TEMPORAILY COMMENTED OUT
+				/*
 		//can shoot in any mode
 		//V is held down, calculate angle
 		if(Input.GetButton("Fire") && canMove){
@@ -660,6 +672,7 @@ public class Player : MonoBehaviour {
 			angleIncSign = 1;
 		}
 		*/
+			}
 	}
 	}
 	

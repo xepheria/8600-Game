@@ -33,16 +33,17 @@ public class nextLevel : MonoBehaviour {
 	}
 	
 	IEnumerator LoadAfterAnim(){
-		print(teleportAnim.length);
+		//print(teleportAnim.length);
 		yield return new WaitForSeconds(teleportAnim.length);
-
+		player.resetSpawnTimer ();
 		PlayerPrefs.SetInt ("currentLevel", PlayerPrefs.GetInt ("currentLevel") + 1); 
-		print(PlayerPrefs.GetInt("currentLevel"));
+		//print(PlayerPrefs.GetInt("currentLevel"));
 		string nextLevel = "level" + PlayerPrefs.GetInt("currentLevel").ToString(); 
 		if (PlayerPrefs.GetInt ("currentLevel") > 6) {
 			PlayerPrefs.SetInt ("currentLevel", 0);
 			SceneManager.LoadScene ("Credits");
 		} else {
+
 			SceneManager.LoadScene (nextLevel);
 		}
 	}
