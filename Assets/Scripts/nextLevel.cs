@@ -34,8 +34,12 @@ public class nextLevel : MonoBehaviour {
 	
 	IEnumerator LoadAfterAnim(){
 		//print(teleportAnim.length);
-		yield return new WaitForSeconds(teleportAnim.length);
+		yield return new WaitForSeconds(teleportAnim.length - 0.05f);
 		player.resetSpawnTimer ();
+		foreach (Renderer r in player.GetComponentsInChildren<Renderer>()) {
+			r.enabled = false;
+		}
+		yield return new WaitForSeconds (0.05f);
 		PlayerPrefs.SetInt ("currentLevel", PlayerPrefs.GetInt ("currentLevel") + 1); 
 		//print(PlayerPrefs.GetInt("currentLevel"));
 		string nextLevel = "level" + PlayerPrefs.GetInt("currentLevel").ToString(); 
