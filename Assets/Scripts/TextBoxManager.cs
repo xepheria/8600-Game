@@ -24,7 +24,8 @@ public class TextBoxManager : MonoBehaviour {
 	
 	public float typeSpeed;
 	
-	public Image arrowDisplay;
+	//public Image arrowDisplay;
+	public Text continueText;
 	
 	public float tilNextLine = 0;
 	private float waitTime = 3;
@@ -35,7 +36,8 @@ public class TextBoxManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		arrowDisplay.gameObject.SetActive(false);
+		//arrowDisplay.gameObject.SetActive(false);
+		continueText.gameObject.SetActive(false);
 		
 		player = FindObjectOfType<Player>();
 		
@@ -66,7 +68,8 @@ public class TextBoxManager : MonoBehaviour {
 		}
 				
 		if(Input.GetButtonDown("Submit") && stopPlayerMovement){
-			arrowDisplay.gameObject.SetActive(false);
+			//arrowDisplay.gameObject.SetActive(false);
+			continueText.gameObject.SetActive(false);
 			if(!isTyping){
 				currentLine++;
 				if(currentLine > endAtLine){
@@ -82,7 +85,8 @@ public class TextBoxManager : MonoBehaviour {
 			}
 		}
 		else if(!stopPlayerMovement && tilNextLine <= 0){
-			arrowDisplay.gameObject.SetActive(false);
+			//arrowDisplay.gameObject.SetActive(false);
+			continueText.gameObject.SetActive(false);
 			//reset timer, disable timer
 			tilNextLine = waitTime;
 			timerRunning = false;
@@ -111,7 +115,8 @@ public class TextBoxManager : MonoBehaviour {
 		}
 		//if while loop is broken by player input, spit out all the text of the line into the box
 		theText.text = lineOfText;
-		arrowDisplay.gameObject.SetActive(true);
+		//arrowDisplay.gameObject.SetActive(true);
+		continueText.gameObject.SetActive(true);
 		isTyping = false;
 		cancelTyping = false;
 		
