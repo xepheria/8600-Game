@@ -206,6 +206,9 @@ public class Player : MonoBehaviour {
 
 				if (Input.GetButton ("HiFric") && bumpTimer <= 0 && controller.collisions.below && hiFricEnergy > 0) {
 					fricCtrl = -1;
+					if (Input.GetButtonDown ("HiFric")) {
+						hiFricEnergy -= .1f;
+					}
 					if (controller.collisions.mode == 0) {
 						transform.rotation = Quaternion.Euler (0, 0, oldSlideAngle);
 					}
@@ -239,9 +242,9 @@ public class Player : MonoBehaviour {
 				//refill hifric energy bar
 				if (controller.collisions.mode != -1) {
 					if (controller.collisions.mode == 1) {
-						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc + (4 * Mathf.Abs (xsp))), 0, 1);
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc + (3 * Mathf.Abs (xsp))), 0, 1);
 					} else {
-						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+						//hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
 					}
 				}
 		
