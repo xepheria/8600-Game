@@ -168,7 +168,16 @@ public class Player : MonoBehaviour {
 			GUI.EndGroup();
 		GUI.EndGroup();
 	}
-	
+
+	bool isDown = false;
+
+	void Update(){
+		if(Input.GetButtonDown("Jump")) {
+			isDown = true;
+		} else {
+			isDown = false;
+		}
+	}
 	void FixedUpdate(){
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
@@ -310,7 +319,7 @@ public class Player : MonoBehaviour {
 							//both rays hit something. now move and rotate character
 					
 							//if we press jump, do SLIDE JUMP
-							if (Input.GetButtonDown ("Jump")) {
+							if (isDown) {
 								controller.collisions.mode = 0;
 								ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
 								xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
@@ -320,6 +329,7 @@ public class Player : MonoBehaviour {
 								jumping = true;
 								controller.Move (new Vector3 (xsp, ysp, 0));
 								launchTimer = launchTime;
+
 							} else {
 								slidePosition (leftRayInfo, rightRayInfo);
 
@@ -381,7 +391,7 @@ public class Player : MonoBehaviour {
 					RaycastHit leftRayInfo, rightRayInfo;
 					if (doubleRaycastDown (out leftRayInfo, out rightRayInfo)) {
 						//both rays hit something. now move and rotate character
-						if (Input.GetButtonDown ("Jump")) {
+						if (isDown) {
 							controller.collisions.mode = 0;
 							ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
 							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
@@ -391,6 +401,7 @@ public class Player : MonoBehaviour {
 							jumping = true;
 							controller.Move (new Vector3 (xsp, ysp, 0));
 							launchTimer = launchTime;
+					
 						} else {
 							slidePosition (leftRayInfo, rightRayInfo);
 							xsp = Mathf.Lerp (xsp, xsp - (slp * Mathf.Sin (oldSlideAngle * Mathf.Deg2Rad) * 1.8f), Time.deltaTime);
@@ -501,11 +512,12 @@ public class Player : MonoBehaviour {
 						}
 					}
 					//if we're in collision with the ground and press "jump", we jump
-					if (Input.GetButtonDown ("Jump") && controller.collisions.below && canMove) {
+					if (isDown && controller.collisions.below && canMove) {
 						ysp = (jmp + Mathf.Abs (xsp) * .1f) * Mathf.Cos (slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 						xsp = xsp - jmp * Mathf.Sin (slopeAngle * Mathf.Deg2Rad);
 						anim.SetBool ("jumping", true);
 						jumping = true;
+					
 					} else if (jumping && controller.collisions.below) {
 						anim.SetBool ("jumping", false);
 						jumping = false;
@@ -606,7 +618,7 @@ public class Player : MonoBehaviour {
 				
 						anim.SetFloat ("inputH", Mathf.Abs (xsp));
 				
-						if (Input.GetButtonDown ("Jump") && controller.collisions.below) {
+						if (isDown && controller.collisions.below) {
 							controller.collisions.mode = 0;
 							ysp = Mathf.Clamp ((jmp * transform.up).y, -jmp, jmp * 2);
 							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
