@@ -169,7 +169,7 @@ public class Player : MonoBehaviour {
 		GUI.EndGroup();
 	}
 	
-	void Update(){
+	void FixedUpdate(){
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
 			this.spawnTimer += Time.deltaTime;
