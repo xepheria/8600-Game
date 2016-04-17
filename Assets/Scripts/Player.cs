@@ -374,7 +374,7 @@ public class Player : MonoBehaviour {
 						}
 						oldSlideAngle = slopeAngle;
 					}
-					if (slopeAngle < 20 || slopeAngle > 340 || (slopeAngle > 90 && slopeAngle < 270))
+					if (slopeAngle < 20 || slopeAngle > 340 || (slopeAngle > 91 && slopeAngle < 270))
 						controller.collisions.mode = 0;
 			
 			
