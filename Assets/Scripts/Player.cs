@@ -251,13 +251,13 @@ public class Player : MonoBehaviour {
 				//refill hifric energy bar
 				if (controller.collisions.mode != -1) {
 					if (controller.collisions.mode == 1) {
-						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc + (3 * Mathf.Abs (xsp))), 0, 1);
-					} else {
-						//hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * (hiFricEnergyInc*3 + (3 * Mathf.Abs (xsp))), 0, 1);
+					} else if (controller.collisions.mode != 2){
+						hiFricEnergy = Mathf.Clamp (hiFricEnergy + Time.deltaTime * hiFricEnergyInc, 0, 1);
 					}
 				}
 		
-				if (oldSlideAngle > 50 && oldSlideAngle < 310 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below) {
+				if (oldSlideAngle >= 20 && oldSlideAngle <= 340 && (controller.collisions.mode == 0 || (controller.collisions.mode == -1 && hiFricEnergy <= 0)) && controller.collisions.below) {
 					controller.collisions.mode = 2;
 					transform.rotation = Quaternion.Euler (0, 0, oldSlideAngle);
 				}
