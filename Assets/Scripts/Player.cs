@@ -649,7 +649,8 @@ public class Player : MonoBehaviour {
 						//decrement energy
 						hiFricEnergy = Mathf.Clamp (hiFricEnergy - Time.deltaTime * hiFricEnergyDec, 0, 1);
 						if (hiFricEnergy == 0)
-							bumpTimer = barTime;
+							//bumpTimer = barTime;
+							controller.collisions.mode = 2;
 					}
 				}
 				//TEMPORAILY COMMENTED OUT
