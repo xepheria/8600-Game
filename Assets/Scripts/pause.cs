@@ -7,7 +7,8 @@ public class pause : MonoBehaviour {
 	public GUISkin hudSkin;
 	private bool isPaused;
 	
-	void Start () {
+	void Start () {		
+		Application.targetFrameRate = 60;
 		isPaused = false;
 	}
 
