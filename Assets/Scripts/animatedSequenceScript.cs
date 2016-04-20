@@ -47,7 +47,7 @@ public class animatedSequenceScript : MonoBehaviour {
 
 	IEnumerator PlayLoop(float delay){
 		yield return new WaitForSeconds (delay);
-		frameCounter += 2;	
+		frameCounter += 3;	
 		StopCoroutine ("PlayLoop");
 	}
 		
