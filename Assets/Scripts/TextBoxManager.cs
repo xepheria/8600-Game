@@ -116,7 +116,8 @@ public class TextBoxManager : MonoBehaviour {
 		//if while loop is broken by player input, spit out all the text of the line into the box
 		theText.text = lineOfText;
 		//arrowDisplay.gameObject.SetActive(true);
-		continueText.gameObject.SetActive(true);
+		if(stopPlayerMovement)
+			continueText.gameObject.SetActive(true);
 		isTyping = false;
 		cancelTyping = false;
 		

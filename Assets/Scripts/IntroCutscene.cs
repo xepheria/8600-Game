@@ -98,7 +98,7 @@ public class IntroCutscene : MonoBehaviour {
 			textureColor.a = Mathf.Lerp(textureColor.a, 1.0f, 1.5f*Time.deltaTime) / 1.0f;
 			siren.GetComponent<Renderer>().material.color = textureColor;
 			spacePod.transform.position = Vector3.Lerp(spacePod.transform.position, planet.transform.position, Time.deltaTime);
-			spacePod.transform.localScale = Vector3.Lerp(spacePod.transform.localScale, new Vector3(.3f, .3f, .3f), Time.deltaTime);
+			spacePod.transform.localScale = Vector3.Lerp(spacePod.transform.localScale, new Vector3(.1f, .1f, .1f), Time.deltaTime);
 		}
 		
 		if(step[6] && !step[7] && Time.time - theTextBox.timeDone > 5){
