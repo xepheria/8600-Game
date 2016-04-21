@@ -16,14 +16,22 @@ function OnGUI () {
 	
 function Update(){
 	if(Input.anyKey){
-		PlayerPrefs.SetInt ("currentLevel", 0); 
-		Application.LoadLevel("level0");
+		if(PlayerPrefs.GetInt("storyOn")){
+			Application.LoadLevel("introCutscene");
+		}else{
+			PlayerPrefs.SetInt ("currentLevel", 0); 
+			Application.LoadLevel("level0");
+		}
 	}
 
 	for (var i = 0;i < 20; i++) {
 		if(Input.GetKeyDown("joystick 1 button "+i)){
-			PlayerPrefs.SetInt ("currentLevel", 0); 
-			Application.LoadLevel("level0");
+			if(PlayerPrefs.GetInt("storyOn")){
+				Application.LoadLevel("introCutscene");
+			}else{
+				PlayerPrefs.SetInt ("currentLevel", 0); 
+				Application.LoadLevel("level0");
+			}
 		}
 	}
 }

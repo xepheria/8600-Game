@@ -53,7 +53,7 @@ public class TextBoxManager : MonoBehaviour {
 			EnableTextBox();
 		}
 		
-		if(!isActive){
+		if(!isActive || PlayerPrefs.GetInt("storyOn") == 0){
 			DisableTextBox();
 		}
 	}

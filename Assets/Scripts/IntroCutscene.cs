@@ -32,7 +32,7 @@ public class IntroCutscene : MonoBehaviour {
 			step[0] = true;
 			theTextBox.ReloadScript(theText);
 			theTextBox.currentLine = 0;
-			theTextBox.endAtLine = 3;
+			theTextBox.endAtLine = 1;
 			theTextBox.EnableTextBox();
 			return;
 		}
@@ -40,8 +40,8 @@ public class IntroCutscene : MonoBehaviour {
 		//second batch of text
 		if(step[0] && !step[1] && Time.time - theTextBox.timeDone > 3){
 			step[1] = true;
-			theTextBox.currentLine = 4;
-			theTextBox.endAtLine = 7;
+			theTextBox.currentLine = 2;
+			theTextBox.endAtLine = 4;
 			theTextBox.EnableTextBox();
 			return;
 		}
@@ -50,8 +50,8 @@ public class IntroCutscene : MonoBehaviour {
 		if(step[1] && !step[2] && Time.time - theTextBox.timeDone > 3){
 			step[2] = true;
 			StartCoroutine(lightFlashPlay(3));
-			theTextBox.currentLine = 8;
-			theTextBox.endAtLine = 8;
+			theTextBox.currentLine = 6;
+			theTextBox.endAtLine = 6;
 			theTextBox.EnableTextBox();
 			return;
 		}
@@ -67,16 +67,16 @@ public class IntroCutscene : MonoBehaviour {
 		
 		if(step[3] && !step[4] && Time.time - theTextBox.timeDone > 5){
 			step[4] = true;
-			theTextBox.currentLine = 9;
-			theTextBox.endAtLine = 12;
+			theTextBox.currentLine = 7;
+			theTextBox.endAtLine = 10;
 			theTextBox.EnableTextBox();
 			return;
 		}
 		
 		if(step[4] && !step[5] && Time.time - theTextBox.timeDone > 3){
 			step[5] = true;
-			theTextBox.currentLine = 13;
-			theTextBox.endAtLine = 14;
+			theTextBox.currentLine = 11;
+			theTextBox.endAtLine = 12;
 			theTextBox.EnableTextBox();
 			return;
 		}
@@ -102,7 +102,8 @@ public class IntroCutscene : MonoBehaviour {
 		}
 		
 		if(step[6] && !step[7] && Time.time - theTextBox.timeDone > 5){
-			//code here to load the first level
+			PlayerPrefs.SetInt ("currentLevel", 0); 
+			Application.LoadLevel("level0");
 		}
 	}
 	

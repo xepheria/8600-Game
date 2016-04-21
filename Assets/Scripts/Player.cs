@@ -487,7 +487,7 @@ public class Player : MonoBehaviour {
 					}
 					//not pressing anything, gravity kicks in
 					else if (controller.collisions.below) {
-						//xsp = Mathf.Lerp (xsp, xsp - (Mathf.Min (Mathf.Abs (xsp), frc) * Mathf.Sign (xsp)), Time.deltaTime);
+						xsp = Mathf.Lerp (xsp, xsp - (Mathf.Min (Mathf.Abs (xsp), frc) * Mathf.Sign (xsp)), Time.deltaTime);
 					} 
 					else if (ysp > 0 && ysp < 1) {	//air drag
 						if (Mathf.Abs (xsp) > 0.05f)

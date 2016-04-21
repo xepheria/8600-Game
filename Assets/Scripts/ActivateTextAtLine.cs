@@ -25,10 +25,12 @@ public class ActivateTextAtLine : MonoBehaviour {
 	void OnTriggerEnter(Collider col){
 		print("collided with box");
 		if(col.CompareTag("Player")){
-			theTextBox.ReloadScript(theText);
-			theTextBox.currentLine = startLine;
-			theTextBox.endAtLine = endLine;
-			theTextBox.EnableTextBox();
+			if(PlayerPrefs.GetInt("storyOn") == 1){
+				theTextBox.ReloadScript(theText);
+				theTextBox.currentLine = startLine;
+				theTextBox.endAtLine = endLine;
+				theTextBox.EnableTextBox();
+			}
 		
 			if(destroyWhenActivated){
 				Destroy(gameObject);
