@@ -59,6 +59,8 @@ public class Player : MonoBehaviour {
 	private float startTime;
 	public float spawnDelay;
 	private float spawnTimer = 0;
+	public Transform deathFX;
+	GameObject deathFXInstance;
 	
 	private float faceDir;
 	
@@ -195,7 +197,6 @@ public class Player : MonoBehaviour {
 		
 				//game over stuff, reset scene
 				if (gameOver) {
-					gameOverScreen ();
 					return;
 				}
 		
@@ -792,22 +793,24 @@ public class Player : MonoBehaviour {
 	//called when out of life
 	public void defeated(){
 		gameOver = true;
-		gameOverOverlay.gameObject.SetActive(true);
-		gameOverText.gameObject.SetActive(true);
-		anim.Play("Defeated");
+		//gameOverOverlay.gameObject.SetActive(true);
+		//gameOverText.gameObject.SetActive(true);
+
+		//Make our character invisible
+		Renderer[] renderers = GetComponentsInChildren<Renderer> ();
+		for(int i = 0; i < renderers.Length; i++){
+			renderers[i].enabled = false;
+		}
+
+		//Instantiate our death plane
+		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z + 2);
+		deathFXInstance = (GameObject)Instantiate (deathFX, pos, Quaternion.Euler (270, 0, 0));
+
+
+		//anim.Play("Defeated");
 		print("game over");
 	}
 
-	public void gameOverScreen(){
-		gameObject.GetComponent<cameraFollow> ().followVertical = false;
-		bodyMesh.transform.rotation = Quaternion.Lerp (bodyMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
-		//capeMesh.transform.rotation = Quaternion.Lerp (capeMesh.transform.rotation, Quaternion.Euler (0, 180, 0), Time.deltaTime);
-		transform.position = Vector3.Lerp (transform.position, Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width / 2, Screen.height * .7f, 18)), Time.deltaTime*15f);
-		transform.position = new Vector3 (transform.position.x, transform.position.y, -12);
-		gameOverOverlay.color = Color.Lerp (gameOverOverlay.color, Color.black, Time.deltaTime * 5);
-		if (Input.GetButtonDown ("Jump"))
-			Application.LoadLevel(Application.loadedLevel);
-	}
 
 
 }

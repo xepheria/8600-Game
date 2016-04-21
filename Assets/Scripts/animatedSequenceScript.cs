@@ -35,7 +35,7 @@ public class animatedSequenceScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (frameCounter < 120) {
+		if (frameCounter < this.objects.Length) {
 			StartCoroutine ("PlayLoop", 0.00f);
 			mat.mainTexture = textures [frameCounter];
 			//frameCounter = (++frameCounter) % textures.Length;	
@@ -47,7 +47,7 @@ public class animatedSequenceScript : MonoBehaviour {
 
 	IEnumerator PlayLoop(float delay){
 		yield return new WaitForSeconds (delay);
-		frameCounter += 3;	
+		frameCounter += 1;	
 		StopCoroutine ("PlayLoop");
 	}
 		
