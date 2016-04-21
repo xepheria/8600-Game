@@ -169,16 +169,7 @@ public class Player : MonoBehaviour {
 		GUI.EndGroup();
 	}
 
-	bool isDown = false;
-
 	void Update(){
-		if(Input.GetButtonDown("Jump")) {
-			isDown = true;
-		} else {
-			isDown = false;
-		}
-	}
-	void FixedUpdate(){
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
 			this.spawnTimer += Time.deltaTime;
@@ -319,7 +310,7 @@ public class Player : MonoBehaviour {
 							//both rays hit something. now move and rotate character
 					
 							//if we press jump, do SLIDE JUMP
-							if (isDown) {
+							if (Input.GetButtonDown("Jump")) {
 								controller.collisions.mode = 0;
 								ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
 								xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
@@ -391,7 +382,7 @@ public class Player : MonoBehaviour {
 					RaycastHit leftRayInfo, rightRayInfo;
 					if (doubleRaycastDown (out leftRayInfo, out rightRayInfo)) {
 						//both rays hit something. now move and rotate character
-						if (isDown) {
+						if (Input.GetButtonDown("Jump")) {
 							controller.collisions.mode = 0;
 							ysp = Mathf.Clamp ((jmp * transform.up).y, 0, jmp * 2);
 							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
@@ -486,21 +477,21 @@ public class Player : MonoBehaviour {
 							xsp = Mathf.Lerp (xsp, xsp - acc, Time.deltaTime);
 						}
 					}
-			//pressing right
-			else if (inputLR > 0) {
+					//pressing right
+					else if (inputLR > 0) {
 						if (xsp < 0) {
 							xsp = Mathf.Lerp (xsp, xsp + dec, Time.deltaTime);
 						} else if (xsp < top) {
 							xsp = Mathf.Lerp (xsp, xsp + acc, Time.deltaTime);
 						}
 					}
-			//not pressing anything, gravity kicks in
-			else if (controller.collisions.below) {
+					//not pressing anything, gravity kicks in
+					else if (controller.collisions.below) {
 						//xsp = Mathf.Lerp (xsp, xsp - (Mathf.Min (Mathf.Abs (xsp), frc) * Mathf.Sign (xsp)), Time.deltaTime);
 					} 
 					else if (ysp > 0 && ysp < 1) {	//air drag
-						//if (Mathf.Abs (xsp) > 0.05f)
-							//xsp = xsp * 0.96875f;
+						if (Mathf.Abs (xsp) > 0.05f)
+							xsp = xsp * 0.995f;
 					}
 			
 					//air/jump movement
@@ -513,7 +504,7 @@ public class Player : MonoBehaviour {
 						}
 					}
 					//if we're in collision with the ground and press "jump", we jump
-					if (isDown && controller.collisions.below && canMove) {
+					if (Input.GetButtonDown("Jump") && controller.collisions.below && canMove) {
 						ysp = (jmp + Mathf.Abs (xsp) * .1f) * Mathf.Cos (slopeAngle * Mathf.Deg2Rad); //add a little bit of x-speed to jump
 						xsp = xsp - jmp * Mathf.Sin (slopeAngle * Mathf.Deg2Rad);
 						anim.SetBool ("jumping", true);
@@ -558,11 +549,11 @@ public class Player : MonoBehaviour {
 					controller.Move (new Vector3 (xsp, ysp, 0));
 				}
 		
-		//high friction
-		//takes player input
-		//grip to surface
-		//low max speed
-		else if (controller.collisions.mode == -1 && bumpTimer <= 0) {
+				//high friction
+				//takes player input
+				//grip to surface
+				//low max speed
+				else if (controller.collisions.mode == -1 && bumpTimer <= 0) {
 					trailOffTime -= Time.deltaTime * 3f;
 					trail.time = Mathf.Lerp (0, trailLifetime, trailOffTime / (trailLifetime));	
 					foreach (GameObject but in bootButtons) {
@@ -602,16 +593,16 @@ public class Player : MonoBehaviour {
 								xsp = Mathf.Lerp (xsp, xsp - hiAcc, Time.deltaTime);
 							}
 						}
-				//pressing right
-				else if (inputLR > 0) {
+						//pressing right
+						else if (inputLR > 0) {
 							if (xsp < 0) {
 								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
 							} else if (xsp < hiFricSpCap) {
 								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
 							}
 						}
-				//not pressing anything, friction kicks in
-				else if (!jumping && !onBelt) {
+						//not pressing anything, friction kicks in
+						else if (!jumping && !onBelt) {
 							xsp = 0;
 						} else if (ysp > 0 && ysp < 1 && !onBelt) {	//air drag
 							xsp = 0;
@@ -619,7 +610,8 @@ public class Player : MonoBehaviour {
 				
 						anim.SetFloat ("inputH", Mathf.Abs (xsp));
 				
-						if (isDown && controller.collisions.below) {
+						//jumping
+						if (Input.GetButtonDown("Jump") && controller.collisions.below) {
 							controller.collisions.mode = 0;
 							ysp = Mathf.Clamp ((jmp * transform.up).y, -jmp, jmp * 2);
 							xsp = Mathf.Clamp ((jmp * transform.up).x + (xsp * transform.right).x, -top * 2, top * 2);
@@ -654,43 +646,8 @@ public class Player : MonoBehaviour {
 							controller.collisions.mode = 2;
 					}
 				}
-				//TEMPORAILY COMMENTED OUT
-				/*
-		//can shoot in any mode
-		//V is held down, calculate angle
-		if(Input.GetButton("Fire") && canMove){
-			if(angleToShoot >= 90) angleIncSign = -1;
-			else if(angleToShoot <= 0) angleIncSign = 1;
-			angleToShoot += angleIncSign * Time.deltaTime * 50;
-			if(faceDir == 0){
-				shootDir = Quaternion.Euler(0, 0, angleToShoot) * transform.right;
 			}
-			else{
-				shootDir = Quaternion.Euler(0, 0, -angleToShoot) * -transform.right;
-			}
-			Debug.DrawRay(boxCollider.bounds.center, shootDir, Color.white);
 		}
-		
-		if(Input.GetButtonUp("Fire")){
-			//shoot at current angle, then reset angle
-			GameObject shotInstance = (GameObject)Instantiate(shot, boxCollider.bounds.center, Quaternion.Euler(shootDir));
-			shotInstance.GetComponent<Rigidbody>().velocity = new Vector3(50*xsp, controller.collisions.below?0:50*ysp, 0);
-			shotInstance.GetComponent<Rigidbody>().AddForce(shootDir * 700);
-			
-			if(controller.collisions.mode == 1){
-				shotInstance.tag = "LoBullet";
-			} else if(controller.collisions.mode == -1){
-				shotInstance.tag = "HiBullet";
-			} else {
-				shotInstance.tag = "bullet";
-			}
-
-			angleToShoot = 0;
-			angleIncSign = 1;
-		}
-		*/
-			}
-	}
 	}
 	
 	bool doubleRaycastDown(out RaycastHit leftRayInfo, out RaycastHit rightRayInfo){
