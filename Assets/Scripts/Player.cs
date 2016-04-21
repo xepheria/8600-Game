@@ -67,8 +67,8 @@ public class Player : MonoBehaviour {
 	public bool canMove;
 	private bool gameOver;
 	public bool onBelt;
-	public Image gameOverOverlay;
-	public Text gameOverText;
+	//public Image gameOverOverlay;
+	//public Text gameOverText;
 	
 	//power meter
 	public Texture2D barHigh,barLow,barNorm, barFull;
@@ -122,9 +122,9 @@ public class Player : MonoBehaviour {
 		angleToShoot = 0;
 		angleIncSign = 1;
 		
-		gameOverOverlay.color = new Color(0,0,0,0);
-		gameOverOverlay.gameObject.SetActive(false);
-		gameOverText.gameObject.SetActive(false);
+		//gameOverOverlay.color = new Color(0,0,0,0);
+		//gameOverOverlay.gameObject.SetActive(false);
+		//gameOverText.gameObject.SetActive(false);
 
 		originalBodyPosition = bodyMesh.transform.localPosition;
 
@@ -175,16 +175,16 @@ public class Player : MonoBehaviour {
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
 			this.spawnTimer += Time.deltaTime;
-			//GetAllComponent<Renderer>().enabled = false;
 			Renderer[] renderers = GetComponentsInChildren<Renderer> ();
-			for(int i = 0; i < renderers.Length; i++){
-				renderers[i].enabled = false;
+			foreach(Renderer r in renderers){
+				r.enabled = false;
 			}
 			//Make sure we only have to turn on the renderers once
 			if (this.spawnTimer >= this.spawnDelay) {
-				for(int i = 0; i < renderers.Length; i++){
-					renderers[i].enabled = true;
+				foreach(Renderer r in renderers){
+					r.enabled = true;
 				}
+				faceDir = 90;
 			}
 		}
 		else{
@@ -803,7 +803,7 @@ public class Player : MonoBehaviour {
 		}
 
 		//Instantiate our death plane
-		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z + 2);
+		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z - 1);
 		deathFXInstance = (GameObject)Instantiate (deathFX, pos, Quaternion.Euler (270, 0, 0));
 
 

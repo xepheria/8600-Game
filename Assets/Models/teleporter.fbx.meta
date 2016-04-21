@@ -12,6 +12,7 @@ ModelImporter:
     100008: spinner
     100010: Teleporter
     100012: //RootNode
+    100014: blueGlow
     400000: base
     400002: floatRing1
     400004: floatRing2
@@ -19,21 +20,25 @@ ModelImporter:
     400008: spinner
     400010: Teleporter
     400012: //RootNode
+    400014: blueGlow
     2300000: base
     2300002: floatRing1
     2300004: floatRing2
     2300006: pCylinder1
     2300008: spinner
+    2300010: blueGlow
     3300000: base
     3300002: floatRing1
     3300004: floatRing2
     3300006: pCylinder1
     3300008: spinner
+    3300010: blueGlow
     4300000: base
     4300002: spinner
     4300004: floatRing1
     4300006: floatRing2
     4300008: pCylinder1
+    4300010: blueGlow
     7400000: teleporterIdle
     7400002: teleporterActive
     9500000: //RootNode
