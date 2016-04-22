@@ -803,7 +803,7 @@ public class Player : MonoBehaviour {
 		}
 
 		//Instantiate our death plane
-		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z - 1);
+		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z - 1.5f);
 		deathFXInstance = (GameObject)Instantiate (deathFX, pos, Quaternion.Euler (270, 0, 0));
 
 
