@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(ParticleSystem))]
 public class nextLevel : MonoBehaviour {
 	
 	GameObject teleporter;
@@ -9,14 +10,19 @@ public class nextLevel : MonoBehaviour {
 	Player player;
 	public AnimationClip teleportAnim;
 	public Transform floatTowards;
-	
+	private ParticleSystem ps;
+
 	void Start(){
+		ps = transform.Find("beamParticles").GetComponent<ParticleSystem> ();
+		ps.Stop ();
+		ps.Clear ();
 		teleporter = GameObject.Find("teleporter");
 		player = FindObjectOfType<Player>();
 	}
 	
 	void OnTriggerEnter(Collider col){
 		if(col.CompareTag("Player")){
+			ps.Play ();
 			teleporter.GetComponent<Animator>().SetTrigger("active");
 			player.GetComponent<Animator>().SetTrigger("teleport");
 			activated = true;
