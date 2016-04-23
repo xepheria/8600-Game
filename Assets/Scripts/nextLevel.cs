@@ -26,7 +26,6 @@ public class nextLevel : MonoBehaviour {
 			teleporter.GetComponent<Animator>().SetTrigger("active");
 			player.GetComponent<Animator>().SetTrigger("teleport");
 			activated = true;
-			player.canMove = false;
 			player.enabled = false;
 			StartCoroutine(LoadAfterAnim());
 		}
@@ -49,7 +48,7 @@ public class nextLevel : MonoBehaviour {
 		PlayerPrefs.SetInt ("currentLevel", PlayerPrefs.GetInt ("currentLevel") + 1); 
 		//print(PlayerPrefs.GetInt("currentLevel"));
 		string nextLevel = "level" + PlayerPrefs.GetInt("currentLevel").ToString(); 
-		if (PlayerPrefs.GetInt ("currentLevel") > 8) {
+		if (PlayerPrefs.GetInt ("currentLevel") > 9) {
 			PlayerPrefs.SetInt ("currentLevel", 0);
 			SceneManager.LoadScene ("Credits");
 		} else {

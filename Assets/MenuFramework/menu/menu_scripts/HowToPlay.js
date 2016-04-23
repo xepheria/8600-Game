@@ -11,7 +11,6 @@ function OnGUI () {
 	}
 
 	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
-	GUI.Label(Rect(0,Screen.height-75,Screen.width,0),"Press Any Key to Continue", menuFont);
 }
 	
 function Update(){

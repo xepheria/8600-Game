@@ -3,23 +3,23 @@ using System.Collections;
 
 public class spawnManagerScript : MonoBehaviour {
 
-	private GameObject[] spawnables;
+	private spawnable[] spawnables;
 
 	// Use this for initialization
 	void Start () {
-		spawnables = (GameObject.FindGameObjectsWithTag("spawnable"));
+		spawnables = FindObjectsOfType<spawnable>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		foreach(GameObject obj in spawnables){
+		foreach(spawnable obj in spawnables){
 			//not spawned
-			pickupBehavior info = obj.GetComponent<pickupBehavior>();
-			if(!info.spawn){
-				info.timeLeft -= Time.deltaTime;
-				if(info.timeLeft <= 0){
-					info.spawn = true;
-					obj.active = true;
+			//pickupBehavior info = obj.GetComponent<pickupBehavior>();
+			if(!obj.spawn){
+				obj.timeLeft -= Time.deltaTime;
+				if(obj.timeLeft <= 0){
+					obj.spawn = true;
+					obj.gameObject.active = true;
 				}
 			}
 		}

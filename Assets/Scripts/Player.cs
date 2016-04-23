@@ -764,10 +764,10 @@ public class Player : MonoBehaviour {
 
 	public void forceField(bool isFan, Vector3 pushAmt, Vector3 maxPush, bool isTouching){
 		if (isFan) {
+			//not high fric mode
 			if (controller.collisions.mode != -1) {
-			//	if (Mathf.Abs (maxPush.x) > Mathf.Abs (xsp)){
+				if(xsp < top*4f)
 					xsp += pushAmt.x;
-			//	}
 				if (maxPush.y > ysp){
 					ysp += pushAmt.y;
 				}
@@ -810,7 +810,8 @@ public class Player : MonoBehaviour {
 		//anim.Play("Defeated");
 		print("game over");
 	}
-
-
-
+	
+	public int getMode(){
+		return controller.collisions.mode;
+	}
 }

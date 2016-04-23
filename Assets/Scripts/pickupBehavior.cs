@@ -3,16 +3,13 @@ using System.Collections;
 
 [RequireComponent (typeof(BoxCollider))]
 [RequireComponent (typeof(Rigidbody))]
-public class pickupBehavior : MonoBehaviour {
+public class pickupBehavior : spawnable {
 
 	public float gainAmt;
 	public Player player;
 	private float y; //used for floating effect
 	private float amplitude = 0.06f;
 	private float speed = 2f;
-	public bool spawn;
-	private float timeToRespawn = 3f;
-	public float timeLeft;
 
 	// Use this for initialization
 	void Start () {
