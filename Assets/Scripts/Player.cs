@@ -549,7 +549,7 @@ public class Player : MonoBehaviour {
 
 					controller.Move (new Vector3 (xsp, ysp, 0));
 				}
-		
+			
 				//high friction
 				//takes player input
 				//grip to surface
@@ -564,7 +564,7 @@ public class Player : MonoBehaviour {
 					//cap speed
 					if (Mathf.Abs (xsp) > hiFricSpCap) {
 						if (!onBelt)
-							xsp = hiFricSpCap * Mathf.Sign (xsp);
+							xsp *= .98f; //highfricDecay
 					}
 					//reset animations of transform
 					anim.SetBool ("sliding", false); //stop low-fric anim if playing
@@ -575,12 +575,12 @@ public class Player : MonoBehaviour {
 
 					loFricStuff.active = false;
 					hiFricStuff.active = true;
-			
+
 					//face direction
 					float moveDir = Input.GetAxisRaw ("Horizontal");
 					if (moveDir != 0)
 						faceDir = (moveDir < 0 ? 270 : 90);
-			
+
 					bodyMesh.transform.rotation = Quaternion.RotateTowards (bodyMesh.transform.rotation, Quaternion.Euler (0, faceDir, 0), 300 * Time.deltaTime);
 
 					if (!controller.collisions.below) {
@@ -588,7 +588,7 @@ public class Player : MonoBehaviour {
 					} else {
 						//pressing left
 						if (inputLR < 0) {
-							if (xsp > 0) {
+							if (xsp > 0 && xsp < hiFricSpCap) {
 								xsp = Mathf.Lerp (xsp, xsp - hiAcc, Time.deltaTime);
 							} else if (xsp > -hiFricSpCap) {
 								xsp = Mathf.Lerp (xsp, xsp - hiAcc, Time.deltaTime);
@@ -596,7 +596,7 @@ public class Player : MonoBehaviour {
 						}
 						//pressing right
 						else if (inputLR > 0) {
-							if (xsp < 0) {
+							if (xsp < 0 && xsp > -hiFricSpCap) {
 								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
 							} else if (xsp < hiFricSpCap) {
 								xsp = Mathf.Lerp (xsp, xsp + hiAcc, Time.deltaTime);
@@ -604,7 +604,7 @@ public class Player : MonoBehaviour {
 						}
 						//not pressing anything, friction kicks in
 						else if (!jumping && !onBelt) {
-							xsp = 0;
+							xsp *= .95f; //highfriction decay no input
 						} else if (ysp > 0 && ysp < 1 && !onBelt) {	//air drag
 							xsp = 0;
 						}

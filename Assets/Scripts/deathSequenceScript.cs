@@ -49,7 +49,7 @@ public class deathSequenceScript : MonoBehaviour {
 
 	IEnumerator PlayLoop(float delay){
 		yield return new WaitForSeconds (delay);
-		frameCounter += 1;	
+		frameCounter += 2;	
 		StopCoroutine ("PlayLoop");
 	}
 		
