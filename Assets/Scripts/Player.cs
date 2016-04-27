@@ -7,6 +7,8 @@ using UnityEngine.UI;
 [RequireComponent (typeof(Animator))]
 public class Player : MonoBehaviour {
 	
+	float fpsCounter = 0.0f;
+	
 	public LayerMask collisionMask;
 
 	public Animator anim;
@@ -150,8 +152,10 @@ public class Player : MonoBehaviour {
 			GUI.Label(new Rect(Screen.width - 50, 150, 100, 50), bumpTimer.ToString());
 			
 			//demo instructions
-			GUI.Box(new Rect(0, 0, 400, 200), "Demo\nMove left/right : arrow keys\t\tJump : Space\nHi-fric mode : Hold X\t\tLo-Fric mode : Hold C\n");
-			GUI.Label(new Rect(20, 60, 375, 100), "Use hi-fric to climb steep hills. Use lo-fric to gain speed and launch off slopes. Press G to toggle instructions/debug information.");
+			float msec = fpsCounter * 1000.0f;
+			float fps = 1.0f / fpsCounter;
+			string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+			GUI.Box(new Rect(0, 0, 400, 40), "Framerate: " + text);
 		}
 		
 		//power gauge
@@ -172,6 +176,9 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update(){
+		//update fpsCounter
+		fpsCounter += (Time.deltaTime - fpsCounter) * 0.1f;
+		
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
 			this.spawnTimer += Time.deltaTime;

@@ -7,9 +7,7 @@ GUI.skin = menuSkin;
 	if(Input.GetKeyDown("escape")){
 		Application.LoadLevel("MainMenu");
 	}
-
-	GUI.Label(Rect(0,20,Screen.width,Screen.height),"THANK YOU FOR PLAYING");
-	GUI.Box(Rect(0,0,Screen.width,Screen.height),"CLEMSON DPA \n 8600 Spring 2016");
+	GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height),bg);
 
 
 }
