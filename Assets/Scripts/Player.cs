@@ -80,8 +80,8 @@ public class Player : MonoBehaviour {
 	float hiFricEnergyDec = 0.15f;
 	
 	//audio stuff
-	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX;
-	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioPickup;
+	public AudioClip climbingSFX, fricDownSFX, fricUpSFX, slidingSFX, fricModeOffSFX, pickupSFX, spawnSFX, despawnSFX;
+	private AudioSource audioClimbing, audioFricDown, audioFricUp, audioSliding, audioPickup, audioSpawn, audioDespawn;
 
 	public void resetSpawnTimer(){
 		this.spawnTimer = 0;
@@ -97,11 +97,13 @@ public class Player : MonoBehaviour {
 	}
 	public void Awake(){
 		//add audiosources to Player
-		audioClimbing = AddAudio(climbingSFX, true, false, 0.05f);
+		audioClimbing = AddAudio(climbingSFX, true, false, 0.08f);
 		audioFricDown = AddAudio(fricDownSFX, false, false, 0.5f);
 		audioFricUp = AddAudio(fricUpSFX, false, false, 0.5f);
-		audioSliding = AddAudio(slidingSFX, true, false, 0.05f);
+		audioSliding = AddAudio(slidingSFX, true, false, 0.08f);
 		audioPickup = AddAudio (pickupSFX, false, false, 0.5f);
+		audioSpawn = AddAudio (spawnSFX, false, false, 0.5f);
+		audioDespawn = AddAudio (despawnSFX, false, false, 0.5f);
 	}
 	
 	void Start() {
@@ -181,6 +183,7 @@ public class Player : MonoBehaviour {
 		
 		//Delay our player's spawn to align with the spawn portal.  The delay is a public variable in player and is NOT linked directly to the spawn animation.
 		if (this.spawnTimer < this.spawnDelay) {
+			if(!audioSpawn.isPlaying)	audioSpawn.Play();
 			this.spawnTimer += Time.deltaTime;
 			Renderer[] renderers = GetComponentsInChildren<Renderer> ();
 			foreach(Renderer r in renderers){
@@ -800,6 +803,7 @@ public class Player : MonoBehaviour {
 	//called when out of life
 	public void defeated(){
 		gameOver = true;
+		audioDespawn.Play();
 		//gameOverOverlay.gameObject.SetActive(true);
 		//gameOverText.gameObject.SetActive(true);
 
@@ -812,7 +816,6 @@ public class Player : MonoBehaviour {
 		//Instantiate our death plane
 		Vector3 pos = new Vector3 (transform.position.x, transform.position.y, transform.position.z - 1.5f);
 		deathFXInstance = (GameObject)Instantiate (deathFX, pos, Quaternion.Euler (270, 0, 0));
-
 
 		//anim.Play("Defeated");
 		print("game over");
